@@ -1,9 +1,10 @@
 "use client ";
 import { Box, Flex, Text, Image, Heading, Grid, Card, s } from "theme-ui";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pagination } from "antd";
+import { sendGet } from "@/utils/networkUtils";
 
-const data = Array.from({ length: 18 }).map((_, index) => ({
+const mockData = Array.from({ length: 18 }).map((_, index) => ({
   id: index,
   name: `CC-MAIN-2024-46-${index}`,
   size: "128T",
@@ -12,16 +13,32 @@ const data = Array.from({ length: 18 }).map((_, index) => ({
   language: null,
 }));
 
-const itemsPerPage = 8;
+const pageSize = 8;
 
 function DatasetList() {
+  const [datasetList, setDatasetList] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const [totalPages, setTotalPages] = useState(0);
 
-  const currentData = data.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  useEffect(() => {
+    async function fetchData() {
+      const res: any = await sendGet("/api/dataset", {
+        currentPage,
+        pageSize,
+      });
+
+      console.log("res", res);
+      setDatasetList(mockData.slice(pageSize - 1));
+      setTotalPages(Math.ceil(mockData.length / pageSize));
+      setCurrentPage(1);
+      // if (res?.code === 0) {
+      //   setDatasetList(res.data.list);
+      //   setTotalPages(res.data.total);
+      //   setCurrentPage(res.data.currentPage);
+      // }
+    }
+    fetchData();
+  }, [currentPage]);
 
   return (
     <Box sx={{ width: 1280, mt: 3 }}>
@@ -33,7 +50,7 @@ function DatasetList() {
       </Heading>
 
       <Grid columns={[1, 2, 3, 4]} gap={4}>
-        {currentData.map((item, index) => (
+        {datasetList.map((item, index) => (
           <Card
             key={index}
             sx={{
@@ -126,13 +143,21 @@ function DatasetList() {
           </Card>
         ))}
       </Grid>
-      <Flex sx={{ justifyContent: "flex-end", mt: 4 }}>
-        <Pagination
-          current={currentPage}
-          total={totalPages}
-          onChange={(page) => setCurrentPage(page)}
-        />
-      </Flex>
+      {datasetList.length > 0 ? (
+        <Flex sx={{ justifyContent: "flex-end", mt: 4 }}>
+          <Pagination
+            current={currentPage}
+            total={totalPages}
+            onChange={(page) => setCurrentPage(page)}
+          />
+        </Flex>
+      ) : (
+        <Flex
+          sx={{ justifyContent: "center", alignItems: "center", height: 200 }}
+        >
+          <Text sx={{ color: "#333333", fontSize: 16 }}>No data</Text>
+        </Flex>
+      )}
     </Box>
   );
 }

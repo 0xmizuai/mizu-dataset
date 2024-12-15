@@ -1,5 +1,6 @@
 /** @jsxImportSource theme-ui */
-import { Box, Flex, Input, Image } from "theme-ui";
+import { Box, Flex, Image } from "theme-ui";
+import { Input } from "antd";
 
 function Header() {
   return (
@@ -21,13 +22,8 @@ function Header() {
             ml: [0, 3],
             flex: 1,
           }}
-          icon={
-            <Image
-              src="/images/icons/search.png"
-              width="24px"
-              height="24px"
-              sx={{ position: "absolute", right: 10, top: "50%" }}
-            />
+          prefix={
+            <Image src="/images/icons/search.png" width="24px" height="24px" />
           }
         />
         <Box sx={{ ml: 3 }}>

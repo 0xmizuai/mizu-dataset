@@ -6,11 +6,13 @@ import { Box, Flex, Text, Heading, Image } from "theme-ui";
 
 function DatasetList() {
   const isMobile = useResponsiveValue([true, false, false]);
+
   return (
     <Flex
       sx={{
         flexDirection: "column",
         alignItems: "center",
+        bg: "#F7FAFC",
       }}
     >
       <Header />

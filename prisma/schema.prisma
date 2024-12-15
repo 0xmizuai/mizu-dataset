@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserType {
+  GOOGLE
+  EMAIL
+  GITHUB
+}
+
+model users {
+  id         String   @id @default(cuid())
+  user_key   String   @unique // 邮箱/github/google user Id
+  type       UserType @default(EMAIL)
+  name       String
+  email      String?
+  avatar     String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model datasets {
+  id            Int            @id @default(autoincrement())
+  name          String
+  language      String
+  data_type     String
+  total_objects Int            @default(0)
+  total_bytes   BigInt         @default(0)
+  created_at    DateTime       @default(now())
+  data_records  data_records[]
+
+  @@index([name, language, data_type, created_at])
+}
+
+model data_records {
+  id                     Int      @id @default(autoincrement())
+  dataset_id             Int
+  md5                    String
+  num_of_records         Int      @default(0)
+  decompressed_byte_size BigInt   @default(0)
+  byte_size              BigInt   @default(0)
+  source                 String
+  created_at             DateTime @default(now())
+  dataset                datasets @relation(fields: [dataset_id], references: [id])
+
+  @@index([md5, dataset_id, created_at])
+}

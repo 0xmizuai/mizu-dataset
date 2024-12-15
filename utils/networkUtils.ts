@@ -1,8 +1,6 @@
 import { ApiResponse } from "@/types/api";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
-
-const COOKIE_KEY_JWT = "jwt_cookie";
-const DEFAULT_ERROR_MESSAGE = "Failed, please try again";
+import { COOKIE_KEY_JWT, DEFAULT_ERROR_MESSAGE } from "./constants";
 
 export async function saveJwt(jwt: string) {
   setCookie(COOKIE_KEY_JWT, jwt, {
