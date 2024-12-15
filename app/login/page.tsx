@@ -212,7 +212,25 @@ export default function LoginPage() {
                 alignItems: "center",
                 pt: 3,
               }}
-            ></Box>
+            >
+              <Box sx={{ position: "relative", zIndex: 1, px: 5 }}>
+                <Heading as="h1" sx={{ fontSize: 5, mb: 3 }}>
+                  Empower your AI Applications with MIZU Data
+                </Heading>
+                <Text>Open, Ultra-low Cost, Hyperscale</Text>
+              </Box>
+              <Image
+                src="/images/login/logo.png"
+                sx={{
+                  width: "100%",
+                  height: "auto",
+                  objectFit: "cover",
+                  position: "absolute",
+                  bottom: 0,
+                  right: 0,
+                }}
+              />
+            </Box>
           )}
         </Flex>
       </Box>
