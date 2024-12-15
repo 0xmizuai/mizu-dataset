@@ -178,7 +178,7 @@ export default function LoginPage() {
                 <Text sx={{ textAlign: "center", my: 2, color: "text" }}>
                   OR
                 </Text>
-                <Button
+                {/* <Button
                   sx={{
                     bg: "white",
                     border: "1px solid #ddd",
@@ -195,7 +195,7 @@ export default function LoginPage() {
                     sx={{ width: "20px", height: "20px", mr: 3 }}
                   />
                   Continue with Google
-                </Button>
+                </Button> */}
               </Flex>
             </Card>
           </Box>
