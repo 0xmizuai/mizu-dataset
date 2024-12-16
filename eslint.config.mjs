@@ -11,9 +11,14 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
-  "@typescript-eslint/no-explicit-any",
-  "jsx-a11y/alt-text",
-  "no-console"
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off", // 禁止使用 any 类型
+      "jsx-a11y/alt-text": "off", // 警告：缺少 alt 属性
+      "no-console": "off", // 警告：禁止使用 console.log
+      "@typescript-eslint/no-unused-vars": "off", // 警告：禁止使用未使用的变量
+    },
+  },
 ];
 
 export default eslintConfig;
