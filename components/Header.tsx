@@ -1,8 +1,65 @@
 /** @jsxImportSource theme-ui */
-import { Box, Flex, Image } from "theme-ui";
-import { Input } from "antd";
+import { Box, Flex, Image, Text } from "theme-ui";
+import { Dropdown, Input, MenuProps, message } from "antd";
+import { deleteJwt } from "@/utils/networkUtils";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+enum HeaderKey {
+  POINTS = "points",
+  LOGOUT = "logout",
+}
 
 function Header() {
+  const router = useRouter();
+  const [key, setKey] = useState<HeaderKey | null>(null);
+
+  const items: MenuProps["items"] = [
+    {
+      label: (
+        <Flex
+          sx={{
+            alignItems: "center",
+            cursor: "pointer",
+            color: key === HeaderKey.POINTS ? "#2979F2" : "inherit",
+          }}
+        >
+          <Text sx={{ ml: 2, fontSize: 16, fontWeight: "medium" }}>
+            My points:
+            <Text sx={{ fontWeight: "bold", color: "#2979F2" }}>2000</Text>
+          </Text>
+        </Flex>
+      ),
+      key: HeaderKey.POINTS,
+    },
+    {
+      label: (
+        <Flex
+          sx={{
+            alignItems: "center",
+            cursor: "pointer",
+            color: key === HeaderKey.LOGOUT ? "#2979F2" : "inherit",
+          }}
+        >
+          <Image src="/images/login/logout.png" width="20px" height="20px" />
+          <Text sx={{ ml: 2, fontSize: 16, fontWeight: "medium" }}>Logout</Text>
+        </Flex>
+      ),
+      key: HeaderKey.LOGOUT,
+    },
+  ];
+
+  const onClick: MenuProps["onClick"] = ({ key }) => {
+    message.info(`Click on item ${key}`);
+    if (key === HeaderKey.LOGOUT) {
+      setKey(HeaderKey.LOGOUT);
+      deleteJwt();
+      router.push("/login");
+    }
+    if (key === HeaderKey.POINTS) {
+      setKey(HeaderKey.POINTS);
+    }
+  };
   return (
     <Flex
       sx={{
@@ -27,10 +84,12 @@ function Header() {
           }
         />
         <Box sx={{ ml: 3 }}>
-          <Image
-            src="/images/icons/avatar.png"
-            sx={{ width: "24px", height: "24px" }}
-          />
+          <Dropdown menu={{ items, onClick }}>
+            <Image
+              src="/images/icons/avatar.png"
+              sx={{ width: "24px", height: "24px", cursor: "pointer" }}
+            />
+          </Dropdown>
         </Box>
       </Flex>
     </Flex>
