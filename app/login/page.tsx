@@ -1,7 +1,7 @@
 "use client";
 import { useUserStore } from "@/stores/userStore";
 import { saveJwt, sendPost } from "@/utils/networkUtils";
-import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -257,6 +257,13 @@ export default function LoginPage() {
                 <Text sx={{ textAlign: "center", my: 2, color: "text" }}>
                   OR
                 </Text>
+                {/* <GoogleLogin
+                  size="large"
+                  onSuccess={handleGoogleLogin}
+                  onError={() => {
+                    toast.error("Login failed");
+                  }}
+                /> */}
                 <Button
                   sx={{
                     bg: "white",
