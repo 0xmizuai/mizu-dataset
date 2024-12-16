@@ -11,7 +11,7 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # 复制项目文件
-COPY . .
+COPY . /app/.
 
 # 生成 Prisma 客户端
 RUN npx prisma generate
