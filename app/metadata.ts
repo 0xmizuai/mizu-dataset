@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "MIZU",
-  description: "",
+  title: "MIZU dataset",
+  description: "MIZU dataset",
 };

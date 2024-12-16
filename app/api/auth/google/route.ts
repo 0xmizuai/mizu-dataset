@@ -5,11 +5,10 @@ import { getJWT } from "@/lib/jwt";
 import { AUTH_FAILED } from "@/utils/constants";
 
 const client = new OAuth2Client({
-  clientId: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+  clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET,
 });
 
-console.log("GOOGLE_CLIENT_ID", process.env.GOOGLE_CLIENT_ID);
 /**
  * @description: google OAuth2.0 login
  * @param request: { tokenId: string }
@@ -21,7 +20,7 @@ export async function POST(request: NextRequest) {
   console.log("tokenId", tokenId);
   const ticket = await client.verifyIdToken({
     idToken: tokenId,
-    audience: process.env.GOOGLE_CLIENT_ID,
+    audience: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
   });
   const payload = ticket.getPayload();
 
