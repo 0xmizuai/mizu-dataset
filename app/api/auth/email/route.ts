@@ -2,7 +2,7 @@ import { validateEmail } from "@/utils/commonUtils";
 import { random } from "lodash";
 import { NextRequest } from "next/server";
 import { getRedisClient } from "@/lib/redis";
-import { AUTH_FAILED } from "@/utils/constants";
+import { AUTH_FAILED, namespace } from "@/utils/constants";
 
 export async function POST(request: NextRequest) {
   const requestData = await request.json();
@@ -17,7 +17,9 @@ export async function POST(request: NextRequest) {
   }
 
   const redisClient = await getRedisClient();
-  const cacheCode = await redisClient.get(`check:emailCode:${email}`);
+  const cacheCode = await redisClient.get(
+    `${namespace}:check:emailCode:${email}`
+  );
 
   if (cacheCode) {
     return Response.json({
@@ -52,10 +54,10 @@ export async function POST(request: NextRequest) {
     const resJson = await res.json();
 
     if (resJson?.ErrorCode === 0) {
-      redisClient.set(`check:emailCode:${email}`, randomCode, {
+      redisClient.set(`${namespace}:check:emailCode:${email}`, randomCode, {
         EX: 60,
       });
-      redisClient.set(`emailCode:${email}`, randomCode, {
+      redisClient.set(`${namespace}:emailCode:${email}`, randomCode, {
         EX: 180,
       });
     }
