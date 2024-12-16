@@ -43,7 +43,14 @@ export async function POST(request: NextRequest) {
         user_key: sub,
         type: "GOOGLE",
         email,
-        name,
+        name: name || "",
+        avatar: picture,
+      },
+      create: {
+        user_key: sub,
+        type: "GOOGLE",
+        email,
+        name: name || "",
         avatar: picture,
       },
     });

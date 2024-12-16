@@ -1,15 +1,13 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
+export async function GET(request: NextRequest) {
+  const params = request.nextUrl.searchParams;
+  const id = params.get("id");
   if (!id) return new NextResponse("Not Found", { status: 404 });
   try {
     const dataset = await prisma.datasets.findUnique({
-      where: { id },
+      where: { id: parseInt(id) },
     });
 
     const jsonData = {

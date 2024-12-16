@@ -20,10 +20,10 @@ enum UserType {
 }
 
 model users {
-  id         String   @id @default(cuid())
+  id         Int      @id @default(autoincrement())
   user_key   String   @unique // 邮箱/github/google user Id
   type       UserType @default(EMAIL)
-  name       String
+  name       String?
   email      String?
   avatar     String?
   created_at DateTime @default(now())

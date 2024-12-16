@@ -1,5 +1,5 @@
 "use client ";
-import { Box, Flex, Text, Image, Heading, Grid, Card, s } from "theme-ui";
+import { Box, Flex, Text, Image, Heading, Grid, Card } from "theme-ui";
 import { useEffect, useState } from "react";
 import { Pagination } from "antd";
 import { sendGet } from "@/utils/networkUtils";
