@@ -4,7 +4,11 @@ import prisma from "@/lib/prisma";
 import { getJWT } from "@/lib/jwt";
 import { AUTH_FAILED } from "@/utils/constants";
 
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const client = new OAuth2Client({
+  clientId: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+});
+
 console.log("GOOGLE_CLIENT_ID", process.env.GOOGLE_CLIENT_ID);
 /**
  * @description: google OAuth2.0 login
