@@ -59,6 +59,7 @@ function DatasetList() {
           </Box>
           <Image
             src="/images/dataset/logo.png"
+            alt="logo"
             sx={{
               width: "497px",
               height: "auto",

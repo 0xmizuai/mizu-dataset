@@ -41,7 +41,12 @@ function Header() {
             color: key === HeaderKey.LOGOUT ? "#2979F2" : "inherit",
           }}
         >
-          <Image src="/images/login/logout.png" width="20px" height="20px" />
+          <Image
+            src="/images/login/logout.png"
+            alt="logout"
+            width="20px"
+            height="20px"
+          />
           <Text sx={{ ml: 2, fontSize: 16, fontWeight: "medium" }}>Logout</Text>
         </Flex>
       ),
@@ -70,7 +75,11 @@ function Header() {
         maxWidth: "100%",
       }}
     >
-      <Image src="/images/login/logo-text.png" sx={{ maxWidth: "114px" }} />
+      <Image
+        src="/images/login/logo-text.png"
+        sx={{ maxWidth: "114px" }}
+        alt="logo"
+      />
       <Flex sx={{ alignItems: "center" }}>
         <Input
           placeholder="Search Dataset..."
@@ -80,7 +89,12 @@ function Header() {
             flex: 1,
           }}
           prefix={
-            <Image src="/images/icons/search.png" width="24px" height="24px" />
+            <Image
+              src="/images/icons/search.png"
+              width="24px"
+              height="24px"
+              alt="search"
+            />
           }
         />
         <Box sx={{ ml: 3 }}>
@@ -88,6 +102,7 @@ function Header() {
             <Image
               src="/images/icons/avatar.png"
               sx={{ width: "24px", height: "24px", cursor: "pointer" }}
+              alt="avatar"
             />
           </Dropdown>
         </Box>

@@ -61,6 +61,7 @@ function DatasetList() {
                   >
                     <Image
                       src={`${"/images/dataset/btc.png"}`}
+                      alt="dataset"
                       width="50px"
                       height="50px"
                     />
@@ -123,6 +124,7 @@ function DatasetList() {
                       <Flex>
                         <Image
                           src="/images/icons/calender.png"
+                          alt="calender"
                           width="19px"
                           height="19px"
                           mr={2}
@@ -139,6 +141,7 @@ function DatasetList() {
                       </Flex>
                       <Image
                         src="/images/icons/link.png"
+                        alt="link"
                         width="24px"
                         height="24px"
                       />

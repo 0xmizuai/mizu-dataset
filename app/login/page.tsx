@@ -144,6 +144,7 @@ export default function LoginPage() {
       >
         <Image
           src="/images/login/logo-text.png"
+          alt="logo"
           sx={{
             maxWidth: ["88px", "108px", "108px"],
             height: "auto",
@@ -278,6 +279,7 @@ export default function LoginPage() {
                 >
                   <Image
                     src="/images/icons/google.png"
+                    alt="google"
                     sx={{ width: "20px", height: "20px", mr: 3 }}
                   />
                   Continue with Google
@@ -307,6 +309,7 @@ export default function LoginPage() {
               </Box>
               <Image
                 src="/images/login/logo.png"
+                alt="logo"
                 sx={{
                   width: "100%",
                   height: "auto",
