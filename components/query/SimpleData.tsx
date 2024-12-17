@@ -56,7 +56,7 @@ export default function SimpleData({ id }: SimpleDataProps) {
       });
       setList(newList);
     })();
-  }, []);
+  }, [id]);
 
   return (
     <Card

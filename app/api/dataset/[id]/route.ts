@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   const token =
     request.headers.get("Authorization")?.replace("Bearer ", "") || "";
@@ -20,7 +20,7 @@ export async function GET(
       { status: 401 }
     );
   }
-  const { id } = await context.params;
+  const { id } = await params;
   if (!id) return new Response("Bad Request", { status: 400 });
   try {
     const dataset = await prisma.datasets.findUnique({
