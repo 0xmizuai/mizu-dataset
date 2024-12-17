@@ -31,7 +31,11 @@ export default function LoginPage() {
   }, [countdown]);
 
   const handleGoogleLogin = async (credentialResponse: any) => {
-    console.log("credent🌻🌻ialResponse", credentialResponse);
+    console.log(
+      "credent🌻🌻ialResponse",
+      credentialResponse,
+      credentialResponse.credential
+    );
     try {
       const tokenId = credentialResponse.credential;
       console.log("tokenId", tokenId);
