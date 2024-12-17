@@ -33,7 +33,7 @@ export default function LoginPage() {
   const handleGoogleLogin = async (credentialResponse: any) => {
     console.log("credent🌻🌻ialResponse", credentialResponse);
     try {
-      const tokenId = credentialResponse.access_token;
+      const tokenId = credentialResponse.credential;
       console.log("tokenId", tokenId);
       const response: any = await sendPost(
         `/api/auth/google`,
