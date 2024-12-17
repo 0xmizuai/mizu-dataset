@@ -11,9 +11,11 @@ export default function Breadcrumb() {
   return (
     <Flex sx={{ gap: 2, mb: 3 }}>
       {pathSegments.map((segment, index) => {
+        // 处理路径段中的 "dataset" 替换成适当的显示文本
+        const segmentLabel =
+          segment === "dataset" ? "Dataset" : decodeURIComponent(segment);
         const href = "/" + pathSegments.slice(0, index + 1).join("/");
 
-        console.log("href", href);
         return (
           <Flex key={href} sx={{ alignItems: "center", gap: 2, my: 3 }}>
             {index !== 0 && <Text sx={{ color: "text" }}>{">"}</Text>}
@@ -31,7 +33,7 @@ export default function Breadcrumb() {
                     index === pathSegments.length - 1 ? "bold" : "normal",
                 }}
               >
-                {decodeURIComponent(segment)}
+                {segmentLabel}
               </Text>
             </Link>
           </Flex>
