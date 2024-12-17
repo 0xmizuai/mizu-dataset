@@ -44,6 +44,10 @@ function Header({ showSearch = false }: HeaderProps) {
             cursor: "pointer",
             color: key === HeaderKey.LOGOUT ? "#2979F2" : "inherit",
           }}
+          onClick={() => {
+            deleteJwt();
+            router.push("/login");
+          }}
         >
           <Image
             src="/images/login/logout.png"
