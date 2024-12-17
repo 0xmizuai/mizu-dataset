@@ -1,4 +1,5 @@
 "use client";
+import { AuthInit } from "@/components/AuthInit";
 import { theme } from "@/theme";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ThemeUIProvider } from "theme-ui";
@@ -9,7 +10,10 @@ export default function Provider({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeUIProvider theme={theme}>
-      <GoogleOAuthProvider clientId={clientId}>{children}</GoogleOAuthProvider>
+      <GoogleOAuthProvider clientId={clientId}>
+        {/* <AuthInit /> */}
+        {children}
+      </GoogleOAuthProvider>
     </ThemeUIProvider>
   );
 }

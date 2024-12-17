@@ -1,6 +1,5 @@
 "use client";
-import DatasetCardList from "@/components/DatasetCard";
-import Header from "@/components/Header";
+import DatasetComList from "@/components/DatasetList";
 import { useResponsiveValue } from "@theme-ui/match-media";
 import { Box, Flex, Text, Heading, Image } from "theme-ui";
 
@@ -8,14 +7,7 @@ function DatasetList() {
   const isMobile = useResponsiveValue([true, false, false]);
 
   return (
-    <Flex
-      sx={{
-        flexDirection: "column",
-        alignItems: "center",
-        bg: "#F7FAFC",
-      }}
-    >
-      <Header />
+    <>
       <Flex
         sx={{
           width: ["100%", "100%"],
@@ -33,7 +25,6 @@ function DatasetList() {
       >
         <Box
           sx={{
-            width: "1280px",
             mx: "auto",
           }}
         >
@@ -70,8 +61,8 @@ function DatasetList() {
           />
         </Box>
       </Flex>
-      <DatasetCardList />
-    </Flex>
+      <DatasetComList />
+    </>
   );
 }
 

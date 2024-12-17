@@ -1,6 +1,5 @@
 "use client";
-import DatasetListPage from "./datasetList/page";
-// import LoginPage from "./login/page";
+import DatasetListPage from "./dataset/page";
 
 export default function Home() {
   return <DatasetListPage />;

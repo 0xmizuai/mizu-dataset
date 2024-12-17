@@ -10,7 +10,11 @@ enum HeaderKey {
   LOGOUT = "logout",
 }
 
-function Header() {
+interface HeaderProps {
+  showSearch?: boolean;
+}
+
+function Header({ showSearch = false }: HeaderProps) {
   const router = useRouter();
   const [key, setKey] = useState<HeaderKey | null>(null);
 
@@ -68,44 +72,54 @@ function Header() {
   return (
     <Flex
       sx={{
-        justifyContent: "space-between",
-        p: 3,
+        backgroundColor: "#F7FAFC",
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
         borderBottom: "1px solid #eaeaea",
-        width: 1280,
-        maxWidth: "100%",
       }}
     >
-      <Image
-        src="/images/login/logo-text.png"
-        sx={{ maxWidth: "114px" }}
-        alt="logo"
-      />
-      <Flex sx={{ alignItems: "center" }}>
-        <Input
-          placeholder="Search Dataset..."
-          sx={{
-            maxWidth: ["100%", "300px"],
-            ml: [0, 3],
-            flex: 1,
-          }}
-          prefix={
-            <Image
-              src="/images/icons/search.png"
-              width="24px"
-              height="24px"
-              alt="search"
-            />
-          }
+      <Flex
+        sx={{
+          py: 3,
+          justifyContent: "space-between",
+          width: 1280,
+        }}
+      >
+        <Image
+          src="/images/login/logo-text.png"
+          sx={{ maxWidth: "114px" }}
+          alt="logo"
         />
-        <Box sx={{ ml: 3 }}>
-          <Dropdown menu={{ items, onClick }}>
-            <Image
-              src="/images/icons/avatar.png"
-              sx={{ width: "24px", height: "24px", cursor: "pointer" }}
-              alt="avatar"
+        <Flex sx={{ alignItems: "center" }}>
+          {showSearch && (
+            <Input
+              placeholder="Search Dataset..."
+              sx={{
+                maxWidth: ["100%", "300px"],
+                ml: [0, 3],
+                flex: 1,
+              }}
+              prefix={
+                <Image
+                  src="/images/icons/search.png"
+                  width="24px"
+                  height="24px"
+                  alt="search"
+                />
+              }
             />
-          </Dropdown>
-        </Box>
+          )}
+          <Box sx={{ ml: 3 }}>
+            <Dropdown menu={{ items, onClick }}>
+              <Image
+                src="/images/icons/avatar.png"
+                sx={{ width: "24px", height: "24px", cursor: "pointer" }}
+                alt="avatar"
+              />
+            </Dropdown>
+          </Box>
+        </Flex>
       </Flex>
     </Flex>
   );

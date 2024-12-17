@@ -21,7 +21,7 @@ enum UserType {
 
 model users {
   id         Int      @id @default(autoincrement())
-  user_key   String   @unique // 邮箱/github/google user Id
+  user_key   String   @unique // emil/github/google user Id
   type       UserType @default(EMAIL)
   name       String?
   email      String?
