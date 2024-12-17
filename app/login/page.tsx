@@ -72,18 +72,7 @@ export default function LoginPage() {
 
   const login = useGoogleLogin({
     scope: "openid email profile",
-    onSuccess: async (credentialResponse) => {
-      // console.log("🍷🍷credentialResponse", credentialResponse);
-      // const response = await fetch("https://oauth2.googleapis.com/userinfo", {
-      //   headers: {
-      //     Authorization: `Bearer ${credentialResponse.access_token}`,
-      //   },
-      // });
-
-      // const userInfo = await response.json();
-      // console.log("🍷🍷userInfo", userInfo);
-      handleGoogleLogin(credentialResponse);
-    },
+    onSuccess: handleGoogleLogin,
     onError: () => {
       toast.error("Login failed");
     },
@@ -146,24 +135,21 @@ export default function LoginPage() {
 
   console.log("loading", isLoading);
   return (
-    <Box
+    <Flex
       sx={{
         height: "100vh",
         width: "100%",
         bg: "white",
-        display: "flex",
         alignItems: "center",
-        justifyContent: ["flex-start", "center", "center"],
         flexDirection: "column",
       }}
     >
-      <Box
+      <Flex
         sx={{
-          display: "flex",
           alignItems: "center",
-          justifyContent: "flex-start",
-          width: !isMobile ? "76%" : "100%",
-          mb: [2, 4, 4],
+          width: "100%",
+          height: "108px",
+          pl: "20%",
         }}
       >
         <Image
@@ -176,20 +162,19 @@ export default function LoginPage() {
             mt: [4, 0, 0],
           }}
         />
-      </Box>
+      </Flex>
       <Box
         sx={
           isMobile
             ? { width: "100%" }
             : {
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: "20px",
-                mx: [0, 4, 4],
+                width: "100%",
                 background: !isMobile
                   ? "linear-gradient(135deg, #3C81BF 0%, #1C44B3 31%, #1A42B4 63%, #1B43B4 100%)"
                   : "none",
+                height: "calc(100vh - 108px - 268px)",
+                pl: "20%",
               }
         }
       >
@@ -201,8 +186,8 @@ export default function LoginPage() {
           {/* 左侧登录卡片 */}
           <Box
             sx={{
-              width: ["100%", "50%", "50%"],
-              p: [2, 4, 4],
+              // width: ["100%", "50%", "50%"],
+              p: [2, 0, 0],
               display: "flex",
               alignItems: "center",
               justifyContent: "flex-start",
@@ -314,39 +299,36 @@ export default function LoginPage() {
 
           {/* 右侧背景图片和文案 */}
           {!isMobile && (
-            <Box
+            <Flex
               sx={{
                 width: ["100%", "50%"],
-                position: "relative",
-                color: "white",
-                display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
-                pt: 3,
+                mt: 200,
+                ml: 80,
               }}
             >
-              <Box sx={{ position: "relative", zIndex: 1, px: 5 }}>
-                <Heading as="h1" sx={{ fontSize: 5, mb: 3 }}>
-                  Empower your AI Applications with MIZU Data
-                </Heading>
-                <Text>Open, Ultra-low Cost, Hyperscale</Text>
-              </Box>
-              <Image
-                src="/images/login/logo.png"
-                alt="logo"
-                sx={{
-                  width: "100%",
-                  height: "auto",
-                  objectFit: "cover",
-                  position: "absolute",
-                  bottom: 0,
-                  right: 0,
-                }}
-              />
-            </Box>
+              <Heading as="h1" sx={{ fontSize: 5, mb: 3 }}>
+                Empower your AI Applications with MIZU Data
+              </Heading>
+              <Text>Open, Ultra-low Cost, Hyperscale</Text>
+            </Flex>
           )}
         </Flex>
       </Box>
-    </Box>
+      {!isMobile && (
+        <Image
+          src="/images/login/logo.png"
+          alt="logo"
+          sx={{
+            width: "677px",
+            height: "auto",
+            objectFit: "cover",
+            position: "absolute",
+            bottom: 268,
+            right: 0,
+          }}
+        />
+      )}
+    </Flex>
   );
 }
