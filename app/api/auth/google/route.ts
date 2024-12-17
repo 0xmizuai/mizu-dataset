@@ -36,7 +36,8 @@ export async function POST(request: NextRequest) {
     }
   );
 
-  if (!response || !response?.data) {
+  console.log("🌹 response = ", response);
+  if (!response) {
     return Response.json({
       code: -1,
       message: "verify token failed",
