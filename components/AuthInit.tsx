@@ -14,13 +14,7 @@ export const AuthInit = () => {
 
   useDebouncedEffect(
     async () => {
-      const res: any = await sendPost(
-        `/api/auth/verify`,
-        {},
-        {
-          excludeAuthorization: true,
-        }
-      );
+      const res: any = await sendPost(`/api/auth/verify`, {}, {});
       console.log("res", res);
       if (res?.code === 0) {
         saveJwt(res?.data?.token);
