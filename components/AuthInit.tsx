@@ -15,7 +15,6 @@ export const AuthInit = () => {
   useDebouncedEffect(
     async () => {
       const res: any = await sendPost(`/api/auth/verify`, {}, {});
-      console.log("res", res);
       if (res?.code === 0) {
         saveJwt(res?.data?.token);
         setUser(res?.data?.userKey);
@@ -25,7 +24,7 @@ export const AuthInit = () => {
       }
     },
     [pathname],
-    500
+    1000 * 60 * 10
   );
 
   return null;

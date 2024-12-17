@@ -10,25 +10,25 @@ function DatasetList() {
     <>
       <Flex
         sx={{
-          width: ["100%", "100%"],
+          width: "100%",
           height: ["200px", "261px"],
           position: "relative",
           color: "white",
-          display: "flex",
-          flexDirection: "column",
           alignItems: "center",
-          pt: 3,
+          justifyContent: "center",
           background: !isMobile
             ? "linear-gradient(135deg, #3C81BF 0%, #1C44B3 31%, #1A42B4 63%, #1B43B4 100%)"
             : "none",
         }}
       >
-        <Box
+        <Flex
           sx={{
-            mx: "auto",
+            width: "1280px",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          <Box sx={{ position: "relative", zIndex: 1, width: "50%", mt: 4 }}>
+          <Box sx={{ width: "50%", mt: 4 }}>
             <Heading
               as="h1"
               sx={{
@@ -54,12 +54,11 @@ function DatasetList() {
             sx={{
               width: "497px",
               height: "auto",
-              position: "absolute",
-              bottom: 0,
-              right: 180,
+              mr: -40,
+              mb: -18,
             }}
           />
-        </Box>
+        </Flex>
       </Flex>
       <DatasetComList />
     </>

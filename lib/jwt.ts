@@ -19,6 +19,9 @@ export const getJWT = async (userKey: string, userKeyType: string) => {
 };
 
 export const verifyJWT = async (jwt: string) => {
+  if (!jwt) {
+    return null;
+  }
   try {
     const key = createPublicKey(process.env.JWT_PUBLIC_KEY || "");
     const verifyResult = await jwtVerify(jwt, key);

@@ -119,6 +119,7 @@ export default function DatasetCard({
               console.log("click");
               router.push(`/dataset/${item?.id}`);
             }}
+            sx={{ cursor: "pointer" }}
           />
         )}
       </Flex>

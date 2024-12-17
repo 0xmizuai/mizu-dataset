@@ -2,39 +2,62 @@
 
 import { Card, Text } from "theme-ui";
 import { Table } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box } from "theme-ui";
-import { mockData } from "../DatasetList";
+import { sendGet } from "@/utils/networkUtils";
 
-export default function SimpleData() {
-  const [data, setData] = useState(mockData);
+interface SimpleDataProps {
+  id: string;
+}
+
+interface SimpleDataItem {
+  id: string;
+  text: string;
+  uri: string;
+}
+
+export default function SimpleData({ id }: SimpleDataProps) {
+  const [list, setList] = useState<SimpleDataItem[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  console.log("~🚀 🚀 id", id);
   const columns = [
+    {
+      title: "Seq",
+      dataIndex: "seq",
+      key: "seq",
+    },
     {
       title: "ID",
       dataIndex: "id",
       key: "id",
     },
     {
-      title: "Title",
-      dataIndex: "title",
-      key: "title",
+      title: "Text",
+      dataIndex: "text",
+      key: "text",
     },
     {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
-    },
-    {
-      title: "Amount",
-      dataIndex: "amount",
-      key: "amount",
-    },
-    {
-      title: "Updated",
-      dataIndex: "updated",
-      key: "updated",
+      title: "URI",
+      dataIndex: "uri",
+      key: "uri",
     },
   ];
+
+  useEffect(() => {
+    (async () => {
+      const res = await sendGet(`/api/simpleData`, { id });
+      const data = res?.data ?? [];
+      const newList = data.map((item: any, index: number) => {
+        return {
+          ...item,
+          seq: index + 1,
+        };
+      });
+      setList(newList);
+    })();
+  }, []);
+
   return (
     <Card
       sx={{
@@ -55,7 +78,7 @@ export default function SimpleData() {
       <Box sx={{ mt: 3 }}>
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={list}
           pagination={false}
           scroll={{ x: 1000 }}
         />

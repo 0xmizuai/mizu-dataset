@@ -59,7 +59,7 @@ export async function sendPost<T>(
 
 export async function sendGet<T>(
   path: string,
-  params: object,
+  params?: object,
   options?: {
     excludeAuthorization?: boolean;
     onError?: (errMessage: string) => void;
@@ -76,13 +76,11 @@ export async function sendGet<T>(
       headers.Authorization = `Bearer ${jwtCookie}`;
     }
 
-    const response = await fetch(
-      `${path}?` + new URLSearchParams({ ...params }),
-      {
-        method: "GET",
-        headers,
-      }
-    );
+    const url = params ? `${path}?${new URLSearchParams({ ...params })}` : path;
+    const response = await fetch(url, {
+      method: "GET",
+      headers,
+    });
 
     if (!response.ok) {
       options?.onError?.(response.statusText);

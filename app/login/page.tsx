@@ -1,19 +1,13 @@
 "use client";
 import { useUserStore } from "@/stores/userStore";
 import { saveJwt, sendPost } from "@/utils/networkUtils";
-import {
-  GoogleLogin,
-  useGoogleLogin,
-  useGoogleOAuth,
-  useGoogleOneTapLogin,
-} from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Box, Button, Card, Input, Text, Flex, Image, Heading } from "theme-ui";
 import { useResponsiveValue } from "@theme-ui/match-media";
 import { validateEmail } from "@/utils/commonUtils";
-import { useDebouncedEffect } from "@/hooks/useDebouncedEffect";
 import { DEFAULT_LOGIN_REDIRECT } from "@/config/routes";
 
 export default function LoginPage() {
@@ -34,11 +28,6 @@ export default function LoginPage() {
       if (timer) clearTimeout(timer);
     };
   }, [countdown]);
-
-  console.log(
-    "process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID",
-    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
-  );
 
   const handleGoogleLogin = async (credentialResponse: any) => {
     console.log("credent🌻🌻ialResponse", credentialResponse);
@@ -102,38 +91,33 @@ export default function LoginPage() {
     }
   };
 
-  const handleLogin = useDebouncedEffect(
-    async () => {
-      setIsLoading(true); // 设置 loading 状态
-      console.log("提交的验证码:", code);
-      const res: any = await sendPost(
-        "/api/auth/email/login",
-        {
-          email: account,
-          code: code,
-        },
-        {
-          excludeAuthorization: true,
-        }
-      );
-
-      if (!res || res.code === -1) {
-        setCode(null);
-        setIsLoading(false);
-        return toast.error(res?.message || "login failed");
+  const handleLogin = async () => {
+    setIsLoading(true); // 设置 loading 状态
+    console.log("提交的验证码:", code);
+    const res: any = await sendPost(
+      "/api/auth/email/login",
+      {
+        email: account,
+        code: code,
+      },
+      {
+        excludeAuthorization: true,
       }
-      saveJwt(res.data.token);
-      setUser({
-        userKey: res.data.userKey || "",
-      });
-      setIsLoading(false);
-      return router.push(DEFAULT_LOGIN_REDIRECT);
-    },
-    [code],
-    1000
-  );
+    );
 
-  console.log("loading", isLoading);
+    if (!res || res.code === -1) {
+      setCode(null);
+      setIsLoading(false);
+      return toast.error(res?.message || "login failed");
+    }
+    saveJwt(res.data.token);
+    setUser({
+      userKey: res.data.userKey || "",
+    });
+    setIsLoading(false);
+    return router.push(DEFAULT_LOGIN_REDIRECT);
+  };
+
   return (
     <Flex
       sx={{
@@ -267,13 +251,6 @@ export default function LoginPage() {
                 <Text sx={{ textAlign: "center", my: 2, color: "text" }}>
                   OR
                 </Text>
-                {/* <GoogleLogin
-                  size="large"
-                  onSuccess={handleGoogleLogin}
-                  onError={() => {
-                    toast.error("Login failed");
-                  }}
-                /> */}
                 <Button
                   sx={{
                     bg: "white",
@@ -307,10 +284,12 @@ export default function LoginPage() {
                 ml: 80,
               }}
             >
-              <Heading as="h1" sx={{ fontSize: 5, mb: 3 }}>
+              <Heading as="h1" sx={{ fontSize: 5, mb: 3, color: "white" }}>
                 Empower your AI Applications with MIZU Data
               </Heading>
-              <Text>Open, Ultra-low Cost, Hyperscale</Text>
+              <Text sx={{ color: "white" }}>
+                Open, Ultra-low Cost, Hyperscale
+              </Text>
             </Flex>
           )}
         </Flex>

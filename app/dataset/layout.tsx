@@ -11,7 +11,14 @@ export default function DatasetLayout({
   const pathname = usePathname();
   console.log("pathname", pathname);
   return (
-    <Flex sx={{ flexDirection: "column", alignItems: "center", bg: "#F7FAFC" }}>
+    <Flex
+      sx={{
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "100%",
+      }}
+    >
       <Header showSearch={pathname === "/dataset"} />
       {children}
     </Flex>

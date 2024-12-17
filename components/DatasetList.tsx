@@ -3,7 +3,6 @@ import { Box, Flex, Text, Heading, Grid } from "theme-ui";
 import { useEffect, useState } from "react";
 import { Pagination } from "antd";
 import { sendGet } from "@/utils/networkUtils";
-import { useRouter } from "next/navigation";
 import DatasetCard from "./DatasetCard";
 
 export const mockData = [
@@ -67,7 +66,6 @@ export const mockData = [
 
 const pageSize = 8;
 function DatasetList() {
-  const router = useRouter();
   const [datasetList, setDatasetList] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
