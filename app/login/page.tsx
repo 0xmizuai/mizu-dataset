@@ -61,6 +61,8 @@ export default function LoginPage() {
           userKey: response.data.userKey || "",
         });
         return router.push("/");
+      } else {
+        return toast.error("Login failed");
       }
     } catch (error) {
       console.error("Google login error", error);
