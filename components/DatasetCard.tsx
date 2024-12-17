@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 
 interface DatasetCardProps {
   item: any;
-  index?: number;
   showLink?: boolean;
   showBorder?: boolean;
   totalSize?: number;
@@ -14,7 +13,6 @@ interface DatasetCardProps {
 
 export default function DatasetCard({
   item,
-  index = 0,
   showLink = true,
   showBorder = true,
   totalSize = 24,
@@ -23,7 +21,6 @@ export default function DatasetCard({
   const router = useRouter();
   return (
     <Card
-      key={index}
       sx={{
         width: width,
         p: showBorder ? 3 : 0,

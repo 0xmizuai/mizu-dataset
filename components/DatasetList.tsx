@@ -68,7 +68,7 @@ export const mockData = [
 const pageSize = 8;
 function DatasetList() {
   const router = useRouter();
-  const [datasetList, setDatasetList] = useState<any[]>(mockData);
+  const [datasetList, setDatasetList] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -111,7 +111,7 @@ function DatasetList() {
             <>
               <Grid columns={[1, 2, 3, 4]} gap={4}>
                 {datasetList.map((item, index) => (
-                  <DatasetCard item={item} index={index} />
+                  <DatasetCard item={item} key={index} />
                 ))}
               </Grid>
               <Flex sx={{ justifyContent: "flex-end", mt: 4 }}>
