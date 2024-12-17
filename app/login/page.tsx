@@ -1,7 +1,12 @@
 "use client";
 import { useUserStore } from "@/stores/userStore";
 import { saveJwt, sendPost } from "@/utils/networkUtils";
-import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
+import {
+  GoogleLogin,
+  useGoogleLogin,
+  useGoogleOAuth,
+  useGoogleOneTapLogin,
+} from "@react-oauth/google";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -30,19 +35,20 @@ export default function LoginPage() {
     };
   }, [countdown]);
 
+  console.log(
+    "process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID",
+    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
+  );
+
   const handleGoogleLogin = async (credentialResponse: any) => {
-    console.log(
-      "credent🌻🌻ialResponse",
-      credentialResponse,
-      credentialResponse.credential
-    );
+    console.log("credent🌻🌻ialResponse", credentialResponse);
     try {
-      const tokenId = credentialResponse.credential;
-      console.log("tokenId", tokenId);
+      const access_token = credentialResponse.access_token;
+      console.log("access_token", access_token);
       const response: any = await sendPost(
         `/api/auth/google`,
         {
-          tokenId,
+          access_token,
         },
         {
           excludeAuthorization: true,
@@ -63,7 +69,19 @@ export default function LoginPage() {
   };
 
   const login = useGoogleLogin({
-    onSuccess: handleGoogleLogin,
+    scope: "openid email profile",
+    onSuccess: async (credentialResponse) => {
+      // console.log("🍷🍷credentialResponse", credentialResponse);
+      // const response = await fetch("https://oauth2.googleapis.com/userinfo", {
+      //   headers: {
+      //     Authorization: `Bearer ${credentialResponse.access_token}`,
+      //   },
+      // });
+
+      // const userInfo = await response.json();
+      // console.log("🍷🍷userInfo", userInfo);
+      handleGoogleLogin(credentialResponse);
+    },
     onError: () => {
       toast.error("Login failed");
     },
@@ -262,14 +280,14 @@ export default function LoginPage() {
                 <Text sx={{ textAlign: "center", my: 2, color: "text" }}>
                   OR
                 </Text>
-                <GoogleLogin
+                {/* <GoogleLogin
                   size="large"
                   onSuccess={handleGoogleLogin}
                   onError={() => {
                     toast.error("Login failed");
                   }}
-                />
-                {/* <Button
+                /> */}
+                <Button
                   sx={{
                     bg: "white",
                     border: "1px solid #ddd",
@@ -287,7 +305,7 @@ export default function LoginPage() {
                     sx={{ width: "20px", height: "20px", mr: 3 }}
                   />
                   Continue with Google
-                </Button> */}
+                </Button>
               </Flex>
             </Card>
           </Box>
