@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
     );
   }
   const params = request.nextUrl.searchParams;
+  console.log("~🌽🌽 params = ", params);
   const currentPage = params.get("currentPage");
   const pageSize = params.get("pageSize");
   try {
