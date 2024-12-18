@@ -8,7 +8,7 @@ export const formatBytes = (bytes: number) => {
   } else if (bytes >= 1_000) {
     return (bytes / 1_000).toFixed(2) + "KB"; // KB
   } else {
-    return bytes + "B"; // 字节数
+    return bytes + "B"; // bytes
   }
 };
 export const formatObjects = (num: number) => {

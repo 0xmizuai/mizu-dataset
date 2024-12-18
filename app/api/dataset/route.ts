@@ -2,6 +2,7 @@ import { verifyJWT } from "@/lib/jwt";
 import prisma from "@/lib/prisma";
 import { NextRequest } from "next/server";
 import { httpMessage } from "@/utils/constants";
+import { formatDate } from "@/utils/format";
 
 export async function GET(request: NextRequest) {
   const token =
@@ -30,24 +31,28 @@ export async function GET(request: NextRequest) {
     if (language && language !== "all") {
       where.language = language;
     }
-    const dataset = await prisma.datasets.findMany({
+    const datasets = await prisma.datasets.findMany({
       where,
       skip: (Number(currentPage) - 1) * Number(pageSize),
       take: Number(pageSize),
+      orderBy: {
+        crawled_at: "desc",
+      },
     });
 
     const total = await prisma.datasets.count({ where });
 
-    const transformedData = dataset.map((item: any) => {
-      const date = new Date(item.created_at);
+    const transformedData = datasets.map((item: any) => {
+      console.log("item", item);
+      const crawledAt = new Date(item.crawled_at);
       return {
         ...item,
         id: item.id.toString(),
         total_bytes: item.total_bytes.toString(),
-        created_at: date.toLocaleDateString("en-US", {
-          year: "numeric",
+        crawled_at: crawledAt.toLocaleDateString("en-US", {
           month: "2-digit",
           day: "2-digit",
+          year: "numeric",
         }),
       };
     });
