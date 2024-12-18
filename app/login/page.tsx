@@ -250,14 +250,14 @@ export default function LoginPage() {
                       color: countdown > 0 ? "text-gray-600" : "white",
                       flexShrink: 0,
                       borderRadius: "7px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                     onClick={handleSendCode}
                   >
                     {isSending ? (
-                      <Spinner
-                        sx={{ color: "white", textAlign: "center" }}
-                        size={20}
-                      />
+                      <Spinner sx={{ color: "white" }} size={20} />
                     ) : countdown > 0 ? (
                       `Resend in ${countdown}s`
                     ) : (
@@ -305,7 +305,7 @@ export default function LoginPage() {
                     sx={{ width: "20px", height: "20px", mr: 3 }}
                   />
                   {isLoading ? (
-                    <Spinner size={16} sx={{ textAlign: "center" }} />
+                    <Spinner size={20} sx={{ textAlign: "center" }} />
                   ) : (
                     "Continue with Google"
                   )}
