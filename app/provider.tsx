@@ -10,7 +10,8 @@ export default function Provider({ children }: { children: React.ReactNode }) {
   return (
     <ThemeUIProvider theme={theme}>
       <GoogleOAuthProvider clientId={clientId}>
-        <AuthInit>{children}</AuthInit>
+        {/* <AuthInit>{children}</AuthInit> */}
+        {children}
       </GoogleOAuthProvider>
     </ThemeUIProvider>
   );

@@ -10,6 +10,7 @@ interface DatasetCardProps {
   showBorder?: boolean;
   totalSize?: number;
   width?: string;
+  key?: number;
 }
 
 export default function DatasetCard({
@@ -18,6 +19,7 @@ export default function DatasetCard({
   showBorder = true,
   totalSize = 24,
   width = "100%",
+  key,
 }: DatasetCardProps) {
   const router = useRouter();
   return (
@@ -28,9 +30,10 @@ export default function DatasetCard({
         bg: "white",
         border: showBorder ? "1px solid #E5E7EB" : "none",
         borderRadius: "20px",
+        boxShadow: "0px 4px 10px 0px rgba(0, 0, 0, 0.05)",
       }}
     >
-      <Flex sx={{ flexDirection: "row", alignItems: "center", mb: 3 }}>
+      <Flex sx={{ alignItems: "center", mb: 3 }}>
         <Link
           href={
             item?.source_link ??
@@ -62,7 +65,7 @@ export default function DatasetCard({
           <Image
             src="/images/dataset/text.png"
             alt="common"
-            width="10px"
+            width="16px"
             height="auto"
             mr={2}
           />
@@ -81,7 +84,7 @@ export default function DatasetCard({
           <Image
             src="/images/dataset/language.png"
             alt="common"
-            width="10px"
+            width="14px"
             height="auto"
             mr={2}
           />

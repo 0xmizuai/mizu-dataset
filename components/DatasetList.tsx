@@ -12,6 +12,7 @@ import { sendGet } from "@/utils/networkUtils";
 import DatasetCard from "./DatasetCard";
 import { Spinner } from "theme-ui";
 import { LANGUAGES } from "@/utils/languages";
+import { max } from "lodash";
 
 type LanguageEnum = keyof typeof LANGUAGES;
 
@@ -72,20 +73,20 @@ function DatasetList({}, ref: any) {
   return (
     <Flex
       sx={{
-        maxWidth: "1280px",
         width: "100%",
         flexDirection: "column",
         mt: 4,
+        mx: "auto",
+        maxWidth: "1408px",
       }}
     >
-      <Flex sx={{ justifyContent: "space-between", mb: 3 }}>
+      <Flex sx={{ justifyContent: "space-between", mb: 3, mx: 5 }}>
         <Heading
           as="h2"
           sx={{
             color: "text",
             fontSize: 24,
             fontWeight: "bold",
-            textAlign: "left",
           }}
         >
           Dataset list
@@ -113,7 +114,11 @@ function DatasetList({}, ref: any) {
       </Flex>
       {isLoading ? (
         <Flex
-          sx={{ justifyContent: "center", alignItems: "center", height: 268 }}
+          sx={{
+            justifyContent: "center",
+            alignItems: "center",
+            height: 268,
+          }}
         >
           <Spinner size={30} color="primary" />
         </Flex>
@@ -121,7 +126,7 @@ function DatasetList({}, ref: any) {
         <>
           {datasetList.length > 0 ? (
             <>
-              <Grid columns={[1, 2, 3, 4]} gap={4}>
+              <Grid sx={{ mx: 5 }} columns={[1, 2, 3, 4]} gap={4}>
                 {datasetList.map((item, index) => (
                   <DatasetCard item={item} key={index} />
                 ))}

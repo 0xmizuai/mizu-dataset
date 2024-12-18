@@ -98,6 +98,7 @@ function Header({
           justifyContent: "space-between",
           maxWidth: "1280px",
           width: "100%",
+          mx: 5,
         }}
       >
         <Image

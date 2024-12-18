@@ -216,7 +216,6 @@ export default function LoginPage() {
                     textAlign: "center",
                     color: "text",
                     fontWeight: "bold",
-                    fontFamily: "Inter",
                   }}
                 >
                   Login
@@ -322,10 +321,18 @@ export default function LoginPage() {
                 ml: 80,
               }}
             >
-              <Heading as="h1" sx={{ fontSize: 5, mb: 3, color: "white" }}>
+              <Heading
+                as="h1"
+                sx={{
+                  fontSize: 5,
+                  mb: 3,
+                  color: "white",
+                  fontWeight: "bold",
+                }}
+              >
                 Empower your AI Applications with MIZU Data
               </Heading>
-              <Text sx={{ color: "white" }}>
+              <Text sx={{ color: "white", fontSize: 15 }}>
                 Open, Ultra-low Cost, Hyperscale
               </Text>
             </Flex>
