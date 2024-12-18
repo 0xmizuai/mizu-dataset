@@ -103,7 +103,19 @@ export default function SampleAndHistory({
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(7);
   const [totalPages, setTotalPages] = useState(0);
-  const [cache, setCache] = useState<Record<string, any>>({});
+  const [cache, setCache] = useState<Record<string, any>>(() => {
+    if (typeof window !== 'undefined') {
+      const savedCache = localStorage.getItem('sampleDataCache');
+      return savedCache ? JSON.parse(savedCache) : {};
+    }
+    return {};
+  });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('sampleDataCache', JSON.stringify(cache));
+    }
+  }, [cache]);
 
   useEffect(() => {
     (async () => {
