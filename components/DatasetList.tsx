@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Pagination } from "antd";
 import { sendGet } from "@/utils/networkUtils";
 import DatasetCard from "./DatasetCard";
+import { Spinner } from "theme-ui";
 
 export const mockData = [
   {
@@ -69,7 +70,7 @@ function DatasetList() {
   const [datasetList, setDatasetList] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -90,18 +91,24 @@ function DatasetList() {
   }, [currentPage]);
 
   return (
-    <Box sx={{ width: 1280, mt: 3 }}>
+    <Box sx={{ maxWidth: 1280, mt: 3 }}>
       <Heading
         as="h2"
-        sx={{ mb: 3, color: "text", fontSize: 24, fontWeight: "bold" }}
+        sx={{
+          mb: 3,
+          color: "text",
+          fontSize: 24,
+          fontWeight: "bold",
+          textAlign: "left",
+        }}
       >
         Dataset list
       </Heading>
       {isLoading ? (
         <Flex
-          sx={{ justifyContent: "center", alignItems: "center", height: 200 }}
+          sx={{ justifyContent: "center", alignItems: "center", height: 268 }}
         >
-          <Text sx={{ color: "#333333", fontSize: 16 }}>Loading...</Text>
+          <Spinner />
         </Flex>
       ) : (
         <>

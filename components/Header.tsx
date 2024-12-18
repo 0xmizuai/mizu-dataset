@@ -87,7 +87,8 @@ function Header({ showSearch = false }: HeaderProps) {
         sx={{
           py: 3,
           justifyContent: "space-between",
-          width: 1280,
+          maxWidth: "1280px",
+          mx: "auto",
         }}
       >
         <Image

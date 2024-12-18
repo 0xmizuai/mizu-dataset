@@ -9,7 +9,6 @@ export async function GET(
   const token =
     request.headers.get("Authorization")?.replace("Bearer ", "") || "";
   const jwtSub = await verifyJWT(token);
-  console.log("jwtSub = ", jwtSub);
   const userKey = jwtSub?.userKey;
   if (!userKey) {
     return Response.json(
@@ -21,6 +20,7 @@ export async function GET(
     );
   }
   const { id } = await params;
+  console.log("~🌽🌽 id = ", id);
   if (!id) return new Response("Bad Request", { status: 400 });
   try {
     const dataset = await prisma.datasets.findUnique({

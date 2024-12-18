@@ -9,7 +9,6 @@ export default function DatasetLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  console.log("pathname", pathname);
   return (
     <Flex
       sx={{

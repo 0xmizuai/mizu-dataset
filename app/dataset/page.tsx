@@ -7,7 +7,7 @@ function DatasetList() {
   const isMobile = useResponsiveValue([true, false, false]);
 
   return (
-    <>
+    <Flex sx={{ flexDirection: "column", maxWidth: "1280px", mx: "auto" }}>
       <Flex
         sx={{
           width: "100%",
@@ -23,9 +23,10 @@ function DatasetList() {
       >
         <Flex
           sx={{
-            width: "1280px",
+            maxWidth: "1280px",
             justifyContent: "space-between",
             alignItems: "center",
+            mx: "auto",
           }}
         >
           <Box sx={{ width: "50%", mt: 4 }}>
@@ -52,16 +53,16 @@ function DatasetList() {
             src="/images/dataset/logo.png"
             alt="logo"
             sx={{
-              width: "497px",
+              maxWidth: "497px",
               height: "auto",
               mr: -40,
-              mb: -18,
+              mb: -19,
             }}
           />
         </Flex>
       </Flex>
       <DatasetComList />
-    </>
+    </Flex>
   );
 }
 

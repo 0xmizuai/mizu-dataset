@@ -4,28 +4,55 @@ import { useDebouncedEffect } from "@/hooks/useDebouncedEffect";
 import { useUserStore } from "@/stores/userStore";
 import { deleteJwt, saveJwt, sendPost } from "@/utils/networkUtils";
 import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { Spinner } from "theme-ui";
 
 export const AuthInit = () => {
   const router = useRouter();
   const pathname = usePathname();
   const setUser = useUserStore((state) => state.setUser);
-
-  // if (pathname === "/login") return null;
+  const [loading, setLoading] = useState(false);
 
   useDebouncedEffect(
     async () => {
-      const res: any = await sendPost(`/api/auth/verify`, {}, {});
-      if (res?.code === 0) {
-        saveJwt(res?.data?.token);
-        setUser(res?.data?.userKey);
-      } else {
+      if (pathname === "/login") return;
+      setLoading(true);
+      try {
+        const res: any = await sendPost(`/api/auth/verify`, {}, {});
+        if (res?.code === 0) {
+          saveJwt(res?.data?.token);
+          setUser(res?.data?.userKey);
+        } else {
+          deleteJwt();
+          router.push("/login");
+        }
+      } catch (error) {
+        toast.error("Authentication failed");
         deleteJwt();
         router.push("/login");
+      } finally {
+        setLoading(false);
       }
     },
     [pathname],
-    1000 * 60 * 10
+    500
   );
+
+  if (pathname !== "/login" && loading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <Spinner size={64} />
+      </div>
+    );
+  }
 
   return null;
 };
