@@ -2,7 +2,6 @@ import { verifyJWT } from "@/lib/jwt";
 import prisma from "@/lib/prisma";
 import { NextRequest } from "next/server";
 import { httpMessage } from "@/utils/constants";
-import { formatDate } from "@/utils/format";
 
 export async function GET(request: NextRequest) {
   const token =

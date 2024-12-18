@@ -33,7 +33,7 @@ export async function GET(
     const dataset = await prisma.datasets.findUnique({
       where: { id: parseInt(id) },
     });
-    const date = new Date(dataset?.created_at || "");
+    const date = new Date(dataset?.crawled_at || "");
 
     const jsonData = {
       id: dataset?.id.toString,
@@ -42,7 +42,7 @@ export async function GET(
       data_type: dataset?.data_type,
       total_objects: dataset?.total_objects.toString(),
       total_bytes: dataset?.total_bytes?.toString(),
-      created_at: date?.toLocaleDateString("en-US", {
+      crawled_at: date?.toLocaleDateString("en-US", {
         year: "numeric",
         month: "2-digit",
         day: "2-digit",

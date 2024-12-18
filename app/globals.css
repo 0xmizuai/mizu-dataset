@@ -19,3 +19,27 @@
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 } */
+
+:where(.css-dev-only-do-not-override-1kf000u).ant-tabs-card
+  > .ant-tabs-nav
+  .ant-tabs-tab,
+:where(.css-dev-only-do-not-override-1kf000u).ant-tabs-card
+  > div
+  > .ant-tabs-nav
+  .ant-tabs-tab {
+  border-color: rgba(0, 0, 0, 0.2) !important;
+  border-bottom: none !important;
+}
+
+:where(.css-dev-only-do-not-override-1kf000u).ant-tabs-top
+  > .ant-tabs-nav::before,
+:where(.css-dev-only-do-not-override-1kf000u).ant-tabs-bottom
+  > .ant-tabs-nav::before,
+:where(.css-dev-only-do-not-override-1kf000u).ant-tabs-top
+  > div
+  > .ant-tabs-nav::before,
+:where(.css-dev-only-do-not-override-1kf000u).ant-tabs-bottom
+  > div
+  > .ant-tabs-nav::before {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2) !important;
+}

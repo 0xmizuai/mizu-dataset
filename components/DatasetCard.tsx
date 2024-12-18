@@ -169,7 +169,6 @@ export default function DatasetCard({
             width="24px"
             height="24px"
             onClick={() => {
-              console.log("click");
               router.push(`/dataset/${item?.id}`);
             }}
             sx={{ cursor: "pointer" }}

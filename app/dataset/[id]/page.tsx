@@ -2,11 +2,11 @@
 import Breadcrumb from "@/components/Breadcrumb";
 import DatasetCard from "@/components/DatasetCard";
 import Header from "@/components/Header";
-import SimpleData from "@/components/query/SimpleData";
+import SimpleAndHistory from "@/components/query/SimpleAndHistory";
 import { sendGet } from "@/utils/networkUtils";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Box, Flex, Input } from "theme-ui";
+import { Flex } from "theme-ui";
 
 const DatasetPage = () => {
   const { id } = useParams();
@@ -56,25 +56,7 @@ const DatasetPage = () => {
             totalSize={32}
             width="30%"
           />
-          {id && <SimpleData id={id as string} />}
-
-          <Box sx={{ mb: 4, width: "100%" }}>
-            <Input
-              placeholder="Enter your query"
-              sx={{
-                width: "100%",
-                mb: 2,
-                height: "59px",
-                borderRadius: "14px",
-                borderColor: "rgba(0, 0, 0, 0.2)",
-                background: "#EEF2F5",
-              }}
-            />
-            {/* <Button sx={{ width: "100px" }}>
-            Submit
-            <Image src="/images/dataset/arrow.svg" alt="arrow" />
-          </Button> */}
-          </Box>
+          {id && <SimpleAndHistory id={id as string} />}
         </Flex>
       </Flex>
     </Flex>
