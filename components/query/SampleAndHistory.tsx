@@ -6,11 +6,11 @@ import { useEffect, useState } from "react";
 import { Box } from "theme-ui";
 import { sendGet } from "@/utils/networkUtils";
 
-interface SimpleDataProps {
+interface SampleDataProps {
   id: string;
 }
 
-interface SimpleDataItem {
+interface SampleDataItem {
   key: string;
   text: string;
   uri: string;
@@ -29,7 +29,7 @@ enum Tab {
   SIMPLE = "simple",
 }
 
-const SimpleColumns = [
+const SampleColumns = [
   {
     title: "Seq",
     dataIndex: "seq",
@@ -110,8 +110,8 @@ const mockList = [
   },
 ];
 
-export default function SimpleAndHistory({ id }: SimpleDataProps) {
-  const [list, setList] = useState<SimpleDataItem[] | HistoryItem[]>(
+export default function SimpleAndHistory({ id }: SampleDataProps) {
+  const [list, setList] = useState<SampleDataItem[] | HistoryItem[]>(
     mockList.slice(0, 7)
   );
   const [loading, setLoading] = useState(false);

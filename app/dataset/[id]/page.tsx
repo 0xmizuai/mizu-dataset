@@ -2,7 +2,7 @@
 import Breadcrumb from "@/components/Breadcrumb";
 import DatasetCard from "@/components/DatasetCard";
 import Header from "@/components/Header";
-import SimpleAndHistory from "@/components/query/SimpleAndHistory";
+import SampleAndHistory from "@/components/query/SampleAndHistory";
 import { sendGet } from "@/utils/networkUtils";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -56,7 +56,7 @@ const DatasetPage = () => {
             totalSize={32}
             width="30%"
           />
-          {id && <SimpleAndHistory id={id as string} />}
+          {id && <SampleAndHistory id={id as string} />}
         </Flex>
       </Flex>
     </Flex>
