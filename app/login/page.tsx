@@ -263,7 +263,14 @@ export default function LoginPage() {
                   }}
                   onClick={handleLogin}
                 >
-                  {isLoging ? <Spinner color="white" size={16} /> : "Log In"}
+                  {isLoging ? (
+                    <Spinner
+                      sx={{ color: "white", textAlign: "center" }}
+                      size={16}
+                    />
+                  ) : (
+                    "Log In"
+                  )}
                 </Button>
                 <Text sx={{ textAlign: "center", my: 2, color: "text" }}>
                   OR

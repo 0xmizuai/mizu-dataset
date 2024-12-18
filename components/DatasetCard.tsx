@@ -2,7 +2,9 @@
 
 import { Card, Flex, Image, Text } from "theme-ui";
 import { useRouter } from "next/navigation";
-
+import { formatBytes, formatObjects } from "@/utils/format";
+import { Box } from "theme-ui";
+import Link from "next/link";
 interface DatasetCardProps {
   item: any;
   showLink?: boolean;
@@ -26,15 +28,62 @@ export default function DatasetCard({
         p: showBorder ? 3 : 0,
         bg: "white",
         border: showBorder ? "1px solid #E5E7EB" : "none",
-        borderRadius: "8px",
+        borderRadius: "20px",
       }}
     >
-      <Image
-        src={`${"/images/dataset/btc.png"}`}
-        alt="dataset"
-        width="50px"
-        height="50px"
-      />
+      <Flex sx={{ flexDirection: "row", alignItems: "center", mb: 3 }}>
+        <Link href="https://commoncrawl.org/blog/november-2024-crawl-archive-now-available">
+          <Image
+            src={`${"/images/dataset/common.png"}`}
+            alt="dataset"
+            width="76px"
+            height="auto"
+            sx={{
+              mr: 3,
+            }}
+          />
+        </Link>
+        <Flex
+          sx={{
+            alignItems: "center",
+            border: "1px solid #E5E7EB",
+            borderRadius: "20px",
+            px: 2,
+            width: "",
+            flexDirection: "row",
+            height: "20px",
+            mr: 3,
+          }}
+        >
+          <Image
+            src="/images/dataset/text.png"
+            alt="common"
+            width="10px"
+            height="auto"
+            mr={2}
+          />
+          <Text>{item?.data_type ?? "text"}</Text>
+        </Flex>
+        <Flex
+          sx={{
+            alignItems: "center",
+            border: "1px solid #E5E7EB",
+            borderRadius: "20px",
+            px: 2,
+            ml: 2,
+            height: "20px",
+          }}
+        >
+          <Image
+            src="/images/dataset/language.png"
+            alt="common"
+            width="10px"
+            height="auto"
+            mr={2}
+          />
+          <Text>{item?.language ?? "eng"}</Text>
+        </Flex>
+      </Flex>
       <Text
         sx={{
           color: "#333333",
@@ -58,7 +107,7 @@ export default function DatasetCard({
               fontSize: 14,
             }}
           >
-            Size:
+            Data Size
           </Text>
           <Text
             sx={{
@@ -67,7 +116,7 @@ export default function DatasetCard({
               fontWeight: "bold",
             }}
           >
-            {`${item?.total_objects ?? 0}T`}
+            {`${formatObjects(item?.total_objects ?? 0)}`}
           </Text>
         </Flex>
         <Flex sx={{ flexDirection: "column" }}>
@@ -77,7 +126,7 @@ export default function DatasetCard({
               fontSize: 14,
             }}
           >
-            Num:
+            Total Objects
           </Text>
           <Text
             sx={{
@@ -86,7 +135,7 @@ export default function DatasetCard({
               fontWeight: "bold",
             }}
           >
-            {`${item?.total_bytes ?? 0}K`}
+            {`${formatBytes(item?.total_bytes ?? 0)}`}
           </Text>
         </Flex>
       </Flex>
@@ -106,7 +155,7 @@ export default function DatasetCard({
               fontWeight: "medium",
             }}
           >
-            {item?.created_at}
+            {item?.crawled_at}
           </Text>
         </Flex>
         {showLink && (
