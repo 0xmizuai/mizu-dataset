@@ -91,7 +91,7 @@ function DatasetList() {
   }, [currentPage]);
 
   return (
-    <Box sx={{ maxWidth: 1280, mt: 3 }}>
+    <Flex sx={{ width: "1280px", flexDirection: "column", mt: 3 }}>
       <Heading
         as="h2"
         sx={{
@@ -140,7 +140,7 @@ function DatasetList() {
           )}
         </>
       )}
-    </Box>
+    </Flex>
   );
 }
 

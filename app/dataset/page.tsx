@@ -4,10 +4,12 @@ import { useResponsiveValue } from "@theme-ui/match-media";
 import { Box, Flex, Text, Heading, Image } from "theme-ui";
 
 function DatasetList() {
-  const isMobile = useResponsiveValue([true, false, false]);
+  const isMobile = useResponsiveValue([true, false, false], {
+    defaultIndex: 2,
+  });
 
   return (
-    <Flex sx={{ flexDirection: "column", maxWidth: "1280px", mx: "auto" }}>
+    <Flex sx={{ flexDirection: "column", width: "100%", alignItems: "center" }}>
       <Flex
         sx={{
           width: "100%",
@@ -23,10 +25,9 @@ function DatasetList() {
       >
         <Flex
           sx={{
-            maxWidth: "1280px",
+            width: "1280px",
             justifyContent: "space-between",
             alignItems: "center",
-            mx: "auto",
           }}
         >
           <Box sx={{ width: "50%", mt: 4 }}>
@@ -61,7 +62,7 @@ function DatasetList() {
           />
         </Flex>
       </Flex>
-      <DatasetComList />
+        <DatasetComList />
     </Flex>
   );
 }
