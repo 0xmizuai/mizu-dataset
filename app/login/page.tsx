@@ -315,7 +315,7 @@ export default function LoginPage() {
             src="/images/login/logo.png"
             alt="logo"
             sx={{
-              maxWidth: ["100%", "400px", "628px"],
+              maxWidth: ["100%", "400px", "588px"],
               minWidth: ["100%", "400px", "408px"],
               height: "auto",
               objectFit: "cover",
