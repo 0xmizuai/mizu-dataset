@@ -16,6 +16,7 @@ export default function DatasetLayout({
         alignItems: "center",
         justifyContent: "center",
         width: "100%",
+        mb: 5,
       }}
     >
       <Header showSearch={pathname === "/dataset"} />

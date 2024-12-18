@@ -1,24 +1,23 @@
 import { verifyJWT } from "@/lib/jwt";
 import prisma from "@/lib/prisma";
 import { NextRequest } from "next/server";
+import { httpMessage } from "@/utils/constants";
 
 export async function GET(request: NextRequest) {
   const token =
     request.headers.get("Authorization")?.replace("Bearer ", "") || "";
   const jwtSub = await verifyJWT(token);
-  console.log("jwtSub = ", jwtSub);
   const userKey = jwtSub?.userKey;
   if (!userKey) {
     return Response.json(
       {
         code: 401,
-        message: "Authorization header missing",
+        message: httpMessage[401],
       },
       { status: 401 }
     );
   }
   const params = request.nextUrl.searchParams;
-  console.log("~🌽🌽 params = ", params);
   const currentPage = params.get("currentPage");
   const pageSize = params.get("pageSize");
   try {
@@ -58,7 +57,7 @@ export async function GET(request: NextRequest) {
     return Response.json(
       {
         code: 500,
-        message: "Internal server error",
+        message: httpMessage[500],
       },
       { status: 500 }
     );

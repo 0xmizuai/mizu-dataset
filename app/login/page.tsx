@@ -103,10 +103,11 @@ export default function LoginPage() {
     if (res && res?.code === 0) {
       setCountdown(60);
       setCode(null);
+      setIsSending(false);
     } else {
+      setIsSending(false);
       return toast.error(res?.message || "Send failed");
     }
-    setIsSending(false);
   };
 
   const handleLogin = async () => {

@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   const token =
     request.headers.get("Authorization")?.replace("Bearer ", "") || "";
+
   if (!token) {
     return NextResponse.json(
       { code: 401, message: "Auth failed" },

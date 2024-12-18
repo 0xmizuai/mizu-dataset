@@ -81,6 +81,9 @@ function Header({ showSearch = false }: HeaderProps) {
         justifyContent: "center",
         alignItems: "center",
         borderBottom: "1px solid #eaeaea",
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
       }}
     >
       <Flex

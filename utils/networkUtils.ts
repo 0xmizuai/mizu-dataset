@@ -1,6 +1,7 @@
 import { ApiResponse } from "@/types/api";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { COOKIE_KEY_JWT, DEFAULT_ERROR_MESSAGE } from "./constants";
+import { useRouter } from "next/navigation";
 
 export async function saveJwt(jwt: string) {
   setCookie(COOKIE_KEY_JWT, jwt, {
@@ -46,8 +47,10 @@ export async function sendPost<T>(
     }
 
     const resJson = await response.json();
+    const router = useRouter();
     if (resJson?.code === 401) {
       options?.onError?.("Unauthorized");
+      router.push("/login");
       return undefined;
     }
 
@@ -88,9 +91,10 @@ export async function sendGet<T>(
     }
 
     const resJson = await response.json();
-
+    const router = useRouter();
     if (resJson?.code === 401) {
       options?.onError?.("Unauthorized");
+      router.push("/login");
       return undefined;
     }
 

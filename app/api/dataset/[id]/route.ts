@@ -1,5 +1,6 @@
 import { verifyJWT } from "@/lib/jwt";
 import prisma from "@/lib/prisma";
+import { httpMessage } from "@/utils/constants";
 import { NextRequest } from "next/server";
 
 export async function GET(
@@ -14,21 +15,26 @@ export async function GET(
     return Response.json(
       {
         code: 401,
-        message: "Authorization header missing",
+        message: httpMessage[401],
       },
       { status: 401 }
     );
   }
   const { id } = await params;
-  console.log("~🌽🌽 id = ", id);
-  if (!id) return new Response("Bad Request", { status: 400 });
+  if (!id)
+    return Response.json(
+      {
+        code: 400,
+        message: httpMessage[400],
+      },
+      { status: 400 }
+    );
   try {
     const dataset = await prisma.datasets.findUnique({
       where: { id: parseInt(id) },
     });
     const date = new Date(dataset?.created_at || "");
 
-    console.log("~🌽🌽 dataset = ", dataset);
     const jsonData = {
       id: dataset?.id.toString,
       name: dataset?.name,
@@ -48,11 +54,10 @@ export async function GET(
       data: jsonData,
     });
   } catch (error) {
-    console.error("Error processing request:", error);
     return Response.json(
       {
         code: 500,
-        message: "Internal Server Error",
+        message: httpMessage[500],
       },
       { status: 500 }
     );

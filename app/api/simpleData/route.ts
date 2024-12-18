@@ -1,7 +1,9 @@
 import { verifyJWT } from "@/lib/jwt";
 import prisma from "@/lib/prisma";
+import { AUTH_FAILED } from "@/utils/constants";
 import { NextRequest } from "next/server";
 import zlib from "zlib";
+import { httpMessage } from "@/utils/constants";
 
 async function downloadAndParseJSON(url: string) {
   try {
@@ -45,7 +47,7 @@ export async function GET(request: NextRequest) {
     return Response.json(
       {
         code: 401,
-        message: "Unauthorized - Invalid or missing token",
+        message: httpMessage[401],
       },
       { status: 401 }
     );
@@ -115,7 +117,7 @@ export async function GET(request: NextRequest) {
     return Response.json(
       {
         code: 500,
-        message: "Internal server error",
+        message: httpMessage[500],
       },
       { status: 500 }
     );
