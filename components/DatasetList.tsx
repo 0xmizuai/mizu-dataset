@@ -18,6 +18,7 @@ function DatasetList({}, ref: any) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [pageSize, setPageSize] = useState(8);
 
   const loadData = useCallback(
     async (searchValue?: string) => {
@@ -36,12 +37,12 @@ function DatasetList({}, ref: any) {
       }
       setIsLoading(false);
     },
-    [currentPage]
+    [currentPage, pageSize]
   );
 
   useEffect(() => {
     loadData();
-  }, [currentPage]);
+  }, [currentPage, pageSize]);
 
   useImperativeHandle(ref, () => ({
     loadData,
@@ -93,6 +94,14 @@ function DatasetList({}, ref: any) {
                   current={currentPage}
                   total={totalPages}
                   onChange={(page) => setCurrentPage(page)}
+                  pageSizeOptions={[8, 16, 32]}
+                  pageSize={pageSize}
+                  showSizeChanger
+                  showQuickJumper
+                  onShowSizeChange={(current, size) => {
+                    setCurrentPage(current);
+                    setPageSize(size);
+                  }}
                 />
               </Flex>
             </>
