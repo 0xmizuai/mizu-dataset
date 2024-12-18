@@ -1,69 +1,10 @@
 "use client";
-import { Box, Flex, Text, Heading, Grid } from "theme-ui";
+import { Flex, Text, Heading, Grid } from "theme-ui";
 import { useEffect, useState } from "react";
 import { Pagination } from "antd";
 import { sendGet } from "@/utils/networkUtils";
 import DatasetCard from "./DatasetCard";
 import { Spinner } from "theme-ui";
-
-export const mockData = [
-  {
-    id: 1,
-    name: "CC-MAIN-2024-46",
-    total_objects: 100,
-    total_bytes: 100000,
-    created_at: "2024-01-01",
-  },
-  {
-    id: 2,
-    name: "CC-MAIN-2024-46",
-    total_objects: 100,
-    total_bytes: 100000,
-    created_at: "2024-01-01",
-  },
-  {
-    id: 3,
-    name: "CC-MAIN-2024-46",
-    total_objects: 100,
-    total_bytes: 100000,
-    created_at: "2024-01-01",
-  },
-  {
-    id: 4,
-    name: "CC-MAIN-2024-46",
-    total_objects: 100,
-    total_bytes: 100000,
-    created_at: "2024-01-01",
-  },
-  {
-    id: 5,
-    name: "CC-MAIN-2024-46",
-    total_objects: 100,
-    total_bytes: 100000,
-    created_at: "2024-01-01",
-  },
-  {
-    id: 6,
-    name: "CC-MAIN-2024-46",
-    total_objects: 100,
-    total_bytes: 100000,
-    created_at: "2024-01-01",
-  },
-  {
-    id: 7,
-    name: "CC-MAIN-2024-46",
-    total_objects: 100,
-    total_bytes: 100000,
-    created_at: "2024-01-01",
-  },
-  {
-    id: 8,
-    name: "CC-MAIN-2024-46",
-    total_objects: 100,
-    total_bytes: 100000,
-    created_at: "2024-01-01",
-  },
-];
 
 const pageSize = 8;
 function DatasetList() {

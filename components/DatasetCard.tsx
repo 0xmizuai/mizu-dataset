@@ -32,7 +32,12 @@ export default function DatasetCard({
       }}
     >
       <Flex sx={{ flexDirection: "row", alignItems: "center", mb: 3 }}>
-        <Link href="https://commoncrawl.org/blog/november-2024-crawl-archive-now-available">
+        <Link
+          href={
+            item?.source_link ??
+            "https://commoncrawl.org/blog/november-2024-crawl-archive-now-available"
+          }
+        >
           <Image
             src={`${"/images/dataset/common.png"}`}
             alt="dataset"

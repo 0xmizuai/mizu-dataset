@@ -19,13 +19,11 @@ export default function Provider({ children }: { children: React.ReactNode }) {
     </Flex>
   );
   return (
-    <Suspense fallback={fallback}>
-      <ThemeUIProvider theme={theme}>
-        <GoogleOAuthProvider clientId={clientId}>
-          <AuthInit />
-          {children}
-        </GoogleOAuthProvider>
-      </ThemeUIProvider>
-    </Suspense>
+    <ThemeUIProvider theme={theme}>
+      <GoogleOAuthProvider clientId={clientId}>
+        <AuthInit />
+        {children}
+      </GoogleOAuthProvider>
+    </ThemeUIProvider>
   );
 }
