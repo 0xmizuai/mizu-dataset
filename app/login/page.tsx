@@ -87,7 +87,6 @@ export default function LoginPage() {
     if (!account) {
       return toast.error("Please input valid email");
     }
-    setIsSending(true);
     validateEmail(account);
     console.log("account", account);
     const res = await sendPost(
@@ -100,19 +99,16 @@ export default function LoginPage() {
       }
     );
 
-    if (res && res?.code === 0) {
+    if (res && res.code === 0) {
       setCountdown(60);
       setCode(null);
-      setIsSending(false);
     } else {
-      setIsSending(false);
       return toast.error(res?.message || "Send failed");
     }
   };
 
   const handleLogin = async () => {
-    setIsLoging(true); // 设置 loading 状态
-    console.log("提交的验证码:", code);
+    setIsLoging(true);
     const res: any = await sendPost(
       "/api/auth/email/login",
       {
@@ -257,13 +253,7 @@ export default function LoginPage() {
                     }}
                     onClick={handleSendCode}
                   >
-                    {isSending ? (
-                      <Spinner sx={{ color: "white" }} size={20} />
-                    ) : countdown > 0 ? (
-                      `Resend in ${countdown}s`
-                    ) : (
-                      "Send"
-                    )}
+                    {countdown > 0 ? `Resend in ${countdown}s` : "Send"}
                   </Button>
                 </Flex>
                 <Button

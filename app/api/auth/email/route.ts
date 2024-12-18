@@ -2,7 +2,7 @@ import { validateEmail } from "@/utils/commonUtils";
 import { random } from "lodash";
 import { NextRequest } from "next/server";
 import { getRedisClient } from "@/lib/redis";
-import { AUTH_FAILED, namespace } from "@/utils/constants";
+import { httpMessage, namespace } from "@/utils/constants";
 
 export async function POST(request: NextRequest) {
   const requestData = await request.json();
@@ -10,10 +10,13 @@ export async function POST(request: NextRequest) {
   console.log("email", email);
 
   if (!email || !validateEmail(email)) {
-    return Response.json({
-      code: -1,
-      message: "email format error",
-    });
+    return Response.json(
+      {
+        code: 400,
+        message: httpMessage[400],
+      },
+      { status: 400 }
+    );
   }
 
   const redisClient = await getRedisClient();
@@ -24,7 +27,7 @@ export async function POST(request: NextRequest) {
   if (cacheCode) {
     return Response.json({
       code: -1,
-      message: "send code too frequently",
+      message: "Send code too frequently, please try again later",
     });
   }
 
@@ -66,9 +69,12 @@ export async function POST(request: NextRequest) {
       data: {},
     });
   } catch (err) {
-    return Response.json({
-      code: AUTH_FAILED,
-      message: "Telegram initData Auth failed",
-    });
+    return Response.json(
+      {
+        code: 500,
+        message: httpMessage[500],
+      },
+      { status: 500 }
+    );
   }
 }
