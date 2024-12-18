@@ -13,9 +13,8 @@ export async function POST(request: Request) {
     );
   }
   const jwtSub = await verifyJWT(token);
-  console.log("jwtSub", jwtSub);
   const userKey = jwtSub?.userKey;
-
+  const userKeyType = jwtSub?.userKeyType;
   if (!userKey) {
     return NextResponse.json(
       { code: 401, message: "Auth failed" },
@@ -24,15 +23,15 @@ export async function POST(request: Request) {
   }
 
   try {
-    const newToken = await getJWT(jwtSub.userKey, jwtSub.userKeyType);
+    const newToken = await getJWT(userKey, userKeyType);
     await prisma.users.upsert({
-      where: { user_key: jwtSub.userKey },
-      update: { user_key: jwtSub.userKey, type: jwtSub.userKeyType },
-      create: { user_key: jwtSub.userKey, type: jwtSub.userKeyType },
+      where: { user_key: userKey },
+      update: { user_key: userKey, type: userKeyType },
+      create: { user_key: userKey, type: userKeyType },
     });
     return NextResponse.json({
       code: 0,
-      data: { userKey: jwtSub.userKey, token: newToken },
+      data: { userKey, token: newToken },
     });
   } catch (error) {
     return NextResponse.json(

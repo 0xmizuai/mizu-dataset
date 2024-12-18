@@ -20,8 +20,11 @@ export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
   const currentPage = params.get("currentPage");
   const pageSize = params.get("pageSize");
+  const name = params.get("name");
   try {
+    const where = name ? { name: { contains: name } } : {};
     const dataset = await prisma.datasets.findMany({
+      where,
       skip: (Number(currentPage) - 1) * Number(pageSize),
       take: Number(pageSize),
     });

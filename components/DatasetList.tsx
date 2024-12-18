@@ -1,35 +1,51 @@
 "use client";
 import { Flex, Text, Heading, Grid } from "theme-ui";
-import { useEffect, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 import { Pagination } from "antd";
 import { sendGet } from "@/utils/networkUtils";
 import DatasetCard from "./DatasetCard";
 import { Spinner } from "theme-ui";
 
 const pageSize = 8;
-function DatasetList() {
+function DatasetList({}, ref: any) {
   const [datasetList, setDatasetList] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchData() {
+  const loadData = useCallback(
+    async (searchValue?: string) => {
       setIsLoading(true);
-      const res: any = await sendGet("/api/dataset", {
+      const params: any = {
         currentPage,
         pageSize,
-      });
-
+      };
+      if (searchValue) {
+        params.name = searchValue;
+      }
+      const res: any = await sendGet("/api/dataset", params);
       if (res?.code === 0) {
         setDatasetList(res.data.list);
         setTotalPages(res.data.total);
-        setCurrentPage(res.data.currentPage);
       }
       setIsLoading(false);
-    }
-    fetchData();
+    },
+    [currentPage]
+  );
+
+  useEffect(() => {
+    loadData();
   }, [currentPage]);
+
+  useImperativeHandle(ref, () => ({
+    loadData,
+  }));
 
   return (
     <Flex
@@ -97,4 +113,4 @@ function DatasetList() {
   );
 }
 
-export default DatasetList;
+export default forwardRef(DatasetList);

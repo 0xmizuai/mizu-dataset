@@ -1,11 +1,11 @@
 import { ApiResponse } from "@/types/api";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { COOKIE_KEY_JWT, DEFAULT_ERROR_MESSAGE } from "./constants";
-import { useAuth } from "@/hooks/useAuth";
 
 export async function saveJwt(jwt: string) {
   setCookie(COOKIE_KEY_JWT, jwt, {
     maxAge: 60 * 60 * 24 * 7, // 7 days in seconds
+    secure: process.env.NODE_ENV === "production",
   });
 }
 
@@ -32,6 +32,7 @@ export async function sendPost<T>(
       const jwtCookie = getJwt();
       if (!jwtCookie) {
         options?.onError?.("Unauthorized");
+        window.location.href = "/login";
         return;
       }
       headers.Authorization = `Bearer ${jwtCookie}`;
@@ -45,6 +46,7 @@ export async function sendPost<T>(
 
     if (response.status === 401) {
       options?.onError?.("Unauthorized");
+      window.location.href = "/login";
       return;
     }
 
@@ -74,6 +76,7 @@ export async function sendGet<T>(
     if (!options?.excludeAuthorization) {
       const jwtCookie = getJwt();
       if (!jwtCookie) {
+        window.location.href = "/login";
         options?.onError?.("Unauthorized");
         return;
       }
@@ -88,6 +91,7 @@ export async function sendGet<T>(
 
     if (response.status === 401) {
       options?.onError?.("Unauthorized");
+      window.location.href = "/login";
       return;
     }
 

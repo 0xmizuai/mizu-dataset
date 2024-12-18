@@ -12,9 +12,15 @@ enum HeaderKey {
 
 interface HeaderProps {
   showSearch?: boolean;
+  handleSearch?: (value: string) => void;
+  searchValue?: string;
 }
 
-function Header({ showSearch = false }: HeaderProps) {
+function Header({
+  showSearch = false,
+  handleSearch,
+  searchValue,
+}: HeaderProps) {
   const router = useRouter();
   const [key, setKey] = useState<HeaderKey | null>(null);
 
@@ -102,6 +108,8 @@ function Header({ showSearch = false }: HeaderProps) {
         <Flex sx={{ alignItems: "center" }}>
           {showSearch && (
             <Input
+              value={searchValue}
+              onChange={(e) => handleSearch?.(e.target.value)}
               placeholder="Search Dataset..."
               sx={{
                 maxWidth: ["100%", "300px"],

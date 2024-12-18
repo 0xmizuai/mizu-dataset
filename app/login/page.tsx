@@ -222,12 +222,10 @@ export default function LoginPage() {
                   Login
                 </Heading>
                 <Input
-                  allClearable
-                  onClear={() => setAccount("")}
                   placeholder="Enter your email address..."
                   sx={{
                     borderRadius: "7px",
-                    color: "text", // 使用主题中的 text 色值
+                    color: "text",
                     border: "1px solid #ddd",
                   }}
                   onChange={(e: any) => {
@@ -236,14 +234,12 @@ export default function LoginPage() {
                 />
                 <Flex>
                   <Input
-                    allClearable
-                    onClear={() => setCode(null)}
                     placeholder="Verification Code"
                     sx={{
                       flex: 1,
                       mr: 2,
                       borderRadius: "7px",
-                      color: "text", // 使用主题中的 text 色值
+                      color: "text",
                       border: "1px solid #ddd",
                     }}
                     onChange={(e: any) => setCode(e.target.value)}
