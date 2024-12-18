@@ -21,15 +21,22 @@ export async function GET(request: NextRequest) {
   const currentPage = params.get("currentPage");
   const pageSize = params.get("pageSize");
   const name = params.get("name");
+  const language = params.get("language");
   try {
-    const where = name ? { name: { contains: name } } : {};
+    const where: any = {};
+    if (name) {
+      where.name = { contains: name };
+    }
+    if (language && language !== "all") {
+      where.language = language;
+    }
     const dataset = await prisma.datasets.findMany({
       where,
       skip: (Number(currentPage) - 1) * Number(pageSize),
       take: Number(pageSize),
     });
 
-    const total = await prisma.datasets.count();
+    const total = await prisma.datasets.count({ where });
 
     const transformedData = dataset.map((item: any) => {
       const date = new Date(item.created_at);

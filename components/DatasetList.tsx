@@ -7,10 +7,13 @@ import {
   useImperativeHandle,
   useState,
 } from "react";
-import { Pagination } from "antd";
+import { Pagination, Select } from "antd";
 import { sendGet } from "@/utils/networkUtils";
 import DatasetCard from "./DatasetCard";
 import { Spinner } from "theme-ui";
+import { LANGUAGES } from "@/utils/languages";
+
+type LanguageEnum = keyof typeof LANGUAGES;
 
 const pageSize = 8;
 function DatasetList({}, ref: any) {
@@ -19,6 +22,19 @@ function DatasetList({}, ref: any) {
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [pageSize, setPageSize] = useState(8);
+  const [languageOptions, setLanguageOptions] = useState<any[]>([]);
+  const [selectedLanguage, setSelectedLanguage] = useState<LanguageEnum>("all");
+
+  useEffect(() => {
+    const newLanguageOptions = [
+      { label: "Language", value: "all" },
+      ...Object.keys(LANGUAGES).map((key) => ({
+        label: LANGUAGES[key].name,
+        value: key,
+      })),
+    ];
+    setLanguageOptions(newLanguageOptions);
+  }, []);
 
   const loadData = useCallback(
     async (searchValue?: string) => {
@@ -29,6 +45,11 @@ function DatasetList({}, ref: any) {
       };
       if (searchValue) {
         params.name = searchValue;
+        params.currentPage = 1;
+      }
+      console.log("@@@selectedLanguage", selectedLanguage);
+      if (selectedLanguage !== "all") {
+        params.language = selectedLanguage;
       }
       const res: any = await sendGet("/api/dataset", params);
       if (res?.code === 0) {
@@ -37,12 +58,12 @@ function DatasetList({}, ref: any) {
       }
       setIsLoading(false);
     },
-    [currentPage, pageSize]
+    [currentPage, pageSize, selectedLanguage]
   );
 
   useEffect(() => {
     loadData();
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, selectedLanguage]);
 
   useImperativeHandle(ref, () => ({
     loadData,
@@ -54,21 +75,42 @@ function DatasetList({}, ref: any) {
         maxWidth: "1280px",
         width: "100%",
         flexDirection: "column",
-        mt: 3,
+        mt: 4,
       }}
     >
-      <Heading
-        as="h2"
-        sx={{
-          mb: 3,
-          color: "text",
-          fontSize: 24,
-          fontWeight: "bold",
-          textAlign: "left",
-        }}
-      >
-        Dataset list
-      </Heading>
+      <Flex sx={{ justifyContent: "space-between", mb: 3 }}>
+        <Heading
+          as="h2"
+          sx={{
+            color: "text",
+            fontSize: 24,
+            fontWeight: "bold",
+            textAlign: "left",
+          }}
+        >
+          Dataset list
+        </Heading>
+        <Flex>
+          <Select
+            value={selectedLanguage}
+            options={languageOptions}
+            onChange={(value) => setSelectedLanguage(value as LanguageEnum)}
+            style={{ borderRadius: 4, width: 150 }}
+          />
+          {/* <Select
+            value={selectedLanguage}
+            options={languageOptions}
+            onChange={(value) => setSelectedLanguage(value as LanguageEnum)}
+            style={{ marginRight: 16, borderRadius: 4, width: 120 }}
+          />
+          <Select
+            value={selectedLanguage}
+            options={languageOptions}
+            onChange={(value) => setSelectedLanguage(value)}
+            style={{ borderRadius: 4, width: 120 }}
+          /> */}
+        </Flex>
+      </Flex>
       {isLoading ? (
         <Flex
           sx={{ justifyContent: "center", alignItems: "center", height: 268 }}
