@@ -297,16 +297,16 @@ export default function LoginPage() {
                   }}
                   onClick={() => login()}
                 >
-                  <Image
-                    src="/images/icons/google.png"
-                    alt="google"
-                    sx={{ width: "20px", height: "20px", mr: 3 }}
-                  />
                   {isLoading ? (
-                    <Spinner size={20} sx={{ textAlign: "center" }} />
+                    <Spinner size={20} sx={{ textAlign: "center", mr: 3 }} />
                   ) : (
-                    "Continue with Google"
+                    <Image
+                      src="/images/icons/google.png"
+                      alt="google"
+                      sx={{ width: "20px", height: "20px", mr: 3 }}
+                    />
                   )}
+                  Continue with Google
                 </Button>
               </Flex>
             </Card>

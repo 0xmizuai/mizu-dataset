@@ -43,7 +43,6 @@ export async function GET(request: NextRequest) {
     const total = await prisma.datasets.count({ where });
 
     const transformedData = datasets.map((item: any) => {
-      console.log("item", item);
       const crawledAt = new Date(item.crawled_at);
       return {
         ...item,
