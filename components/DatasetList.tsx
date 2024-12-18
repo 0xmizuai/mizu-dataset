@@ -32,7 +32,9 @@ function DatasetList() {
   }, [currentPage]);
 
   return (
-    <Flex sx={{ width: "1280px", flexDirection: "column", mt: 3 }}>
+    <Flex
+      sx={{ maxWidth: "1280px", width: "100%", flexDirection: "column", mt: 3 }}
+    >
       <Heading
         as="h2"
         sx={{

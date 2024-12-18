@@ -272,14 +272,14 @@ export default function LoginPage() {
                     color: "white",
                     borderRadius: "7px",
                     py: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                   onClick={handleLogin}
                 >
                   {isLoging ? (
-                    <Spinner
-                      sx={{ color: "white", textAlign: "center" }}
-                      size={16}
-                    />
+                    <Spinner sx={{ color: "white" }} size={20} />
                   ) : (
                     "Log In"
                   )}
@@ -304,7 +304,11 @@ export default function LoginPage() {
                     alt="google"
                     sx={{ width: "20px", height: "20px", mr: 3 }}
                   />
-                  {isLoading ? <Spinner size={16} /> : "Continue with Google"}
+                  {isLoading ? (
+                    <Spinner size={16} sx={{ textAlign: "center" }} />
+                  ) : (
+                    "Continue with Google"
+                  )}
                 </Button>
               </Flex>
             </Card>
