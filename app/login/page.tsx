@@ -194,6 +194,7 @@ export default function LoginPage() {
               display: "flex",
               alignItems: "center",
               justifyContent: "flex-start",
+              // width: ["100%", "45%", "45%"],
             }}
           >
             <Card
