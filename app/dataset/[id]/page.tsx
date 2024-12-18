@@ -11,7 +11,6 @@ import { Flex } from "theme-ui";
 const DatasetPage = () => {
   const { id } = useParams();
   const [dataset, setDataset] = useState<any>(null);
-  console.log("id", id);
 
   useEffect(() => {
     if (!id) return;
@@ -56,7 +55,14 @@ const DatasetPage = () => {
             totalSize={32}
             width="30%"
           />
-          {id && <SampleAndHistory id={id as string} />}
+          {id && (
+            <SampleAndHistory
+              id={id as string}
+              name={dataset?.name}
+              data_type={dataset?.data_type}
+              language={dataset?.language}
+            />
+          )}
         </Flex>
       </Flex>
     </Flex>

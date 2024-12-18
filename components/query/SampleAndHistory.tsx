@@ -5,9 +5,13 @@ import { Pagination, Table, Tabs } from "antd";
 import { useEffect, useState } from "react";
 import { Box } from "theme-ui";
 import { sendGet } from "@/utils/networkUtils";
+import { inflate } from "pako";
 
 interface SampleDataProps {
   id: string;
+  name: string;
+  data_type: string;
+  language: string;
 }
 
 interface SampleDataItem {
@@ -26,15 +30,10 @@ interface HistoryItem {
 
 enum Tab {
   HISTORY = "history",
-  SIMPLE = "simple",
+  SAMPLE = "sample",
 }
 
 const SampleColumns = [
-  {
-    title: "Seq",
-    dataIndex: "seq",
-    key: "seq",
-  },
   {
     title: "ID",
     dataIndex: "id",
@@ -59,80 +58,105 @@ enum StatusEnum {
   PENDING = "Pending",
 }
 
-const mockList = [
-  {
-    seq: 1,
-    key: "#3546651",
-    query: "text",
-    date: "2024-01-01",
-    expend: "uri",
-    status: StatusEnum.SUCCESS,
-  },
-  {
-    seq: 2,
-    key: "#3546652",
-    query: "text",
-    date: "2024-01-01",
-    expend: "uri",
-    status: StatusEnum.PROCESSING,
-  },
-  {
-    seq: 3,
-    key: "#3546653",
-    query: "text",
-    date: "2024-01-01",
-    expend: "uri",
-    status: StatusEnum.PENDING,
-  },
-  {
-    seq: 4,
-    key: "#3546654",
-    query: "text",
-    date: "2024-01-01",
-    expend: "uri",
-    status: StatusEnum.FAILED,
-  },
-  {
-    seq: 5,
-    key: "#3546655",
-    query: "text",
-    date: "2024-01-01",
-    expend: "uri",
-    status: StatusEnum.SUCCESS,
-  },
-  {
-    seq: 6,
-    key: "#3546656",
-    query: "text",
-    date: "2024-01-01",
-    expend: "uri",
-    status: StatusEnum.SUCCESS,
-  },
-];
+type TableItem = HistoryItem | SampleDataItem;
 
-export default function SimpleAndHistory({ id }: SampleDataProps) {
-  const [list, setList] = useState<SampleDataItem[] | HistoryItem[]>(
-    mockList.slice(0, 7)
+const R2_DOWNLOAD_URL = "https://rawdata.mizu.global";
+
+async function downloadAndParseJSON(url: string) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+    const base64EncodedData = await response.text();
+    const decodedBuffer = Buffer.from(base64EncodedData, "base64");
+
+    try {
+      const decompressedData = inflate(decodedBuffer);
+      const textDecoder = new TextDecoder("utf-8", { fatal: false });
+      const lines = textDecoder
+        .decode(decompressedData)
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0);
+      return lines.map((line) => JSON.parse(line));
+    } catch (parseErr) {
+      console.error("Parse error details:", url, parseErr);
+      return [];
+    }
+  } catch (error: any) {
+    console.error("downloadAndParseJSON error:", url, error);
+    return [];
+  }
+}
+
+export default function SampleAndHistory({
+  id,
+  name,
+  data_type,
+  language,
+}: SampleDataProps) {
+  const [list, setList] = useState<HistoryItem[] | SampleDataItem[]>(
+    [] as HistoryItem[]
   );
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState(Tab.HISTORY);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(7);
-  const [totalPages, setTotalPages] = useState(mockList.length);
+  const [totalPages, setTotalPages] = useState(0);
+  const [cache, setCache] = useState<Record<string, any>>({});
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const res = await sendGet(`/api/simpleData`, { id });
-  //     const data = res?.data ?? [];
-  //     const newList = data.map((item: any, index: number) => {
-  //       return {
-  //         ...item,
-  //         seq: index + 1,
-  //       };
-  //     });
-  //     setList(newList);
-  //   })();
-  // }, [id]);
+  useEffect(() => {
+    (async () => {
+      if (!name || !data_type || !language) return;
+
+      const cacheKey = `${id}-${name}-${data_type}-${language}`;
+
+      if (cache[cacheKey]) {
+        setList(cache[cacheKey]);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const res = await sendGet(`/api/sampleData`, { id });
+        const data = res?.data ?? [];
+        const keys = data.map((item: any) => `${R2_DOWNLOAD_URL}/${name}/${data_type}/${language}/${item.md5}.zz`);
+
+        const jsonDataArray = await Promise.all(
+          keys.map(async (key: any) => {
+            try {
+              const jsonData = await downloadAndParseJSON(key);
+              if (jsonData) {
+                return jsonData.map((dataItem: any, index: number) => ({
+                  key: dataItem.id,
+                  id: dataItem.id,
+                  text: dataItem.text,
+                  short_text:
+                    dataItem.text.length > 50
+                      ? dataItem.text.slice(0, 50) + "..."
+                      : dataItem.text,
+                  uri: dataItem.uri,
+                }));
+              }
+              return null;
+            } catch (err) {
+              console.error("Error parsing item:", err);
+              return null;
+            }
+          })
+        );
+
+        const processedData = jsonDataArray.filter(Boolean).flat();
+        setCache((prev) => ({ ...prev, [cacheKey]: processedData }));
+        setList(processedData);
+      } catch (err) {
+        console.error("Error fetching sample data:", err);
+        setList([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [data_type, id, language, name, tab, cache]);
 
   const getColor = (status: StatusEnum) => {
     if (status === StatusEnum.SUCCESS)
@@ -211,7 +235,7 @@ export default function SimpleAndHistory({ id }: SampleDataProps) {
         type="card"
         items={[
           { label: "Query history", key: Tab.HISTORY },
-          { label: "Simple data", key: Tab.SIMPLE },
+          { label: "Sample data", key: Tab.SAMPLE },
         ]}
         onChange={(key) => setTab(key as Tab)}
         tabBarStyle={{
@@ -238,8 +262,8 @@ export default function SimpleAndHistory({ id }: SampleDataProps) {
         <Box sx={{ mt: 3 }}>
           <Table
             key="id"
-            columns={tab === Tab.HISTORY ? HistoryColumns : SimpleColumns}
-            dataSource={list}
+            columns={tab === Tab.HISTORY ? HistoryColumns : SampleColumns}
+            dataSource={list as readonly TableItem[]}
             pagination={false}
             scroll={{ x: 1000 }}
           />
