@@ -13,7 +13,6 @@ export default function DatasetLayout({
     <Flex
       sx={{
         flexDirection: "column",
-        alignItems: "center",
         justifyContent: "center",
         width: "100%",
         mb: 5,

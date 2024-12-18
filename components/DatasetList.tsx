@@ -33,7 +33,12 @@ function DatasetList() {
 
   return (
     <Flex
-      sx={{ maxWidth: "1280px", width: "100%", flexDirection: "column", mt: 3 }}
+      sx={{
+        maxWidth: "1280px",
+        width: "100%",
+        flexDirection: "column",
+        mt: 3,
+      }}
     >
       <Heading
         as="h2"
@@ -51,7 +56,7 @@ function DatasetList() {
         <Flex
           sx={{ justifyContent: "center", alignItems: "center", height: 268 }}
         >
-          <Spinner />
+          <Spinner size={30} color="primary" />
         </Flex>
       ) : (
         <>
@@ -64,6 +69,11 @@ function DatasetList() {
               </Grid>
               <Flex sx={{ justifyContent: "flex-end", mt: 4 }}>
                 <Pagination
+                  showTotal={(total) => (
+                    <Text sx={{ color: "#333333", fontSize: 16 }}>
+                      {`Total: ${total}`}
+                    </Text>
+                  )}
                   current={currentPage}
                   total={totalPages}
                   onChange={(page) => setCurrentPage(page)}

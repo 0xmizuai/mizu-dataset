@@ -3,7 +3,6 @@
 import { Card, Flex, Image, Text } from "theme-ui";
 import { useRouter } from "next/navigation";
 import { formatBytes, formatObjects } from "@/utils/format";
-import { Box } from "theme-ui";
 import Link from "next/link";
 interface DatasetCardProps {
   item: any;

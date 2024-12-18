@@ -90,7 +90,8 @@ function Header({ showSearch = false }: HeaderProps) {
         sx={{
           py: 3,
           justifyContent: "space-between",
-          width: "1280px",
+          maxWidth: "1280px",
+          width: "100%",
         }}
       >
         <Image
@@ -105,7 +106,6 @@ function Header({ showSearch = false }: HeaderProps) {
               sx={{
                 maxWidth: ["100%", "300px"],
                 ml: [0, 3],
-                flex: 1,
               }}
               prefix={
                 <Image
@@ -113,6 +113,7 @@ function Header({ showSearch = false }: HeaderProps) {
                   width="24px"
                   height="24px"
                   alt="search"
+                  sx={{ display: "inline-block" }}
                 />
               }
             />
@@ -121,7 +122,7 @@ function Header({ showSearch = false }: HeaderProps) {
             <Dropdown menu={{ items, onClick }}>
               <Image
                 src="/images/icons/avatar.png"
-                sx={{ width: "24px", height: "24px", cursor: "pointer" }}
+                sx={{ width: "24px", height: "auto", cursor: "pointer" }}
                 alt="avatar"
               />
             </Dropdown>

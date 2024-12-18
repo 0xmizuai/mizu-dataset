@@ -31,7 +31,6 @@ export default function LoginPage() {
   const [code, setCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoging, setIsLoging] = useState(false);
-  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
@@ -84,11 +83,11 @@ export default function LoginPage() {
   });
 
   const handleSendCode = async () => {
-    if (!account) {
+    if (!account || !validateEmail(account)) {
+      console.log("account", account);
       return toast.error("Please input valid email");
     }
-    validateEmail(account);
-    console.log("account", account);
+    console.log("🚀 ~ handleSendCode ~ account", account);
     const res = await sendPost(
       `/api/auth/email`,
       {
@@ -98,6 +97,8 @@ export default function LoginPage() {
         excludeAuthorization: true,
       }
     );
+
+    console.log("🚀 ~ handleSendCode ~ res", res);
 
     if (res && res.code === 0) {
       setCountdown(60);
@@ -109,6 +110,9 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
     setIsLoging(true);
+    if (!code || !account) {
+      return toast.error("Please input verification code and email");
+    }
     const res: any = await sendPost(
       "/api/auth/email/login",
       {
@@ -218,6 +222,8 @@ export default function LoginPage() {
                   Login
                 </Heading>
                 <Input
+                  allClearable
+                  onClear={() => setAccount("")}
                   placeholder="Enter your email address..."
                   sx={{
                     borderRadius: "7px",
@@ -230,6 +236,8 @@ export default function LoginPage() {
                 />
                 <Flex>
                   <Input
+                    allClearable
+                    onClear={() => setCode(null)}
                     placeholder="Verification Code"
                     sx={{
                       flex: 1,
@@ -250,6 +258,7 @@ export default function LoginPage() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
+                      cursor: !account ? "not-allowed" : "pointer",
                     }}
                     onClick={handleSendCode}
                   >
@@ -266,7 +275,9 @@ export default function LoginPage() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
+                    cursor: !code || !account ? "not-allowed" : "pointer",
                   }}
+                  disabled={!code || !account}
                   onClick={handleLogin}
                 >
                   {isLoging ? (

@@ -50,16 +50,19 @@ function DatasetList() {
               Open, Ultra-low Cost, Hyperscale
             </Text>
           </Box>
-          <Image
-            src="/images/dataset/logo.png"
-            alt="logo"
-            sx={{
-              maxWidth: "497px",
-              height: "auto",
-              mr: -40,
-              mb: -19,
-            }}
-          />
+          <Box sx={{ position: "absolute", right: 0, bottom: 0 }}>
+            <Image
+              src="/images/dataset/logo.png"
+              alt="logo"
+              sx={{
+                maxWidth: "497px",
+                height: "auto",
+                position: "absolute",
+                right: 80,
+                bottom: 0,
+              }}
+            />
+          </Box>
         </Flex>
       </Flex>
       <DatasetComList />

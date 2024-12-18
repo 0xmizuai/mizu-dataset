@@ -6,9 +6,8 @@ import { deleteJwt, saveJwt, sendPost } from "@/utils/networkUtils";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Spinner } from "theme-ui";
 
-export const AuthInit = () => {
+export const AuthInit = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
   const setUser = useUserStore((state) => state.setUser);
@@ -39,20 +38,5 @@ export const AuthInit = () => {
     500
   );
 
-  if (pathname !== "/login" && loading) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <Spinner size={64} />
-      </div>
-    );
-  }
-
-  return null;
+  return children;
 };
