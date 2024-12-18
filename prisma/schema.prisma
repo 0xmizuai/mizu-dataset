@@ -38,6 +38,7 @@ model datasets {
   total_objects Int            @default(0)
   total_bytes   BigInt         @default(0)
   created_at    DateTime       @default(now())
+  crawled_at    DateTime
   data_records  data_records[]
 
   @@index([name, language, data_type, created_at])
