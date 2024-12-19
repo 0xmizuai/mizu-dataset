@@ -60,7 +60,7 @@ enum StatusEnum {
 
 type TableItem = HistoryItem | SampleDataItem;
 
-const R2_DOWNLOAD_URL = "https://rawdata.mizu.global";
+const R2_DOWNLOAD_URL = "https://rawdata.mizu.technology";
 
 async function downloadAndParseJSON(url: string) {
   try {
