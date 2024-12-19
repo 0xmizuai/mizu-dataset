@@ -159,7 +159,9 @@ export default function SampleAndHistory({
         );
 
         const processedData = jsonDataArray.filter(Boolean).flat();
-        setCache((prev) => ({ ...prev, [cacheKey]: processedData }));
+        if (processedData.length > 0) {
+          setCache((prev) => ({ ...prev, [cacheKey]: processedData }));
+        }
         setList(processedData);
       } catch (err) {
         console.error("Error fetching sample data:", err);
