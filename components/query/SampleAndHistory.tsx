@@ -1,92 +1,21 @@
 "use client";
 
-import { Card, Text, Input, Flex } from "theme-ui";
-import { Pagination, Table, Tabs } from "antd";
+import { Text, Input, Flex } from "theme-ui";
+import { Popover, Table, Tabs } from "antd";
 import { useEffect, useState } from "react";
 import { Box } from "theme-ui";
 import { sendGet } from "@/utils/networkUtils";
-import { inflate } from "pako";
-
-interface SampleDataProps {
-  id: string;
-  name: string;
-  data_type: string;
-  language: string;
-}
-
-interface SampleDataItem {
-  key: string;
-  text: string;
-  uri: string;
-}
-
-interface HistoryItem {
-  key: string;
-  query: string;
-  date: string;
-  expend: string;
-  status: string;
-}
+import { SampleDataProps, SampleDataItem, HistoryItem } from "@/types/dataset";
+import {
+  downloadAndParseJSON,
+  getColor,
+  R2_DOWNLOAD_URL,
+  StatusEnum,
+} from "@/utils/simpleData";
 
 enum Tab {
   HISTORY = "history",
   SAMPLE = "sample",
-}
-
-const SampleColumns = [
-  {
-    title: "ID",
-    dataIndex: "id",
-    key: "id",
-  },
-  {
-    title: "Text",
-    dataIndex: "text",
-    key: "text",
-  },
-  {
-    title: "URI",
-    dataIndex: "uri",
-    key: "uri",
-  },
-];
-
-enum StatusEnum {
-  SUCCESS = "Success",
-  FAILED = "Failed",
-  PROCESSING = "Processing",
-  PENDING = "Pending",
-}
-
-type TableItem = HistoryItem | SampleDataItem;
-
-const R2_DOWNLOAD_URL = "https://rawdata.mizu.technology";
-
-async function downloadAndParseJSON(url: string) {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-    const base64EncodedData = await response.text();
-    const decodedBuffer = Buffer.from(base64EncodedData, "base64");
-
-    try {
-      const decompressedData = inflate(decodedBuffer);
-      const textDecoder = new TextDecoder("utf-8", { fatal: false });
-      const lines = textDecoder
-        .decode(decompressedData)
-        .split("\n")
-        .map((line) => line.trim())
-        .filter((line) => line.length > 0);
-      return lines.map((line) => JSON.parse(line));
-    } catch (parseErr) {
-      console.error("Parse error details:", url, parseErr);
-      return [];
-    }
-  } catch (error: any) {
-    console.error("downloadAndParseJSON error:", url, error);
-    return [];
-  }
 }
 
 export default function SampleAndHistory({
@@ -95,25 +24,25 @@ export default function SampleAndHistory({
   data_type,
   language,
 }: SampleDataProps) {
-  const [list, setList] = useState<HistoryItem[] | SampleDataItem[]>(
-    [] as HistoryItem[]
-  );
+  const [historyList, setHistoryList] = useState<HistoryItem[]>([]);
+  const [sampleList, setSampleList] = useState<SampleDataItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState(Tab.HISTORY);
+  const [tab, setTab] = useState(Tab.SAMPLE);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(7);
   const [totalPages, setTotalPages] = useState(0);
   const [cache, setCache] = useState<Record<string, any>>(() => {
-    if (typeof window !== 'undefined') {
-      const savedCache = localStorage.getItem('sampleDataCache');
+    if (typeof window !== "undefined") {
+      const savedCache = localStorage.getItem("sampleDataCache");
       return savedCache ? JSON.parse(savedCache) : {};
     }
     return {};
   });
+  console.log("....", tab, historyList, sampleList);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('sampleDataCache', JSON.stringify(cache));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("sampleDataCache", JSON.stringify(cache));
     }
   }, [cache]);
 
@@ -124,7 +53,7 @@ export default function SampleAndHistory({
       const cacheKey = `${id}-${name}-${data_type}-${language}`;
 
       if (cache[cacheKey]) {
-        setList(cache[cacheKey]);
+        setSampleList(cache[cacheKey]);
         return;
       }
 
@@ -132,7 +61,10 @@ export default function SampleAndHistory({
       try {
         const res = await sendGet(`/api/sampleData`, { id });
         const data = res?.data ?? [];
-        const keys = data.map((item: any) => `${R2_DOWNLOAD_URL}/${name}/${data_type}/${language}/${item.md5}.zz`);
+        const keys = data.map(
+          (item: any) =>
+            `${R2_DOWNLOAD_URL}/${name}/${data_type}/${language}/${item.md5}.zz`
+        );
 
         const jsonDataArray = await Promise.all(
           keys.map(async (key: any) => {
@@ -140,7 +72,6 @@ export default function SampleAndHistory({
               const jsonData = await downloadAndParseJSON(key);
               if (jsonData) {
                 return jsonData.map((dataItem: any, index: number) => ({
-                  key: dataItem.id,
                   id: dataItem.id,
                   text: dataItem.text,
                   short_text:
@@ -159,30 +90,23 @@ export default function SampleAndHistory({
         );
 
         const processedData = jsonDataArray.filter(Boolean).flat();
+        const newSampleList = processedData.map((item, index) => ({
+          ...item,
+          seq: index + 1,
+        }));
         if (processedData.length > 0) {
-          setCache((prev) => ({ ...prev, [cacheKey]: processedData }));
+          setCache((prev) => ({ ...prev, [cacheKey]: newSampleList }));
         }
-        setList(processedData);
+
+        setSampleList(newSampleList);
       } catch (err) {
         console.error("Error fetching sample data:", err);
-        setList([]);
+        setSampleList([]);
       } finally {
         setLoading(false);
       }
     })();
   }, [data_type, id, language, name, tab, cache]);
-
-  const getColor = (status: StatusEnum) => {
-    if (status === StatusEnum.SUCCESS)
-      return { backgroundColor: "#B9F3AD", textColor: "#2F7C20" };
-    if (status === StatusEnum.PROCESSING)
-      return { backgroundColor: "#F9F3CB", textColor: "#B58D0B" };
-    if (status === StatusEnum.PENDING)
-      return { backgroundColor: "#E3F1FF", textColor: "#2979F2" };
-    if (status === StatusEnum.FAILED)
-      return { backgroundColor: "#F3E58C", textColor: "#7C6D1A" };
-    return { backgroundColor: "#F3E58C", textColor: "#7C6D1A" };
-  };
 
   const HistoryColumns = [
     {
@@ -230,8 +154,96 @@ export default function SampleAndHistory({
     },
   ];
 
+  const SampleColumns = [
+    {
+      title: "Seq",
+      dataIndex: "seq",
+      key: "seq",
+    },
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
+      title: "Text",
+      dataIndex: "short_text",
+      key: "short_text",
+      width: "40%",
+      render: (text: string, record: SampleDataItem) => {
+        return (
+          <Popover
+            content={() => (
+              <Box
+                sx={{ maxHeight: "500px", maxWidth: "500px", overflow: "auto" }}
+              >
+                <Text>{record.text}</Text>
+              </Box>
+            )}
+            trigger={["hover", "click"]}
+          >
+            <Text
+              style={{
+                display: "block",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {text}
+            </Text>
+          </Popover>
+        );
+      },
+    },
+    {
+      title: "URI",
+      dataIndex: "uri",
+      key: "uri",
+      render: (uri: string) => {
+        return (
+          <Text
+            style={{
+              display: "block",
+              textOverflow: "ellipsis",
+              whiteSpace: "wrap",
+              wordBreak: "break-all",
+            }}
+          >
+            {uri}
+          </Text>
+        );
+      },
+    },
+  ];
+
+  const renderHistory = () => {
+    return (
+      <Table
+        rowKey="id"
+        columns={HistoryColumns}
+        dataSource={historyList}
+        pagination={false}
+        scroll={{ x: 1000 }}
+        bordered
+        style={{ width: "100%" }}
+      />
+    );
+  };
+
+  const renderSample = () => {
+    return (
+      <Table
+        rowKey="id"
+        columns={SampleColumns}
+        dataSource={sampleList}
+        pagination={false}
+        bordered
+        style={{ width: "100%" }}
+      />
+    );
+  };
+
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%", pb: 4 }}>
       <Box sx={{ mb: 4, width: "100%" }}>
         <Input
           placeholder="Enter your query"
@@ -248,18 +260,26 @@ export default function SampleAndHistory({
       <Tabs
         type="card"
         items={[
-          { label: "Query history", key: Tab.HISTORY },
-          { label: "Sample data", key: Tab.SAMPLE },
+          {
+            label: "Query history",
+            key: Tab.HISTORY,
+            children: renderHistory(),
+          },
+          {
+            label: "Sample data",
+            key: Tab.SAMPLE,
+            children: renderSample(),
+          },
         ]}
         onChange={(key) => setTab(key as Tab)}
-        tabBarStyle={{
-          margin: 0,
-          borderColor: "rgba(0, 0, 0, 0.2)",
-          width: "99%",
-        }}
-        tabBarGutter={0}
+        // tabBarStyle={{
+        //   margin: 0,
+        //   borderColor: "rgba(0, 0, 0, 0.2)",
+        //   width: "99%",
+        // }}
+        // tabBarGutter={0}
       />
-      <Card
+      {/* <Card
         sx={{
           mb: 4,
           border: "1px solid rgba(0, 0, 0, 0.2)",
@@ -272,44 +292,37 @@ export default function SampleAndHistory({
           p: 3,
           pt: 0,
         }}
-      >
-        <Box sx={{ mt: 3 }}>
-          <Table
-            key="id"
-            columns={tab === Tab.HISTORY ? HistoryColumns : SampleColumns}
-            dataSource={list as readonly TableItem[]}
-            pagination={false}
-            scroll={{ x: 1000 }}
-          />
-          <Flex
-            sx={{
-              justifyContent: "flex-end",
-              mt: 4,
-              position: "sticky",
-              bottom: 0,
+      > */}
+      {/* <Box sx={{ mt: 3 }}>
+        <Flex
+          sx={{
+            justifyContent: "flex-end",
+            mt: 4,
+            position: "sticky",
+            bottom: 0,
+          }}
+        >
+          <Pagination
+            showTotal={(total) => (
+              <Text sx={{ color: "#333333", fontSize: 16 }}>
+                {`Total: ${total}`}
+              </Text>
+            )}
+            current={currentPage}
+            total={totalPages}
+            onChange={(page) => setCurrentPage(page)}
+            pageSizeOptions={[7, 14, 21]}
+            pageSize={pageSize}
+            showSizeChanger
+            showQuickJumper
+            onShowSizeChange={(current, size) => {
+              setCurrentPage(current);
+              setPageSize(size);
             }}
-          >
-            <Pagination
-              showTotal={(total) => (
-                <Text sx={{ color: "#333333", fontSize: 16 }}>
-                  {`Total: ${total}`}
-                </Text>
-              )}
-              current={currentPage}
-              total={totalPages}
-              onChange={(page) => setCurrentPage(page)}
-              pageSizeOptions={[7, 14, 21]}
-              pageSize={pageSize}
-              showSizeChanger
-              showQuickJumper
-              onShowSizeChange={(current, size) => {
-                setCurrentPage(current);
-                setPageSize(size);
-              }}
-            />
-          </Flex>
-        </Box>
-      </Card>
+          />
+        </Flex>
+      </Box> */}
+      {/* </Card> */}
     </Box>
   );
 }

@@ -25,9 +25,7 @@ const DatasetPage = () => {
     <Flex
       sx={{
         flexDirection: "column",
-        justifyContent: "center",
-        width: "100%",
-        mb: 5,
+        backgroundColor: "white",
       }}
     >
       <Header />
@@ -35,16 +33,17 @@ const DatasetPage = () => {
         sx={{
           flexDirection: "column",
           backgroundColor: "white",
-          width: "100%",
+          alignItems: "center",
           minHeight: "100vh",
+          mx: 5,
         }}
       >
         <Flex
           sx={{
-            width: "1280px",
+            maxWidth: "1280px",
+            width: "100%",
             flexDirection: "column",
             alignItems: "flex-start",
-            mx: "auto",
           }}
         >
           <Breadcrumb />
@@ -53,8 +52,15 @@ const DatasetPage = () => {
             showLink={false}
             showBorder={false}
             totalSize={32}
-            width="30%"
+            width="40%"
           />
+        </Flex>
+        <Flex
+          sx={{
+            width: "100%",
+            maxWidth: "1280px",
+          }}
+        >
           {id && (
             <SampleAndHistory
               id={id as string}
