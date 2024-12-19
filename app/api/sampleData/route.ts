@@ -1,8 +1,6 @@
 import { verifyJWT } from "@/lib/jwt";
 import prisma from "@/lib/prisma";
-import { AUTH_FAILED } from "@/utils/constants";
 import { NextRequest } from "next/server";
-import zlib from "zlib";
 import { httpMessage } from "@/utils/constants";
 
 export async function GET(request: NextRequest) {
@@ -22,8 +20,6 @@ export async function GET(request: NextRequest) {
   }
 
   const params = request.nextUrl.searchParams;
-  console.log("...params..", params);
-
   const id = params.get("id");
 
   if (!id) {
@@ -39,10 +35,7 @@ export async function GET(request: NextRequest) {
     });
 
     if (!dataset) {
-      return Response.json(
-        { code: 404, message: "Dataset not found" },
-        { status: 404 }
-      );
+      return Response.json({ code: 0, message: "success", data: [] });
     }
 
     const records = await prisma.data_records.findMany({
