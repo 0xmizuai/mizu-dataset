@@ -8,7 +8,6 @@ import { sendGet } from "@/utils/networkUtils";
 import { SampleDataProps, SampleDataItem, HistoryItem } from "@/types/dataset";
 import {
   downloadAndParseJSON,
-  getColor,
   R2_DOWNLOAD_URL,
   StatusEnum,
 } from "@/utils/simpleData";
@@ -19,6 +18,17 @@ enum Tab {
   SAMPLE = "sample",
 }
 
+const mockHistoryList = [
+  {
+    seq: 1,
+    id: "1",
+    query: "What is the capital of France?",
+    date: "2024-01-01",
+    expend: "100",
+    status: StatusEnum.SUCCESS,
+  },
+];
+
 export default function SampleAndHistory({
   id,
   name,
@@ -28,7 +38,7 @@ export default function SampleAndHistory({
   const [historyList, setHistoryList] = useState<HistoryItem[]>([]);
   const [sampleList, setSampleList] = useState<SampleDataItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState(Tab.SAMPLE);
+  const [tab, setTab] = useState<Tab>(Tab["HISTORY"]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(7);
   const [totalPages, setTotalPages] = useState(0);
@@ -41,6 +51,12 @@ export default function SampleAndHistory({
   });
 
   useEffect(() => {
+    if (tab === Tab.HISTORY) {
+      setHistoryList(mockHistoryList);
+    }
+  }, [tab]);
+
+  useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("sampleDataCache", JSON.stringify(cache));
     }
@@ -48,6 +64,7 @@ export default function SampleAndHistory({
 
   useEffect(() => {
     (async () => {
+      if (tab === Tab.HISTORY) return;
       if (!name || !data_type || !language) return;
 
       const cacheKey = `${id}-${name}-${data_type}-${language}`;
@@ -108,6 +125,18 @@ export default function SampleAndHistory({
     })();
   }, [data_type, id, language, name, tab, cache]);
 
+  const getColor = (status: StatusEnum) => {
+    if (status === StatusEnum.SUCCESS)
+      return { backgroundColor: "#B9F3AD", textColor: "#2F7C20" };
+    if (status === StatusEnum.PROCESSING)
+      return { backgroundColor: "#F9F3CB", textColor: "#B58D0B" };
+    if (status === StatusEnum.PENDING)
+      return { backgroundColor: "#E3F1FF", textColor: "#2979F2" };
+    if (status === StatusEnum.FAILED)
+      return { backgroundColor: "#F3E58C", textColor: "#7C6D1A" };
+    return { backgroundColor: "#F3E58C", textColor: "#7C6D1A" };
+  };
+
   const HistoryColumns = [
     {
       title: "Seq",
@@ -118,6 +147,9 @@ export default function SampleAndHistory({
       title: "Query Content",
       dataIndex: "query",
       key: "query",
+      render: (text: string) => {
+        return <Link href={`/dataset/${id}/queryId`}>{text}</Link>;
+      },
     },
     {
       title: "Date",

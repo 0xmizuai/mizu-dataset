@@ -8,18 +8,6 @@ export enum StatusEnum {
 }
 export const R2_DOWNLOAD_URL = "https://rawdata.mizu.technology";
 
-export const getColor = (status: StatusEnum) => {
-  if (status === StatusEnum.SUCCESS)
-    return { backgroundColor: "#B9F3AD", textColor: "#2F7C20" };
-  if (status === StatusEnum.PROCESSING)
-    return { backgroundColor: "#F9F3CB", textColor: "#B58D0B" };
-  if (status === StatusEnum.PENDING)
-    return { backgroundColor: "#E3F1FF", textColor: "#2979F2" };
-  if (status === StatusEnum.FAILED)
-    return { backgroundColor: "#F3E58C", textColor: "#7C6D1A" };
-  return { backgroundColor: "#F3E58C", textColor: "#7C6D1A" };
-};
-
 export async function downloadAndParseJSON(url: string) {
   try {
     const response = await fetch(url);
