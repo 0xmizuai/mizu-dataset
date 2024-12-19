@@ -12,6 +12,7 @@ import {
   R2_DOWNLOAD_URL,
   StatusEnum,
 } from "@/utils/simpleData";
+import Link from "next/link";
 
 enum Tab {
   HISTORY = "history",
@@ -38,7 +39,6 @@ export default function SampleAndHistory({
     }
     return {};
   });
-  console.log("....", tab, historyList, sampleList);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -186,6 +186,7 @@ export default function SampleAndHistory({
               style={{
                 display: "block",
                 textOverflow: "ellipsis",
+                cursor: "pointer",
               }}
             >
               {text}
@@ -200,7 +201,9 @@ export default function SampleAndHistory({
       key: "uri",
       render: (uri: string) => {
         return (
-          <Text
+          <Link
+            href={uri}
+            target="_blank"
             style={{
               display: "block",
               textOverflow: "ellipsis",
@@ -209,7 +212,7 @@ export default function SampleAndHistory({
             }}
           >
             {uri}
-          </Text>
+          </Link>
         );
       },
     },
@@ -258,7 +261,7 @@ export default function SampleAndHistory({
         />
       </Box>
       <Tabs
-        type="card"
+        activeKey={tab}
         items={[
           {
             label: "Query history",
