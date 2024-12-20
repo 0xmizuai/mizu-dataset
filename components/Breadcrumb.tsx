@@ -5,16 +5,22 @@ import { usePathname } from "next/navigation";
 import { Flex, Text } from "theme-ui";
 
 export default function Breadcrumb() {
-  const pathname = usePathname(); // 获取当前路径
-  const pathSegments = pathname.split("/").filter(Boolean); // 分割路径并过滤空值
+  const pathname = usePathname();
+  const pathSegments = pathname.split("/").filter(Boolean);
 
   return (
     <Flex sx={{ gap: 2, mb: 3 }}>
       {pathSegments.map((segment, index) => {
-        // 处理路径段中的 "dataset" 替换成适当的显示文本
-        const segmentLabel =
-          segment === "dataset" ? "Dataset" : decodeURIComponent(segment);
+        let segmentLabel =
+          segment === "dataset" ? "Home" : decodeURIComponent(segment);
         const href = "/" + pathSegments.slice(0, index + 1).join("/");
+
+        if (index === 1) {
+          segmentLabel = "Dataset";
+        }
+        if (index === 2) {
+          segmentLabel = "Query";
+        }
 
         return (
           <Flex key={href} sx={{ alignItems: "center", gap: 2, my: 3 }}>

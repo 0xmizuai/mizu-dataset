@@ -105,8 +105,6 @@ export default function CollectedTable({ id }: CollectedTableProps) {
           sx={{
             justifyContent: "flex-end",
             mt: 4,
-            position: "sticky",
-            bottom: 0,
           }}
         >
           <Pagination
