@@ -15,6 +15,7 @@ import { Button, Image, Text, Flex } from "theme-ui";
 import toast from "react-hot-toast";
 import { ApiResponse } from "@/types/api";
 import { ColumnType } from "antd/es/table";
+import { SorterResult } from "antd/es/table/interface";
 
 enum Tab {
   HISTORY = "history",
@@ -51,7 +52,6 @@ export default function SampleAndHistory({
   const [totalPages, setTotalPages] = useState(0);
   const [visible, setVisible] = useState(false);
   const [queryText, setQueryText] = useState("");
-  const [sort, setSort] = useState<any>(null);
 
   const [cache, setCache] = useState<Record<string, any>>(() => {
     if (typeof window !== "undefined") {
@@ -283,11 +283,24 @@ export default function SampleAndHistory({
         bordered
         style={{ width: "100%" }}
         loading={loading}
-        onChange={(pagination, filters, sorter) => {
-          console.log("~ 🚀 ~ sorter:", sorter);
-          const order = sorter.order === "ascend" ? "asc" : "desc";
-          const orderBy = sorter.field;
-          loadHistory(orderBy, order);
+        onChange={(
+          pagination,
+          filters,
+          sorter: SorterResult<HistoryItem> | SorterResult<HistoryItem>[]
+        ) => {
+          setCurrentPage(pagination.current ?? 1);
+          setPageSize(pagination.pageSize ?? 7);
+          const order = Array.isArray(sorter)
+            ? sorter[0].order === "ascend"
+              ? "asc"
+              : "desc"
+            : (sorter as SorterResult<HistoryItem>).order === "ascend"
+            ? "asc"
+            : "desc";
+          const orderBy = Array.isArray(sorter)
+            ? (sorter[0] as SorterResult<HistoryItem>).field
+            : (sorter as SorterResult<HistoryItem>).field;
+          loadHistory(orderBy as string, order);
         }}
       />
     );
