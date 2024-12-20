@@ -250,6 +250,7 @@ export default function SampleAndHistory({
               textOverflow: "ellipsis",
               whiteSpace: "wrap",
               wordBreak: "break-all",
+              color: "#2979F2",
             }}
           >
             {uri}

@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { Box } from "theme-ui";
 import { sendGet } from "@/utils/networkUtils";
 import { SampleDataProps, HistoryItem } from "@/types/dataset";
-import { StatusEnum } from "@/utils/simpleData";
 import Link from "next/link";
 import { Flex, Text } from "theme-ui";
 
@@ -17,7 +16,7 @@ const mockCollectedList = [
     query: "What is the capital of France?",
     date: "2024-01-01",
     expend: "100",
-    status: StatusEnum.SUCCESS,
+    status: 0,
   },
 ];
 
@@ -34,7 +33,7 @@ export default function CollectedTable({ id }: SampleDataProps) {
       try {
         const res = await sendGet(`/api/sampleData`, { id });
         const newCollectedList = res?.data ?? [];
-        setCollectedList(mockCollectedList);
+        setCollectedList(newCollectedList);
       } catch (err) {
         console.error("Error fetching sample data:", err);
         setCollectedList([]);
