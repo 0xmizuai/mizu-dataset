@@ -1,12 +1,14 @@
 import { inflate } from "pako";
 
-export enum StatusEnum {
-  SUCCESS = "Success",
-  FAILED = "Failed",
-  PROCESSING = "Processing",
-  PENDING = "Pending",
-}
+// Start of Selection
 export const R2_DOWNLOAD_URL = "https://rawdata.mizu.technology";
+
+export const StatusText: Record<number, string> = {
+  0: "Pending",
+  1: "Processing",
+  2: "Finished",
+  3: "Error",
+};
 
 export async function downloadAndParseJSON(url: string) {
   try {

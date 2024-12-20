@@ -1,7 +1,7 @@
 "use client";
 
 import { Text, Input, Flex } from "theme-ui";
-import { Popover, Table, Tabs } from "antd";
+import { Pagination, Popover, Table, Tabs } from "antd";
 import { useEffect, useState } from "react";
 import { Box } from "theme-ui";
 import { sendGet } from "@/utils/networkUtils";
@@ -9,7 +9,7 @@ import { SampleDataProps, SampleDataItem, HistoryItem } from "@/types/dataset";
 import {
   downloadAndParseJSON,
   R2_DOWNLOAD_URL,
-  StatusEnum,
+  StatusText,
 } from "@/utils/simpleData";
 import Link from "next/link";
 
@@ -17,17 +17,6 @@ enum Tab {
   HISTORY = "history",
   SAMPLE = "sample",
 }
-
-const mockHistoryList = [
-  {
-    seq: 1,
-    id: "1",
-    query: "What is the capital of France?",
-    date: "2024-01-01",
-    expend: "100",
-    status: StatusEnum.SUCCESS,
-  },
-];
 
 export default function SampleAndHistory({
   id,
@@ -42,6 +31,7 @@ export default function SampleAndHistory({
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(7);
   const [totalPages, setTotalPages] = useState(0);
+
   const [cache, setCache] = useState<Record<string, any>>(() => {
     if (typeof window !== "undefined") {
       const savedCache = localStorage.getItem("sampleDataCache");
@@ -51,10 +41,23 @@ export default function SampleAndHistory({
   });
 
   useEffect(() => {
-    if (tab === Tab.HISTORY) {
-      setHistoryList(mockHistoryList);
-    }
-  }, [tab]);
+    if (tab !== Tab.HISTORY || !id || !currentPage || !pageSize) return;
+    (async () => {
+      setLoading(true);
+      const res = await sendGet(`/api/queryList`, {
+        id,
+        currentPage,
+        pageSize,
+      });
+      console.log("res🌻", res);
+      const data = res?.data ?? [];
+      setHistoryList(data.list);
+      setTotalPages(data.total);
+      setCurrentPage(data.currentPage);
+      setPageSize(data.pageSize);
+      setLoading(false);
+    })();
+  }, [tab, currentPage, pageSize]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -125,50 +128,49 @@ export default function SampleAndHistory({
     })();
   }, [data_type, id, language, name, tab, cache]);
 
-  const getColor = (status: StatusEnum) => {
-    if (status === StatusEnum.SUCCESS)
-      return { backgroundColor: "#B9F3AD", textColor: "#2F7C20" };
-    if (status === StatusEnum.PROCESSING)
-      return { backgroundColor: "#F9F3CB", textColor: "#B58D0B" };
-    if (status === StatusEnum.PENDING)
-      return { backgroundColor: "#E3F1FF", textColor: "#2979F2" };
-    if (status === StatusEnum.FAILED)
-      return { backgroundColor: "#F3E58C", textColor: "#7C6D1A" };
-    return { backgroundColor: "#F3E58C", textColor: "#7C6D1A" };
+  const getColor = (status: number) => {
+    switch (status) {
+      case 2: // finished
+        return { backgroundColor: "#B9F3AD", textColor: "#2F7C20" };
+      case 1: // processing
+        return { backgroundColor: "#F9F3CB", textColor: "#B58D0B" };
+      case 0: // pending
+        return { backgroundColor: "#E3F1FF", textColor: "#2979F2" };
+      case 3: // error
+        return { backgroundColor: "#F3E58C", textColor: "#7C6D1A" };
+      default:
+        return { backgroundColor: "#F3E58C", textColor: "#7C6D1A" };
+    }
   };
 
   const HistoryColumns = [
     {
-      title: "Seq",
-      dataIndex: "seq",
-      key: "seq",
-    },
-    {
       title: "Query Content",
-      dataIndex: "query",
-      key: "query",
-      render: (text: string) => {
-        return <Link href={`/dataset/${id}/queryId`}>{text}</Link>;
+      dataIndex: "query_text",
+      key: "query_text",
+      render: (text: string, record: HistoryItem) => {
+        return <Link href={`/dataset/${id}/${record.id}`}>{text}</Link>;
       },
     },
     {
       title: "Date",
-      dataIndex: "date",
-      key: "date",
+      dataIndex: "created_at",
+      key: "created_at",
     },
     {
       title: "Expend",
-      dataIndex: "expend",
-      key: "expend",
+      dataIndex: "points_spent",
+      key: "points_spent",
+      render: (points_spent: string) => {
+        return <Text>{`${points_spent} points`}</Text>;
+      },
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: string) => {
-        const { backgroundColor, textColor }: any = getColor(
-          status as StatusEnum
-        );
+      render: (status: number) => {
+        const { backgroundColor, textColor }: any = getColor(status);
         return (
           <Flex
             sx={{
@@ -179,7 +181,9 @@ export default function SampleAndHistory({
               justifyContent: "center",
             }}
           >
-            <Text sx={{ color: textColor, fontSize: 16 }}>{status}</Text>
+            <Text sx={{ color: textColor, fontSize: 16 }}>
+              {StatusText[status]}
+            </Text>
           </Flex>
         );
       },
@@ -260,6 +264,7 @@ export default function SampleAndHistory({
         scroll={{ x: 1000 }}
         bordered
         style={{ width: "100%" }}
+        loading={loading}
       />
     );
   };
@@ -273,6 +278,7 @@ export default function SampleAndHistory({
         pagination={false}
         bordered
         style={{ width: "100%" }}
+        loading={loading}
       />
     );
   };
@@ -293,6 +299,7 @@ export default function SampleAndHistory({
         />
       </Box>
       <Tabs
+        type="card"
         activeKey={tab}
         items={[
           {
@@ -307,57 +314,40 @@ export default function SampleAndHistory({
           },
         ]}
         onChange={(key) => setTab(key as Tab)}
-        // tabBarStyle={{
-        //   margin: 0,
-        //   borderColor: "rgba(0, 0, 0, 0.2)",
-        //   width: "99%",
-        // }}
-        // tabBarGutter={0}
       />
-      {/* <Card
-        sx={{
-          mb: 4,
-          border: "1px solid rgba(0, 0, 0, 0.2)",
-          borderTop: "none",
-          width: "100%",
-          borderRadius: "14px",
-          borderTopLeftRadius: "0",
-          maxHeight: "770px",
-          overflow: "auto",
-          p: 3,
-          pt: 0,
-        }}
-      > */}
-      {/* <Box sx={{ mt: 3 }}>
-        <Flex
-          sx={{
-            justifyContent: "flex-end",
-            mt: 4,
-            position: "sticky",
-            bottom: 0,
-          }}
-        >
-          <Pagination
-            showTotal={(total) => (
-              <Text sx={{ color: "#333333", fontSize: 16 }}>
-                {`Total: ${total}`}
-              </Text>
-            )}
-            current={currentPage}
-            total={totalPages}
-            onChange={(page) => setCurrentPage(page)}
-            pageSizeOptions={[7, 14, 21]}
-            pageSize={pageSize}
-            showSizeChanger
-            showQuickJumper
-            onShowSizeChange={(current, size) => {
-              setCurrentPage(current);
-              setPageSize(size);
+      {tab === Tab.HISTORY && (
+        <Box sx={{ mt: 3 }}>
+          <Flex
+            sx={{
+              justifyContent: "flex-end",
+              mt: 4,
+              position: "sticky",
+              bottom: 0,
             }}
-          />
-        </Flex>
-      </Box> */}
-      {/* </Card> */}
+          >
+            <Pagination
+              showTotal={(total) => (
+                <Text sx={{ color: "#333333", fontSize: 16 }}>
+                  {`Total: ${total}`}
+                </Text>
+              )}
+              current={currentPage}
+              total={totalPages}
+              onChange={(page) => {
+                setCurrentPage(page);
+              }}
+              pageSizeOptions={[7, 14, 21]}
+              pageSize={pageSize}
+              showSizeChanger
+              showQuickJumper
+              onShowSizeChange={(current, size) => {
+                setCurrentPage(current);
+                setPageSize(size);
+              }}
+            />
+          </Flex>
+        </Box>
+      )}
     </Box>
   );
 }
