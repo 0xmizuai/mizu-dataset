@@ -5,7 +5,7 @@ import { NextRequest } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string; queryId: string } }
 ) {
   const token =
     request.headers.get("Authorization")?.replace("Bearer ", "") || "";
@@ -20,8 +20,8 @@ export async function GET(
       { status: 401 }
     );
   }
-  const { id } = await params; // queryId
-  if (!id)
+  const { id, queryId } = await params;
+  if (!id || !queryId)
     return Response.json(
       {
         code: 400,
@@ -31,20 +31,26 @@ export async function GET(
     );
   try {
     const query = await prisma.queries.findUnique({
-      where: { id: parseInt(id) },
+      where: { id: parseInt(queryId), dataset_id: parseInt(id) },
       include: {
         dataset: true,
       },
     });
-    const date = new Date(query?.created_at || "");
+    if (!query) {
+      return Response.json({
+        code: -1,
+        message: "Query not found",
+      });
+    }
+    const date = new Date(query.created_at);
 
     const jsonData = {
-      id: query?.id.toString,
-      query_text: query?.query_text,
-      model: query?.model,
-      status: query?.status,
-      points_spent: query?.points_spent.toString(),
-      created_at: date?.toLocaleDateString("en-US", {
+      id: query.id,
+      query_text: query.query_text,
+      model: query.model,
+      status: query.status,
+      points_spent: query.points_spent.toString(),
+      created_at: date.toLocaleDateString("en-US", {
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
@@ -52,14 +58,27 @@ export async function GET(
         minute: "2-digit",
         second: "2-digit",
       }),
-      dataset: query?.dataset,
+      dataset: {
+        ...query.dataset,
+        total_bytes: query.dataset.total_bytes.toString(),
+        total_objects: query.dataset.total_objects.toString(),
+        created_at: query.dataset.created_at.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }),
+      },
     };
 
+    console.log("~ 🚀 ~ jsonData:", jsonData);
+
     return Response.json({
-      code: 200,
+      code: 0,
+      message: "success",
       data: jsonData,
     });
   } catch (error) {
+    console.log("~ 🚀 ~ error:", error);
     return Response.json(
       {
         code: 500,

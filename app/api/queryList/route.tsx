@@ -64,12 +64,13 @@ export async function GET(request: NextRequest) {
     }));
 
     return Response.json({
-      code: 200,
+      code: 0,
+      message: "success",
       data: {
         total: total,
         list: jsonData,
-        currentPage: currentPage,
-        pageSize: pageSize,
+        currentPage: Number(currentPage),
+        pageSize: Number(pageSize),
       },
     });
   } catch (error) {

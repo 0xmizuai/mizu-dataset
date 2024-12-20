@@ -1,113 +1,95 @@
 "use client";
 
-import { Input } from "theme-ui";
-import { Pagination, Table, Tabs } from "antd";
+import { Pagination, Table } from "antd";
 import { useEffect, useState } from "react";
 import { Box } from "theme-ui";
 import { sendGet } from "@/utils/networkUtils";
-import { SampleDataProps, HistoryItem } from "@/types/dataset";
-import Link from "next/link";
+import { HistoryItem } from "@/types/dataset";
 import { Flex, Text } from "theme-ui";
+import { getColor } from "./SampleAndHistory";
 
-const mockCollectedList = [
-  {
-    seq: 1,
-    id: "1",
-    query: "What is the capital of France?",
-    date: "2024-01-01",
-    expend: "100",
-    status: 0,
-  },
-];
+interface CollectedTableProps {
+  id: string;
+  queryId: string;
+  datasetId: string;
+}
 
-export default function CollectedTable({ id }: SampleDataProps) {
+export default function CollectedTable({ id }: CollectedTableProps) {
   const [collectedList, setCollectedList] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(7);
   const [totalPages, setTotalPages] = useState(0);
 
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const res = await sendGet(`/api/queryList`, {
+        id,
+        currentPage,
+        pageSize,
+      });
+      console.log("~ 🚀 ~ res:", res);
+      const newCollectedList = res?.data?.list ?? [];
+      setCollectedList(newCollectedList);
+      setTotalPages(res?.data?.total);
+      setCurrentPage(res?.data?.currentPage);
+      setPageSize(res?.data?.pageSize);
+    } catch (err) {
+      console.error("Error fetching sample data:", err);
+      setCollectedList([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      try {
-        const res = await sendGet(`/api/sampleData`, { id });
-        const newCollectedList = res?.data ?? [];
-        setCollectedList(newCollectedList);
-      } catch (err) {
-        console.error("Error fetching sample data:", err);
-        setCollectedList([]);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+    loadData();
+  }, [id, currentPage, pageSize]);
 
   const HistoryColumns = [
     {
-      title: "Seq",
-      dataIndex: "seq",
-      key: "seq",
-    },
-    {
       title: "Query Content",
-      dataIndex: "query",
-      key: "query",
-      render: (text: string) => {
-        return <Link href={`/dataset/${id}/queryId`}>{text}</Link>;
-      },
+      dataIndex: "query_text",
+      key: "query_text",
     },
     {
       title: "Date",
-      dataIndex: "date",
-      key: "date",
+      dataIndex: "created_at",
+      key: "created_at",
     },
     {
       title: "Expend",
-      dataIndex: "expend",
-      key: "expend",
+      dataIndex: "points_spent",
+      key: "points_spent",
     },
-    // {
-    //   title: "Status",
-    //   dataIndex: "status",
-    //   key: "status",
-    //   render: (status: string) => {
-    //     const { backgroundColor, textColor }: any = getColor(
-    //       status as StatusEnum
-    //     );
-    //     return (
-    //       <Flex
-    //         sx={{
-    //           backgroundColor,
-    //           borderRadius: "20px",
-    //           width: "108px",
-    //           alignItems: "center",
-    //           justifyContent: "center",
-    //         }}
-    //       >
-    //         <Text sx={{ color: textColor, fontSize: 16 }}>{status}</Text>
-    //       </Flex>
-    //     );
-    //   },
-    // },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: number) => {
+        const { backgroundColor, textColor }: any = getColor(status);
+        return <Text>{status}</Text>;
+        // <Flex
+        //   sx={{
+        //     backgroundColor,
+        //     borderRadius: "20px",
+        //     width: "108px",
+        //     alignItems: "center",
+        //     justifyContent: "center",
+        //   }}
+        // >
+        //   <Text sx={{ color: textColor, fontSize: 16 }}>{status}</Text>
+        // </Flex>
+      },
+    },
   ];
 
   return (
     <Box sx={{ width: "100%", pb: 4 }}>
-      <Box sx={{ mb: 4, width: "100%" }}>
-        <Input
-          placeholder="Enter your query"
-          sx={{
-            width: "100%",
-            mb: 2,
-            height: "59px",
-            borderRadius: "14px",
-            borderColor: "rgba(0, 0, 0, 0.2)",
-            background: "#EEF2F5",
-          }}
-        />
-      </Box>
-
+      <Text sx={{ color: "#0A043C", fontSize: 24, fontWeight: "semibold" }}>
+        Data collected
+      </Text>
       <Box sx={{ mt: 3 }}>
         <Table
           rowKey="id"
@@ -117,6 +99,7 @@ export default function CollectedTable({ id }: SampleDataProps) {
           scroll={{ x: 1000 }}
           bordered
           style={{ width: "100%" }}
+          loading={loading}
         />
         <Flex
           sx={{
@@ -138,7 +121,6 @@ export default function CollectedTable({ id }: SampleDataProps) {
             pageSizeOptions={[7, 14, 21]}
             pageSize={pageSize}
             showSizeChanger
-            showQuickJumper
             onShowSizeChange={(current, size) => {
               setCurrentPage(current);
               setPageSize(size);

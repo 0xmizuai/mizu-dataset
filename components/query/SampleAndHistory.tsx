@@ -20,6 +20,21 @@ enum Tab {
   SAMPLE = "sample",
 }
 
+export const getColor = (status: number) => {
+  switch (status) {
+    case 2: // finished
+      return { backgroundColor: "#B9F3AD", textColor: "#2F7C20" };
+    case 1: // processing
+      return { backgroundColor: "#F9F3CB", textColor: "#B58D0B" };
+    case 0: // pending
+      return { backgroundColor: "#E3F1FF", textColor: "#2979F2" };
+    case 3: // error
+      return { backgroundColor: "#F3E58C", textColor: "#7C6D1A" };
+    default:
+      return { backgroundColor: "#F3E58C", textColor: "#7C6D1A" };
+  }
+};
+
 export default function SampleAndHistory({
   id,
   name,
@@ -133,28 +148,20 @@ export default function SampleAndHistory({
     })();
   }, [data_type, id, language, name, tab, cache]);
 
-  const getColor = (status: number) => {
-    switch (status) {
-      case 2: // finished
-        return { backgroundColor: "#B9F3AD", textColor: "#2F7C20" };
-      case 1: // processing
-        return { backgroundColor: "#F9F3CB", textColor: "#B58D0B" };
-      case 0: // pending
-        return { backgroundColor: "#E3F1FF", textColor: "#2979F2" };
-      case 3: // error
-        return { backgroundColor: "#F3E58C", textColor: "#7C6D1A" };
-      default:
-        return { backgroundColor: "#F3E58C", textColor: "#7C6D1A" };
-    }
-  };
-
   const HistoryColumns = [
     {
       title: "Query Content",
       dataIndex: "query_text",
       key: "query_text",
       render: (text: string, record: HistoryItem) => {
-        return <Link href={`/dataset/${id}/${record.id}`}>{text}</Link>;
+        return (
+          <Link
+            style={{ color: "#2979F2" }}
+            href={`/dataset/${id}/${record.id}`}
+          >
+            {text}
+          </Link>
+        );
       },
     },
     {
@@ -196,11 +203,6 @@ export default function SampleAndHistory({
   ];
 
   const SampleColumns = [
-    {
-      title: "Seq",
-      dataIndex: "seq",
-      key: "seq",
-    },
     {
       title: "ID",
       dataIndex: "id",
@@ -364,7 +366,6 @@ export default function SampleAndHistory({
               pageSizeOptions={[7, 14, 21]}
               pageSize={pageSize}
               showSizeChanger
-              showQuickJumper
               onShowSizeChange={(current, size) => {
                 setCurrentPage(current);
                 setPageSize(size);
