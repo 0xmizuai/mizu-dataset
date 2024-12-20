@@ -35,6 +35,9 @@ export async function GET(request: NextRequest) {
         where: {
           dataset_id: parseInt(id),
         },
+        orderBy: {
+          created_at: "desc",
+        },
         skip: (Number(currentPage) - 1) * Number(pageSize),
         take: Number(pageSize),
       }),

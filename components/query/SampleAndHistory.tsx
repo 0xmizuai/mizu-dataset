@@ -1,10 +1,9 @@
 "use client";
 
-import { Text, Input, Flex } from "theme-ui";
-import { Pagination, Popover, Table, Tabs } from "antd";
+import { Input, Modal, Pagination, Popover, Table, Tabs } from "antd";
 import { useEffect, useState } from "react";
 import { Box } from "theme-ui";
-import { sendGet } from "@/utils/networkUtils";
+import { sendGet, sendPost } from "@/utils/networkUtils";
 import { SampleDataProps, SampleDataItem, HistoryItem } from "@/types/dataset";
 import {
   downloadAndParseJSON,
@@ -12,6 +11,9 @@ import {
   StatusText,
 } from "@/utils/simpleData";
 import Link from "next/link";
+import { Button, Image, Text, Flex } from "theme-ui";
+import toast from "react-hot-toast";
+import { ApiResponse } from "@/types/api";
 
 enum Tab {
   HISTORY = "history",
@@ -31,6 +33,8 @@ export default function SampleAndHistory({
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(7);
   const [totalPages, setTotalPages] = useState(0);
+  const [visible, setVisible] = useState(false);
+  const [queryText, setQueryText] = useState("");
 
   const [cache, setCache] = useState<Record<string, any>>(() => {
     if (typeof window !== "undefined") {
@@ -40,23 +44,24 @@ export default function SampleAndHistory({
     return {};
   });
 
+  const loadHistory = async () => {
+    setLoading(true);
+    const res = await sendGet(`/api/queryList`, {
+      id,
+      currentPage,
+      pageSize,
+    });
+    const data = res?.data ?? [];
+    setHistoryList(data.list);
+    setTotalPages(data.total);
+    setCurrentPage(data.currentPage);
+    setPageSize(data.pageSize);
+    setLoading(false);
+  };
+
   useEffect(() => {
     if (tab !== Tab.HISTORY || !id || !currentPage || !pageSize) return;
-    (async () => {
-      setLoading(true);
-      const res = await sendGet(`/api/queryList`, {
-        id,
-        currentPage,
-        pageSize,
-      });
-      console.log("res🌻", res);
-      const data = res?.data ?? [];
-      setHistoryList(data.list);
-      setTotalPages(data.total);
-      setCurrentPage(data.currentPage);
-      setPageSize(data.pageSize);
-      setLoading(false);
-    })();
+    loadHistory();
   }, [tab, currentPage, pageSize]);
 
   useEffect(() => {
@@ -282,22 +287,41 @@ export default function SampleAndHistory({
       />
     );
   };
+  const handleNewQuery = async () => {
+    const res = (await sendPost(`/api/dataset/${id}/query`, {
+      datasetId: id,
+      query_text: queryText,
+      model: "gpt-4o",
+    })) as ApiResponse<any>;
+    if (res.code === 0) {
+      setVisible(false);
+      loadHistory();
+      return toast.success("New query created");
+    }
+    return toast.error("Failed to create new query");
+  };
 
   return (
     <Box sx={{ width: "100%", pb: 4 }}>
-      <Box sx={{ mb: 4, width: "100%" }}>
-        <Input
-          placeholder="Enter your query"
-          sx={{
-            width: "100%",
-            mb: 2,
-            height: "59px",
-            borderRadius: "14px",
-            borderColor: "rgba(0, 0, 0, 0.2)",
-            background: "#EEF2F5",
-          }}
+      <Button
+        sx={{
+          mb: 4,
+          borderRadius: "10px",
+          display: "flex",
+          alignItems: "center",
+        }}
+        onClick={() => setVisible(true)}
+      >
+        New Query
+        <Image
+          src="/images/icons/create.png"
+          alt="plus"
+          width={18}
+          height={18.5}
+          sx={{ ml: 2 }}
         />
-      </Box>
+      </Button>
+
       <Tabs
         type="card"
         activeKey={tab}
@@ -348,6 +372,21 @@ export default function SampleAndHistory({
           </Flex>
         </Box>
       )}
+      <Modal
+        open={visible}
+        title="New Query"
+        onCancel={() => setVisible(false)}
+        onOk={handleNewQuery}
+      >
+        <Input.TextArea
+          value={queryText}
+          onChange={(e) => setQueryText(e.target.value)}
+          placeholder="Please enter your query"
+          rows={4}
+          style={{ marginBottom: 16 }}
+          autoSize={{ minRows: 4, maxRows: 10 }}
+        />
+      </Modal>
     </Box>
   );
 }
