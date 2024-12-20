@@ -20,6 +20,9 @@ export async function GET(request: NextRequest) {
   const id = request.nextUrl.searchParams.get("id");
   const currentPage = request.nextUrl.searchParams.get("currentPage");
   const pageSize = request.nextUrl.searchParams.get("pageSize");
+  const orderBy = request.nextUrl.searchParams.get("orderBy") || "created_at";
+  const order = request.nextUrl.searchParams.get("order") || "desc";
+  
   console.log(id, currentPage, pageSize);
   if (!id || !currentPage || !pageSize)
     return Response.json(
@@ -36,7 +39,7 @@ export async function GET(request: NextRequest) {
           dataset_id: parseInt(id),
         },
         orderBy: {
-          created_at: "desc",
+          [orderBy]: order,
         },
         skip: (Number(currentPage) - 1) * Number(pageSize),
         take: Number(pageSize),

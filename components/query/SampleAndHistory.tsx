@@ -14,6 +14,7 @@ import Link from "next/link";
 import { Button, Image, Text, Flex } from "theme-ui";
 import toast from "react-hot-toast";
 import { ApiResponse } from "@/types/api";
+import { ColumnType } from "antd/es/table";
 
 enum Tab {
   HISTORY = "history",
@@ -50,6 +51,7 @@ export default function SampleAndHistory({
   const [totalPages, setTotalPages] = useState(0);
   const [visible, setVisible] = useState(false);
   const [queryText, setQueryText] = useState("");
+  const [sort, setSort] = useState<any>(null);
 
   const [cache, setCache] = useState<Record<string, any>>(() => {
     if (typeof window !== "undefined") {
@@ -59,12 +61,14 @@ export default function SampleAndHistory({
     return {};
   });
 
-  const loadHistory = async () => {
+  const loadHistory = async (orderBy = "created_at", order = "desc") => {
     setLoading(true);
     const res = await sendGet(`/api/queryList`, {
       id,
       currentPage,
       pageSize,
+      orderBy,
+      order,
     });
     const data = res?.data ?? [];
     setHistoryList(data.list);
@@ -168,11 +172,17 @@ export default function SampleAndHistory({
       title: "Date",
       dataIndex: "created_at",
       key: "created_at",
+      defaultSortOrder: "descend",
+      sorter: (a: HistoryItem, b: HistoryItem) =>
+        a.created_at.localeCompare(b.created_at),
     },
     {
       title: "Expend",
       dataIndex: "points_spent",
       key: "points_spent",
+      defaultSortOrder: "descend",
+      sorter: (a: HistoryItem, b: HistoryItem) =>
+        parseInt(a.points_spent) - parseInt(b.points_spent),
       render: (points_spent: string) => {
         return <Text>{`${points_spent} points`}</Text>;
       },
@@ -264,15 +274,21 @@ export default function SampleAndHistory({
 
   const renderHistory = () => {
     return (
-      <Table
+      <Table<HistoryItem>
         rowKey="id"
-        columns={HistoryColumns}
+        columns={HistoryColumns as ColumnType<HistoryItem>[]}
         dataSource={historyList}
         pagination={false}
         scroll={{ x: 1000 }}
         bordered
         style={{ width: "100%" }}
         loading={loading}
+        onChange={(pagination, filters, sorter) => {
+          console.log("~ 🚀 ~ sorter:", sorter);
+          const order = sorter.order === "ascend" ? "asc" : "desc";
+          const orderBy = sorter.field;
+          loadHistory(orderBy, order);
+        }}
       />
     );
   };

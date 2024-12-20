@@ -9,7 +9,7 @@ export interface SampleDataItem {
   id: string;
   text: string;
   uri: string;
-  seq: number;
+  created_at: string;
 }
 
 export interface HistoryItem {
@@ -18,5 +18,6 @@ export interface HistoryItem {
   date: string;
   expend: string;
   status: string;
-  seq: number;
+  created_at: string;
+  points_spent: string;
 }
