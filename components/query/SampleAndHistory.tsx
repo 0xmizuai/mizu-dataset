@@ -311,53 +311,49 @@ export default function SampleAndHistory({
 
   const renderHistory = () => {
     return (
-      <Box sx={{ mx: [3, 0, 0] }}>
-        <Table
-          rowKey="id"
-          columns={HistoryColumns as ColumnType<HistoryItem>[]}
-          dataSource={historyList}
-          pagination={false}
-          scroll={{ x: isMobile ? 100 : 1000 }}
-          style={{ width: "100%" }}
-          size={isMobile ? "small" : "middle"}
-          loading={loading}
-          onChange={(
-            pagination,
-            filters,
-            sorter: SorterResult<HistoryItem> | SorterResult<HistoryItem>[]
-          ) => {
-            setCurrentPage(pagination.current ?? 1);
-            setPageSize(pagination.pageSize ?? 7);
-            const order = Array.isArray(sorter)
-              ? sorter[0].order === "ascend"
-                ? "asc"
-                : "desc"
-              : (sorter as SorterResult<HistoryItem>).order === "ascend"
+      <Table
+        rowKey="id"
+        columns={HistoryColumns as ColumnType<HistoryItem>[]}
+        dataSource={historyList}
+        pagination={false}
+        scroll={{ x: isMobile ? 100 : 1000 }}
+        style={{ width: "100%" }}
+        size={isMobile ? "small" : "middle"}
+        loading={loading}
+        onChange={(
+          pagination,
+          filters,
+          sorter: SorterResult<HistoryItem> | SorterResult<HistoryItem>[]
+        ) => {
+          setCurrentPage(pagination.current ?? 1);
+          setPageSize(pagination.pageSize ?? 7);
+          const order = Array.isArray(sorter)
+            ? sorter[0].order === "ascend"
               ? "asc"
-              : "desc";
-            const orderBy = Array.isArray(sorter)
-              ? (sorter[0] as SorterResult<HistoryItem>).field
-              : (sorter as SorterResult<HistoryItem>).field;
-            loadHistory(orderBy as string, order);
-          }}
-        />
-      </Box>
+              : "desc"
+            : (sorter as SorterResult<HistoryItem>).order === "ascend"
+            ? "asc"
+            : "desc";
+          const orderBy = Array.isArray(sorter)
+            ? (sorter[0] as SorterResult<HistoryItem>).field
+            : (sorter as SorterResult<HistoryItem>).field;
+          loadHistory(orderBy as string, order);
+        }}
+      />
     );
   };
 
   const renderSample = () => {
     return (
-      <Box sx={{ mx: [3, 0, 0] }}>
-        <Table
-          rowKey="id"
-          columns={SampleColumns}
-          dataSource={sampleList}
-          pagination={false}
-          style={{ width: "100%" }}
-          loading={loading}
-          size={isMobile ? "small" : "middle"}
-        />
-      </Box>
+      <Table
+        rowKey="id"
+        columns={SampleColumns}
+        dataSource={sampleList}
+        pagination={false}
+        style={{ width: "100%" }}
+        loading={loading}
+        size={isMobile ? "small" : "middle"}
+      />
     );
   };
   const handleNewQuery = async () => {
@@ -379,10 +375,9 @@ export default function SampleAndHistory({
       sx={{
         maxWidth: "1280px",
         width: "100%",
-        pb: [0, 4, 4],
       }}
     >
-      <Box sx={{ mx: [3, 0, 0] }}>
+      <Box sx={{ mb: 3, mx: [3, 0, 0] }}>
         <Button
           sx={{
             mb: ["15px", "20px", "20px"],
@@ -408,75 +403,115 @@ export default function SampleAndHistory({
         </Button>
       </Box>
 
-      <Box sx={{ backgroundColor: "white", pb: [4, 0, 0] }}>
-        <Tabs
-          type="card"
-          activeKey={tab}
-          tabBarStyle={{
-            ...(isMobile && {
-              width: "100%",
-            }),
+      <Box
+        sx={{
+          boxShadow: isMobile ? "0px 0px 10px 0px rgba(0, 0, 0, 0.1)" : "none",
+          borderTopLeftRadius: "20px",
+          borderTopRightRadius: "20px",
+          borderBottomLeftRadius: isMobile ? "0px" : "20px",
+          borderBottomRightRadius: isMobile ? "0px" : "20px",
+          backgroundColor: "white",
+          pb: "20px",
+          ...(!isMobile && {
+            border: "1px solid rgba(0, 0, 0, 0.2)",
+            pb: 4,
+            pt: 0,
+          }),
+        }}
+      >
+        <Flex
+          sx={{
+            justifyContent: "space-between",
+            mb: [3, 4, 4],
+            borderTopLeftRadius: "20px",
+            borderTopRightRadius: "20px",
           }}
-          items={[
-            {
-              label: "Query history",
-              key: Tab.HISTORY,
-              children: renderHistory(),
-            },
-            {
-              label: "Sample data",
-              key: Tab.SAMPLE,
-              children: renderSample(),
-            },
-          ]}
-          onChange={(key) => setTab(key as Tab)}
-        />
+        >
+          <Button
+            sx={{
+              width: "50%",
+              backgroundColor: tab === Tab.HISTORY ? "white" : "#EFEFEF",
+              color: tab === Tab.HISTORY ? "#0A043C" : "rgba(10, 4, 60, 0.5)",
+              borderTopLeftRadius: "20px",
+              borderTopRightRadius: tab === Tab.HISTORY ? "20px" : "0px",
+              borderBottomLeftRadius: "0px",
+              borderBottomRightRadius: tab === Tab.HISTORY ? "0px" : "20px",
+              border: "none",
+              height: "45px",
+            }}
+            onClick={() => setTab(Tab.HISTORY)}
+          >
+            <Text>Query history</Text>
+          </Button>
+          <Button
+            sx={{
+              width: "50%",
+              backgroundColor: tab === Tab.SAMPLE ? "white" : "#F7FAFC",
+              color: tab === Tab.SAMPLE ? "#0A043C" : "rgba(10, 4, 60, 0.5)",
+              borderTopLeftRadius: tab === Tab.SAMPLE ? "20px" : "0px",
+              borderTopRightRadius: "20px",
+              borderBottomLeftRadius: tab === Tab.SAMPLE ? "0px" : "20px",
+              borderBottomRightRadius: tab === Tab.SAMPLE ? "20px" : "0px",
+              border: "none",
+              height: "45px",
+            }}
+            onClick={() => setTab(Tab.SAMPLE)}
+          >
+            <Text>Sample data</Text>
+          </Button>
+        </Flex>
         {tab === Tab.HISTORY && (
-          <Box sx={{ mt: 3 }}>
-            <Flex
-              sx={{
-                justifyContent: isMobile ? "center" : "flex-end",
-                mt: 4,
-                position: "sticky",
-                bottom: 0,
-                flexDirection: isMobile ? "column" : "row",
-                alignItems: "center",
-              }}
-            >
-              <Pagination
-                showTotal={(total) =>
-                  !isMobile ? (
-                    <Text sx={{ color: "#333333", fontSize: 16 }}>
-                      {`Total: ${total}`}
-                    </Text>
-                  ) : null
-                }
-                current={currentPage}
-                total={total}
-                onChange={(page) => {
-                  setCurrentPage(page);
+          <Box sx={{ mx: [2, 4, 4] }}>
+            {renderHistory()}
+            <Box sx={{ mt: 3 }}>
+              <Flex
+                sx={{
+                  justifyContent: isMobile ? "center" : "flex-end",
+                  mt: 4,
+                  position: "sticky",
+                  bottom: 0,
+                  flexDirection: isMobile ? "column" : "row",
+                  alignItems: "center",
                 }}
-                pageSizeOptions={[7, 14, 21]}
-                pageSize={pageSize}
-                showSizeChanger
-                onShowSizeChange={(current, size) => {
-                  setCurrentPage(current);
-                  setPageSize(size);
-                }}
-              />
-              {isMobile && (
-                <Text
-                  sx={{
-                    color: "#333333",
-                    mt: 2,
-                    fontSize: ["10px", "16px", "16px"],
+              >
+                <Pagination
+                  showTotal={(total) =>
+                    !isMobile ? (
+                      <Text sx={{ color: "#333333", fontSize: 16 }}>
+                        {`Total: ${total}`}
+                      </Text>
+                    ) : null
+                  }
+                  current={currentPage}
+                  total={total}
+                  onChange={(page) => {
+                    setCurrentPage(page);
                   }}
-                >
-                  {`Total: ${total}`}
-                </Text>
-              )}
-            </Flex>
+                  pageSizeOptions={[7, 14, 21]}
+                  pageSize={pageSize}
+                  showSizeChanger
+                  onShowSizeChange={(current, size) => {
+                    setCurrentPage(current);
+                    setPageSize(size);
+                  }}
+                />
+                {isMobile && (
+                  <Text
+                    sx={{
+                      color: "#333333",
+                      mt: 2,
+                      fontSize: ["10px", "16px", "16px"],
+                    }}
+                  >
+                    {`Total: ${total}`}
+                  </Text>
+                )}
+              </Flex>
+            </Box>
           </Box>
+        )}
+        {tab === Tab.SAMPLE && (
+          <Box sx={{ mx: [2, 4, 4] }}>{renderSample()}</Box>
         )}
       </Box>
       <Modal
