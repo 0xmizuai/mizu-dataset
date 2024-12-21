@@ -153,7 +153,7 @@ export default function LoginPage() {
           alignItems: "center",
           width: "100%",
           height: "108px",
-          pl: "18%",
+          pl: isMobile ? "2" : "18%",
         }}
       >
         <Image
@@ -271,6 +271,8 @@ export default function LoginPage() {
                     alignItems: "center",
                     justifyContent: "center",
                     cursor: !code || !account ? "not-allowed" : "pointer",
+                    height: "42px",
+                    lineHeight: "42px",
                   }}
                   disabled={!code || !account}
                   onClick={handleLogin}
