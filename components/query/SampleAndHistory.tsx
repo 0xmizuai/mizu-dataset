@@ -382,6 +382,10 @@ export default function SampleAndHistory({
           borderRadius: "10px",
           display: "flex",
           alignItems: "center",
+          justifyContent: "center",
+          ...(isMobile && {
+            width: "100%",
+          }),
         }}
         onClick={() => setVisible(true)}
       >
@@ -398,6 +402,11 @@ export default function SampleAndHistory({
       <Tabs
         type="card"
         activeKey={tab}
+        tabBarStyle={{
+          ...(isMobile && {
+            width: "100%",
+          }),
+        }}
         items={[
           {
             label: "Query history",
@@ -446,9 +455,55 @@ export default function SampleAndHistory({
       )}
       <Modal
         open={visible}
-        title="New Query"
+        closable={false}
+        title={
+          <Box sx={{ textAlign: "center", fontSize: "16px" }}>
+            <Text sx={{ alignSelf: "center", fontSize: "16px" }}>
+              New Query
+            </Text>
+          </Box>
+        }
         onCancel={() => setVisible(false)}
         onOk={handleNewQuery}
+        footer={[
+          <Flex sx={{ justifyContent: "center", gap: 2 }}>
+            <Button
+              sx={{
+                borderRadius: "10px",
+                backgroundColor: "#EFEFEF",
+                color: "text",
+                width: "160px",
+              }}
+              key="cancel"
+              onClick={() => setVisible(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              sx={{
+                borderRadius: "10px",
+                backgroundColor: "#2979F2",
+                color: "white",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "160px",
+              }}
+              key="submit"
+              onClick={handleNewQuery}
+            >
+              Submit
+              <Image
+                src="/images/icons/create.png"
+                alt="plus"
+                width={18}
+                height={18.5}
+                sx={{ ml: 2 }}
+              />
+            </Button>
+          </Flex>,
+        ]}
       >
         <Input.TextArea
           value={queryText}

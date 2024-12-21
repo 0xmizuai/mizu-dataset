@@ -97,7 +97,7 @@ export default function DatasetCard({
       <Text
         sx={{
           color: "#333333",
-          fontSize: "20px",
+          fontSize: showBorder ? "20px" : ["12px", "20px", "20px"],
           fontWeight: "bold",
           mb: ["15px", "20px", "20px"],
         }}
