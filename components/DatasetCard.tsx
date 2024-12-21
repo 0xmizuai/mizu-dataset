@@ -27,7 +27,7 @@ export default function DatasetCard({
       sx={{
         width: width,
         p: showBorder ? [2, 3, 3] : 0,
-        bg: "white",
+        bg: isMobile ? "#F7FAFC" : "white",
         border: showBorder ? "1px solid #E5E7EB" : "none",
         borderRadius: "20px",
         boxShadow: showBorder ? "0px 4px 10px 0px rgba(0, 0, 0, 0.05)" : "none",

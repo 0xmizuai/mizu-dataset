@@ -29,16 +29,16 @@ const DatasetPage = () => {
     <Flex
       sx={{
         flexDirection: "column",
-        backgroundColor: "white",
+        backgroundColor: isMobile ? "#F7FAFC" : "white",
+        minHeight: "100vh",
       }}
     >
       <Header isMobile={isMobile} />
       <Flex
         sx={{
           flexDirection: "column",
-          backgroundColor: "white",
+          backgroundColor: isMobile ? "#F7FAFC" : "white",
           alignItems: "center",
-          minHeight: "100vh",
           mx: [3, 5, 5],
         }}
       >
@@ -57,24 +57,25 @@ const DatasetPage = () => {
             showBorder={false}
             totalSize={isMobile ? 24 : 32}
             width={isMobile ? "100%" : "40%"}
+            isMobile={isMobile}
           />
         </Flex>
-        <Flex
-          sx={{
-            width: "100%",
-            maxWidth: "1280px",
-          }}
-        >
-          {id && (
-            <SampleAndHistory
-              id={id as string}
-              name={dataset?.name}
-              data_type={dataset?.data_type}
-              language={dataset?.language}
-              isMobile={isMobile}
-            />
-          )}
-        </Flex>
+      </Flex>
+      <Flex
+        sx={{
+          width: "100%",
+          justifyContent: "center",
+        }}
+      >
+        {id && (
+          <SampleAndHistory
+            id={id as string}
+            name={dataset?.name}
+            data_type={dataset?.data_type}
+            language={dataset?.language}
+            isMobile={isMobile}
+          />
+        )}
       </Flex>
     </Flex>
   );

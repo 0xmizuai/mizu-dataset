@@ -16,7 +16,6 @@ import toast from "react-hot-toast";
 import { ApiResponse } from "@/types/api";
 import { ColumnType } from "antd/es/table";
 import { SorterResult } from "antd/es/table/interface";
-import { wrap } from "module";
 
 enum Tab {
   HISTORY = "history",
@@ -51,10 +50,9 @@ export default function SampleAndHistory({
   const [tab, setTab] = useState<Tab>(Tab["HISTORY"]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(7);
-  const [totalPages, setTotalPages] = useState(0);
   const [visible, setVisible] = useState(false);
   const [queryText, setQueryText] = useState("");
-
+  const [total, setTotal] = useState(0);
   const [cache, setCache] = useState<Record<string, any>>(() => {
     if (typeof window !== "undefined") {
       const savedCache = localStorage.getItem("sampleDataCache");
@@ -74,10 +72,10 @@ export default function SampleAndHistory({
     });
     const data = res?.data ?? [];
     setHistoryList(data.list);
-    setTotalPages(data.total);
     setCurrentPage(data.currentPage);
     setPageSize(data.pageSize);
     setLoading(false);
+    setTotal(data.total);
   };
 
   useEffect(() => {
@@ -313,51 +311,53 @@ export default function SampleAndHistory({
 
   const renderHistory = () => {
     return (
-      <Table
-        rowKey="id"
-        columns={HistoryColumns as ColumnType<HistoryItem>[]}
-        dataSource={historyList}
-        pagination={false}
-        scroll={{ x: isMobile ? 100 : 1000 }}
-        bordered
-        style={{ width: "100%" }}
-        size={isMobile ? "small" : "middle"}
-        loading={loading}
-        onChange={(
-          pagination,
-          filters,
-          sorter: SorterResult<HistoryItem> | SorterResult<HistoryItem>[]
-        ) => {
-          setCurrentPage(pagination.current ?? 1);
-          setPageSize(pagination.pageSize ?? 7);
-          const order = Array.isArray(sorter)
-            ? sorter[0].order === "ascend"
+      <Box sx={{ mx: [3, 0, 0] }}>
+        <Table
+          rowKey="id"
+          columns={HistoryColumns as ColumnType<HistoryItem>[]}
+          dataSource={historyList}
+          pagination={false}
+          scroll={{ x: isMobile ? 100 : 1000 }}
+          style={{ width: "100%" }}
+          size={isMobile ? "small" : "middle"}
+          loading={loading}
+          onChange={(
+            pagination,
+            filters,
+            sorter: SorterResult<HistoryItem> | SorterResult<HistoryItem>[]
+          ) => {
+            setCurrentPage(pagination.current ?? 1);
+            setPageSize(pagination.pageSize ?? 7);
+            const order = Array.isArray(sorter)
+              ? sorter[0].order === "ascend"
+                ? "asc"
+                : "desc"
+              : (sorter as SorterResult<HistoryItem>).order === "ascend"
               ? "asc"
-              : "desc"
-            : (sorter as SorterResult<HistoryItem>).order === "ascend"
-            ? "asc"
-            : "desc";
-          const orderBy = Array.isArray(sorter)
-            ? (sorter[0] as SorterResult<HistoryItem>).field
-            : (sorter as SorterResult<HistoryItem>).field;
-          loadHistory(orderBy as string, order);
-        }}
-      />
+              : "desc";
+            const orderBy = Array.isArray(sorter)
+              ? (sorter[0] as SorterResult<HistoryItem>).field
+              : (sorter as SorterResult<HistoryItem>).field;
+            loadHistory(orderBy as string, order);
+          }}
+        />
+      </Box>
     );
   };
 
   const renderSample = () => {
     return (
-      <Table
-        rowKey="id"
-        columns={SampleColumns}
-        dataSource={sampleList}
-        pagination={false}
-        bordered
-        style={{ width: "100%" }}
-        loading={loading}
-        size={isMobile ? "small" : "middle"}
-      />
+      <Box sx={{ mx: [3, 0, 0] }}>
+        <Table
+          rowKey="id"
+          columns={SampleColumns}
+          dataSource={sampleList}
+          pagination={false}
+          style={{ width: "100%" }}
+          loading={loading}
+          size={isMobile ? "small" : "middle"}
+        />
+      </Box>
     );
   };
   const handleNewQuery = async () => {
@@ -375,84 +375,110 @@ export default function SampleAndHistory({
   };
 
   return (
-    <Box sx={{ width: "100%", pb: 4 }}>
-      <Button
-        sx={{
-          mb: ["15px", "20px", "20px"],
-          borderRadius: "10px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          ...(isMobile && {
-            width: "100%",
-          }),
-        }}
-        onClick={() => setVisible(true)}
-      >
-        New Query
-        <Image
-          src="/images/icons/create.png"
-          alt="plus"
-          width={18}
-          height={18.5}
-          sx={{ ml: 2 }}
-        />
-      </Button>
+    <Box
+      sx={{
+        maxWidth: "1280px",
+        width: "100%",
+        pb: [0, 4, 4],
+      }}
+    >
+      <Box sx={{ mx: [3, 0, 0] }}>
+        <Button
+          sx={{
+            mb: ["15px", "20px", "20px"],
+            borderRadius: "10px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#2979F2",
+            ...(isMobile && {
+              width: "100%",
+            }),
+          }}
+          onClick={() => setVisible(true)}
+        >
+          New Query
+          <Image
+            src="/images/icons/create.png"
+            alt="plus"
+            width={18}
+            height={18.5}
+            sx={{ ml: 2 }}
+          />
+        </Button>
+      </Box>
 
-      <Tabs
-        type="card"
-        activeKey={tab}
-        tabBarStyle={{
-          ...(isMobile && {
-            width: "100%",
-          }),
-        }}
-        items={[
-          {
-            label: "Query history",
-            key: Tab.HISTORY,
-            children: renderHistory(),
-          },
-          {
-            label: "Sample data",
-            key: Tab.SAMPLE,
-            children: renderSample(),
-          },
-        ]}
-        onChange={(key) => setTab(key as Tab)}
-      />
-      {tab === Tab.HISTORY && (
-        <Box sx={{ mt: 3 }}>
-          <Flex
-            sx={{
-              justifyContent: "flex-end",
-              mt: 4,
-              position: "sticky",
-              bottom: 0,
-            }}
-          >
-            <Pagination
-              showTotal={(total) => (
-                <Text sx={{ color: "#333333", fontSize: 16 }}>
+      <Box sx={{ backgroundColor: "white", pb: [4, 0, 0] }}>
+        <Tabs
+          type="card"
+          activeKey={tab}
+          tabBarStyle={{
+            ...(isMobile && {
+              width: "100%",
+            }),
+          }}
+          items={[
+            {
+              label: "Query history",
+              key: Tab.HISTORY,
+              children: renderHistory(),
+            },
+            {
+              label: "Sample data",
+              key: Tab.SAMPLE,
+              children: renderSample(),
+            },
+          ]}
+          onChange={(key) => setTab(key as Tab)}
+        />
+        {tab === Tab.HISTORY && (
+          <Box sx={{ mt: 3 }}>
+            <Flex
+              sx={{
+                justifyContent: isMobile ? "center" : "flex-end",
+                mt: 4,
+                position: "sticky",
+                bottom: 0,
+                flexDirection: isMobile ? "column" : "row",
+                alignItems: "center",
+              }}
+            >
+              <Pagination
+                showTotal={(total) =>
+                  !isMobile ? (
+                    <Text sx={{ color: "#333333", fontSize: 16 }}>
+                      {`Total: ${total}`}
+                    </Text>
+                  ) : null
+                }
+                current={currentPage}
+                total={total}
+                onChange={(page) => {
+                  setCurrentPage(page);
+                }}
+                pageSizeOptions={[7, 14, 21]}
+                pageSize={pageSize}
+                showSizeChanger
+                onShowSizeChange={(current, size) => {
+                  setCurrentPage(current);
+                  setPageSize(size);
+                }}
+              />
+              {isMobile && (
+                <Text
+                  sx={{
+                    color: "#333333",
+                    mt: 2,
+                    fontSize: ["10px", "16px", "16px"],
+                  }}
+                >
                   {`Total: ${total}`}
                 </Text>
               )}
-              current={currentPage}
-              total={totalPages}
-              onChange={(page) => {
-                setCurrentPage(page);
-              }}
-              pageSizeOptions={[7, 14, 21]}
-              pageSize={pageSize}
-              showSizeChanger
-              onShowSizeChange={(current, size) => {
-                setCurrentPage(current);
-                setPageSize(size);
-              }}
-            />
-          </Flex>
-        </Box>
-      )}
+            </Flex>
+          </Box>
+        )}
+      </Box>
       <Modal
         open={visible}
         closable={false}
