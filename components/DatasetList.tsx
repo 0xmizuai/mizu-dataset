@@ -123,7 +123,12 @@ function DatasetList({ isMobile }: { isMobile: boolean }, ref: any) {
               <Flex sx={{ justifyContent: "flex-end", mt: 4 }}>
                 <Pagination
                   showTotal={(total) => (
-                    <Text sx={{ color: "#333333", fontSize: 16 }}>
+                    <Text
+                      sx={{
+                        color: "#333333",
+                        fontSize: ["10px", "16px", "16px"],
+                      }}
+                    >
                       {`Total: ${total}`}
                     </Text>
                   )}
@@ -133,7 +138,6 @@ function DatasetList({ isMobile }: { isMobile: boolean }, ref: any) {
                   pageSizeOptions={[8, 16, 32]}
                   pageSize={pageSize}
                   showSizeChanger
-                  showQuickJumper
                   onShowSizeChange={(current, size) => {
                     setCurrentPage(current);
                     setPageSize(size);
@@ -149,7 +153,11 @@ function DatasetList({ isMobile }: { isMobile: boolean }, ref: any) {
                 height: 200,
               }}
             >
-              <Text sx={{ color: "#333333", fontSize: 16 }}>No data</Text>
+              <Text
+                sx={{ color: "#333333", fontSize: ["10px", "16px", "16px"] }}
+              >
+                No data
+              </Text>
             </Flex>
           )}
         </>
