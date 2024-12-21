@@ -9,7 +9,7 @@ export default function Breadcrumb({ isMobile }: { isMobile: boolean }) {
   const pathSegments = pathname.split("/").filter(Boolean);
 
   return (
-    <Flex sx={{ gap: 2, mb: ["15px", "20px", "20px"] }}>
+    <Flex sx={{ gap: 2, mb: [0, "20px", "20px"] }}>
       {pathSegments.map((segment, index) => {
         let segmentLabel =
           segment === "dataset" ? "Home" : decodeURIComponent(segment);

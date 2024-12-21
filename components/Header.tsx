@@ -88,7 +88,6 @@ function Header({
         width: "100%",
         justifyContent: "center",
         alignItems: "center",
-        borderBottom: "1px solid #eaeaea",
         position: "sticky",
         top: 0,
         zIndex: 1000,

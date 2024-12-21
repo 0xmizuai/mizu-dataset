@@ -7,14 +7,16 @@ import { sendGet } from "@/utils/networkUtils";
 import { HistoryItem } from "@/types/dataset";
 import { Flex, Text } from "theme-ui";
 import { getColor } from "./SampleAndHistory";
+import { max } from "lodash";
 
 interface CollectedTableProps {
   id: string;
   queryId: string;
   datasetId: string;
+  isMobile: boolean;
 }
 
-export default function CollectedTable({ id }: CollectedTableProps) {
+export default function CollectedTable({ id, isMobile }: CollectedTableProps) {
   const [collectedList, setCollectedList] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -86,33 +88,60 @@ export default function CollectedTable({ id }: CollectedTableProps) {
   ];
 
   return (
-    <Box sx={{ width: "100%", pb: 4 }}>
-      <Text sx={{ color: "#0A043C", fontSize: 24, fontWeight: "semibold" }}>
+    <Box
+      sx={{
+        width: "100%",
+        maxWidth: "1280px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        pb: 4,
+        ...(isMobile && {
+          borderRadius: "20px",
+          backgroundColor: "white",
+          p: 3,
+        }),
+      }}
+    >
+      <Text
+        sx={{
+          color: "#0A043C",
+          fontSize: [16, 24, 24],
+          fontWeight: "semibold",
+          alignSelf: "flex-start",
+        }}
+      >
         Data collected
       </Text>
-      <Box sx={{ mt: 3 }}>
+      <Box sx={{ mt: 3, width: "100%" }}>
         <Table
           rowKey="id"
           columns={HistoryColumns}
           dataSource={collectedList}
           pagination={false}
-          scroll={{ x: 1000 }}
-          bordered
+          scroll={{ x: isMobile ? 300 : 1000 }}
           style={{ width: "100%" }}
           loading={loading}
+          size={isMobile ? "small" : "middle"}
+          className="antd-collected-table"
         />
         <Flex
           sx={{
-            justifyContent: "flex-end",
+            justifyContent: "center",
+            flexDirection: isMobile ? "column" : "row",
+            alignItems: "center",
             mt: 4,
           }}
         >
           <Pagination
-            showTotal={(total) => (
-              <Text sx={{ color: "#333333", fontSize: 16 }}>
-                {`Total: ${total}`}
-              </Text>
-            )}
+            showTotal={(total) =>
+              !isMobile ? (
+                <Text sx={{ color: "#333333", fontSize: 16 }}>
+                  {`Total: ${total}`}
+                </Text>
+              ) : null
+            }
             current={currentPage}
             total={totalPages}
             onChange={(page) => setCurrentPage(page)}
@@ -124,6 +153,11 @@ export default function CollectedTable({ id }: CollectedTableProps) {
               setPageSize(size);
             }}
           />
+          {isMobile && (
+            <Text sx={{ color: "#333333", mt: 1, fontSize: [10, 16, 16] }}>
+              {`Total: ${totalPages}`}
+            </Text>
+          )}
         </Flex>
       </Box>
     </Box>

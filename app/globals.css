@@ -43,3 +43,15 @@
   > .ant-tabs-nav::before {
   border-bottom: 1px solid rgba(0, 0, 0, 0.2) !important;
 }
+.antd-collected-table {
+  :where(.css-dev-only-do-not-override-1kf000u).ant-table-wrapper
+    .ant-table-thead
+    > tr
+    > th,
+  :where(.css-dev-only-do-not-override-1kf000u).ant-table-wrapper
+    .ant-table-thead
+    > tr
+    > td {
+    background-color: #e3f1ff !important;
+  }
+}

@@ -4,7 +4,7 @@ import CustomCard from "@/components/CustomCard";
 import Header from "@/components/Header";
 import CollectedTable from "@/components/query/ColletedTable";
 import { sendGet } from "@/utils/networkUtils";
-import { Color } from "antd/es/color-picker";
+import { useResponsiveValue } from "@theme-ui/match-media";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Box, Flex, Grid, Image, Text } from "theme-ui";
@@ -12,6 +12,9 @@ import { Box, Flex, Grid, Image, Text } from "theme-ui";
 const QueryDetailPage = () => {
   const { id, queryId } = useParams();
   const [query, setQuery] = useState<any>(null);
+  const isMobile = useResponsiveValue([true, false, false], {
+    defaultIndex: 2,
+  });
 
   useEffect(() => {
     if (!id) return;
@@ -28,17 +31,17 @@ const QueryDetailPage = () => {
     <Flex
       sx={{
         flexDirection: "column",
-        backgroundColor: "white",
+        backgroundColor: isMobile ? "#F7FAFC" : "white",
+        overflowX: "hidden",
+        minHeight: "100vh",
       }}
     >
-      <Header />
+      <Header isMobile={isMobile} />
       <Flex
         sx={{
           flexDirection: "column",
-          backgroundColor: "white",
           alignItems: "center",
-          minHeight: "100vh",
-          mx: 5,
+          mx: ["15px", "20px", "20px"],
         }}
       >
         <Flex
@@ -47,17 +50,16 @@ const QueryDetailPage = () => {
             width: "100%",
             flexDirection: "column",
             alignItems: "flex-start",
-            mb: 3,
           }}
         >
-          <Breadcrumb />
+          <Breadcrumb isMobile={isMobile} />
         </Flex>
         <Flex
           sx={{
             justifyContent: "flex-start",
             width: "100%",
             maxWidth: "1280px",
-            mb: 2,
+            mb: ["15px", "20px", "20px"],
             flexDirection: "column",
           }}
         >
@@ -66,22 +68,38 @@ const QueryDetailPage = () => {
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-start",
-              mb: 2,
+              mb: ["15px", "20px", "20px"],
             }}
           >
-            <Text sx={{ fontSize: 14, color: "rgba(0, 0, 0, 0.5)" }}>
+            <Text
+              sx={{
+                fontSize: "14px",
+                color: "rgba(0, 0, 0, 0.5)",
+              }}
+            >
               Query:
             </Text>
-            <Text sx={{ fontSize: 20, fontWeight: "bold", color: "#333333" }}>
+            <Text
+              sx={{
+                fontSize: ["18px", "20px", "20px"],
+                fontWeight: "bold",
+                color: "#333333",
+              }}
+            >
               {query?.query_text}
             </Text>
           </Box>
-          <Box
+          <Grid
             sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              mb: 2,
+              display: "grid",
+              gridTemplateColumns: [
+                "repeat(2, 1fr)",
+                "repeat(4, 1fr)",
+                "repeat(4, 1fr)",
+              ],
+              gap: 2,
+              width: "100%",
+              mb: ["15px", "20px", "20px"],
             }}
           >
             <Flex
@@ -141,13 +159,13 @@ const QueryDetailPage = () => {
                 />
               </Flex>
             </Flex>
-          </Box>
+          </Grid>
           <Flex
             sx={{
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-start",
-              mb: 4,
+              mb: ["15px", "20px", "20px"],
             }}
           >
             <Text sx={{ fontSize: 14, color: "rgba(0, 0, 0, 0.5)" }}>
@@ -157,11 +175,17 @@ const QueryDetailPage = () => {
               <Image
                 src="/images/icons/calender.png"
                 alt="calendar"
-                width={20}
-                height={20}
+                width={isMobile ? 16 : 20}
+                height={"auto"}
                 sx={{ mr: 2 }}
               />
-              <Text sx={{ fontSize: 20, fontWeight: "bold", color: "#333333" }}>
+              <Text
+                sx={{
+                  fontSize: ["14px", "20px", "20px"],
+                  fontWeight: "bold",
+                  color: "#333333",
+                }}
+              >
                 {query?.created_at}
               </Text>
             </Flex>
@@ -175,46 +199,87 @@ const QueryDetailPage = () => {
             justifyContent: "space-between",
             gridTemplateColumns: "repeat(3, 1fr)",
             gap: 2,
-            mb: 5,
+            mb: ["15px", "20px", "20px"],
           }}
         >
-          <CustomCard height="200px">
-            <Text sx={{ fontSize: 64, fontWeight: "bold", color: "#2979F2" }}>
+          <CustomCard isMobile={isMobile} height={isMobile ? "65px" : "200px"}>
+            <Text
+              sx={{
+                fontSize: ["20px", "64px", "64px"],
+                fontWeight: "bold",
+                color: "#2979F2",
+              }}
+            >
               125 K
             </Text>
-            <Text sx={{ fontSize: 20, fontWeight: "medium", color: "text" }}>
+            <Text
+              sx={{
+                fontSize: ["10px", "20px", "20px"],
+                fontWeight: "medium",
+                color: "text",
+                textAlign: "center",
+              }}
+            >
               Total data processed
             </Text>
           </CustomCard>
-          <CustomCard height="200px">
-            <Text sx={{ fontSize: 64, fontWeight: "bold", color: "#2979F2" }}>
+          <CustomCard isMobile={isMobile} height={isMobile ? "65px" : "200px"}>
+            <Text
+              sx={{
+                fontSize: ["20px", "64px", "64px"],
+                fontWeight: "bold",
+                color: "#2979F2",
+              }}
+            >
               35 K
             </Text>
-            <Text sx={{ fontSize: 20, fontWeight: "medium", color: "text" }}>
+            <Text
+              sx={{
+                fontSize: ["10px", "20px", "20px"],
+                fontWeight: "medium",
+                color: "text",
+                textAlign: "center",
+              }}
+            >
               Total data processed
             </Text>
           </CustomCard>
-          <CustomCard height="200px">
-            <Text sx={{ fontSize: 64, fontWeight: "bold", color: "#2979F2" }}>
+          <CustomCard isMobile={isMobile} height={isMobile ? "65px" : "200px"}>
+            <Text
+              sx={{
+                fontSize: ["20px", "64px", "64px"],
+                fontWeight: "bold",
+                color: "#2979F2",
+              }}
+            >
               25 K
             </Text>
-            <Text sx={{ fontSize: 20, fontWeight: "medium", color: "text" }}>
+            <Text
+              sx={{
+                fontSize: ["10px", "20px", "20px"],
+                fontWeight: "medium",
+                color: "text",
+                textAlign: "center",
+              }}
+            >
               Documents
             </Text>
           </CustomCard>
         </Grid>
-        <Flex
-          sx={{
-            width: "100%",
-            maxWidth: "1280px",
-          }}
-        >
-          <CollectedTable
-            id={id as string}
-            queryId={queryId as string}
-            datasetId={id as string}
-          />
-        </Flex>
+      </Flex>
+      <Flex
+        sx={{
+          width: "100%",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <CollectedTable
+          id={id as string}
+          queryId={queryId as string}
+          datasetId={id as string}
+          isMobile={isMobile}
+        />
       </Flex>
     </Flex>
   );
