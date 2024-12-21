@@ -3,7 +3,7 @@ import DatasetComList from "@/components/DatasetList";
 import Header from "@/components/Header";
 import { useResponsiveValue } from "@theme-ui/match-media";
 import { useRef, useState } from "react";
-import { Box, Flex, Text, Heading, Image } from "theme-ui";
+import { Box, Flex, Text, Heading, Image, Input } from "theme-ui";
 
 function DatasetList() {
   const datasetListRef = useRef<any>(null);
@@ -13,7 +13,6 @@ function DatasetList() {
   const [searchValue, setSearchValue] = useState("");
 
   const handleSearch = (value: string) => {
-    console.log("value", value);
     setSearchValue(value);
     datasetListRef.current?.loadData(value);
   };
@@ -23,53 +22,93 @@ function DatasetList() {
       sx={{
         flexDirection: "column",
         justifyContent: "center",
-        width: "100%",
         mb: 5,
+        overflow: "hidden",
       }}
     >
       <Header
         showSearch={true}
         handleSearch={handleSearch}
         searchValue={searchValue}
+        isMobile={isMobile}
       />
+      {isMobile && (
+        <Flex sx={{ width: "100%", mt: 3, mb: ["15px", "32px", "32px"] }}>
+          <Input
+            value={searchValue}
+            onChange={(e: any) => handleSearch?.(e.target.value)}
+            placeholder="Search Dataset..."
+            sx={{
+              mx: 3,
+              borderRadius: "20px",
+              border: "1px solid #FFFFFF",
+              backgroundColor: "#FFFFFF",
+              boxShadow: "0px 4px 10px 0px rgba(0, 0, 0, 0.05)",
+            }}
+            prefix={
+              <Image
+                src="/images/icons/search.png"
+                width="24px"
+                height="24px"
+                alt="search"
+                sx={{ display: "inline-block" }}
+              />
+            }
+          />
+        </Flex>
+      )}
       <Flex
-        sx={{ flexDirection: "column", width: "100%", alignItems: "center" }}
+        sx={{
+          flexDirection: "column",
+          width: "100%",
+          alignItems: "center",
+        }}
       >
         <Flex
           sx={{
-            width: "100%",
-            height: ["200px", "260px"],
+            mx: [3, 0, 0],
+            borderRadius: ["20px", "0", "0"],
+            height: ["115px", "260px", "260px"],
             position: "relative",
             color: "white",
             alignItems: "center",
             justifyContent: "center",
-            background: !isMobile
-              ? "linear-gradient(135deg, #3C81BF 0%, #1C44B3 31%, #1A42B4 63%, #1B43B4 100%)"
-              : "none",
+            background:
+              "linear-gradient(135deg, #3C81BF 0%, #1C44B3 31%, #1A42B4 63%, #1B43B4 100%)",
+            ...(!isMobile && {
+              width: "100%",
+            }),
           }}
         >
           <Flex
             sx={{
-              width: "1280px",
+              width: ["100%", "1280px", "1280px"],
               justifyContent: "space-between",
               alignItems: "flex-start",
-              mx: 5,
+              mx: [3, 5, 5],
             }}
           >
-            <Box sx={{ width: "50%", mt: 4, pt: 4 }}>
-              <Heading
-                as="h1"
+            <Box
+              sx={{
+                width: ["75%", "50%", "50%"],
+                mt: [0, 4, 4],
+                pt: [0, 4, 4],
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <Text
                 sx={{
-                  fontSize: 36,
+                  fontSize: ["16px", "36px", "36px"],
                   fontWeight: "bold",
-                  mb: 3,
+                  mb: [0, 3, 3],
                 }}
               >
                 Empower your AI Applications with MIZU Data
-              </Heading>
+              </Text>
               <Text
                 sx={{
-                  fontSize: 15,
+                  fontSize: ["8px", "15px", "15px"],
                 }}
               >
                 Open, Ultra-low Cost, Hyperscale
@@ -79,15 +118,21 @@ function DatasetList() {
               src="/images/dataset/logo.png"
               alt="logo"
               sx={{
-                maxWidth: "497px",
+                maxWidth: ["216px", "497px", "497px"],
                 height: "auto",
-                mt: 4,
-                mr: -8,
+                mt: ["10px", "18px", "18px"],
+                mr: "-43px",
+                borderBottomRightRadius: ["20px", "20px", "0"],
+                ...(isMobile && {
+                  position: "absolute",
+                  right: 0,
+                  bottom: 0,
+                }),
               }}
             />
           </Flex>
         </Flex>
-        <DatasetComList ref={datasetListRef} />
+        <DatasetComList isMobile={isMobile} ref={datasetListRef} />
       </Flex>
     </Flex>
   );

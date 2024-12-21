@@ -1,5 +1,5 @@
 "use client";
-import { Flex, Text, Heading, Grid } from "theme-ui";
+import { Flex, Text, Grid } from "theme-ui";
 import {
   forwardRef,
   useCallback,
@@ -12,12 +12,10 @@ import { sendGet } from "@/utils/networkUtils";
 import DatasetCard from "./DatasetCard";
 import { Spinner } from "theme-ui";
 import { LANGUAGES } from "@/utils/languages";
-import { max } from "lodash";
 
 type LanguageEnum = keyof typeof LANGUAGES;
 
-const pageSize = 8;
-function DatasetList({}, ref: any) {
+function DatasetList({ isMobile }: { isMobile: boolean }, ref: any) {
   const [datasetList, setDatasetList] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -75,22 +73,21 @@ function DatasetList({}, ref: any) {
       sx={{
         width: "100%",
         flexDirection: "column",
-        mt: 4,
+        mt: ["15px", "32px", "32px"],
         mx: "auto",
         maxWidth: "1408px",
       }}
     >
-      <Flex sx={{ justifyContent: "space-between", mb: 3, mx: 5 }}>
-        <Heading
-          as="h2"
+      <Flex sx={{ justifyContent: "space-between", mb: 3, mx: [3, 5, 5] }}>
+        <Text
           sx={{
-            color: "text",
-            fontSize: 24,
-            fontWeight: "bold",
+            color: "#0A043C",
+            fontSize: ["20px", "24px", "24px"],
+            fontWeight: ["semiBold", "bold", "bold"],
           }}
         >
           Dataset list
-        </Heading>
+        </Text>
         <Flex>
           <Select
             value={selectedLanguage}
@@ -98,18 +95,6 @@ function DatasetList({}, ref: any) {
             onChange={(value) => setSelectedLanguage(value as LanguageEnum)}
             style={{ borderRadius: 4, width: 150 }}
           />
-          {/* <Select
-            value={selectedLanguage}
-            options={languageOptions}
-            onChange={(value) => setSelectedLanguage(value as LanguageEnum)}
-            style={{ marginRight: 16, borderRadius: 4, width: 120 }}
-          />
-          <Select
-            value={selectedLanguage}
-            options={languageOptions}
-            onChange={(value) => setSelectedLanguage(value)}
-            style={{ borderRadius: 4, width: 120 }}
-          /> */}
         </Flex>
       </Flex>
       {isLoading ? (
@@ -126,9 +111,13 @@ function DatasetList({}, ref: any) {
         <>
           {datasetList.length > 0 ? (
             <>
-              <Grid sx={{ mx: 5 }} columns={[1, 2, 3, 4]} gap={4}>
+              <Grid
+                sx={{ mx: [3, 5, 5] }}
+                columns={[2, 3, 4]}
+                gap={["15px", "24px", "24px"]}
+              >
                 {datasetList.map((item, index) => (
-                  <DatasetCard item={item} key={index} />
+                  <DatasetCard item={item} key={index} isMobile={isMobile} />
                 ))}
               </Grid>
               <Flex sx={{ justifyContent: "flex-end", mt: 4 }}>

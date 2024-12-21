@@ -10,6 +10,7 @@ interface DatasetCardProps {
   showBorder?: boolean;
   totalSize?: number;
   width?: string;
+  isMobile?: boolean;
 }
 
 export default function DatasetCard({
@@ -18,20 +19,21 @@ export default function DatasetCard({
   showBorder = true,
   totalSize = 24,
   width = "100%",
+  isMobile = false,
 }: DatasetCardProps) {
   const router = useRouter();
   return (
     <Card
       sx={{
         width: width,
-        p: showBorder ? 3 : 0,
+        p: showBorder ? [2, 3, 3] : 0,
         bg: "white",
         border: showBorder ? "1px solid #E5E7EB" : "none",
         borderRadius: "20px",
         boxShadow: showBorder ? "0px 4px 10px 0px rgba(0, 0, 0, 0.05)" : "none",
       }}
     >
-      <Flex sx={{ alignItems: "center", mb: 3 }}>
+      <Flex sx={{ alignItems: "center", mb: ["15px", "20px", "20px"] }}>
         <Link
           href={
             item?.source_link ??
@@ -41,10 +43,10 @@ export default function DatasetCard({
           <Image
             src={`${"/images/dataset/common.png"}`}
             alt="dataset"
-            width="76px"
+            width={isMobile ? "48px" : "76px"}
             height="auto"
             sx={{
-              mr: 3,
+              mr: [2, 3, 3],
             }}
           />
         </Link>
@@ -53,11 +55,10 @@ export default function DatasetCard({
             alignItems: "center",
             border: "1px solid #E5E7EB",
             borderRadius: "20px",
-            px: 2,
-            width: "",
+            px: [1, 2, 2],
             flexDirection: "row",
             height: "20px",
-            mr: 3,
+            mr: [1, 3, 3],
           }}
         >
           <Image
@@ -65,17 +66,19 @@ export default function DatasetCard({
             alt="common"
             width="16px"
             height="auto"
-            mr={2}
+            mr={isMobile ? 1 : 2}
           />
-          <Text>{item?.data_type ?? "text"}</Text>
+          <Text sx={{ fontSize: isMobile ? 10 : 14 }}>
+            {item?.data_type ?? "text"}
+          </Text>
         </Flex>
         <Flex
           sx={{
             alignItems: "center",
             border: "1px solid #E5E7EB",
             borderRadius: "20px",
-            px: 2,
-            ml: 2,
+            px: [1, 2, 2],
+            ml: isMobile ? 1 : 2,
             height: "20px",
           }}
         >
@@ -84,17 +87,19 @@ export default function DatasetCard({
             alt="common"
             width="14px"
             height="auto"
-            mr={2}
+            mr={isMobile ? 1 : 2}
           />
-          <Text>{item?.language ?? "eng"}</Text>
+          <Text sx={{ fontSize: isMobile ? 10 : 14 }}>
+            {item?.language ?? "eng"}
+          </Text>
         </Flex>
       </Flex>
       <Text
         sx={{
           color: "#333333",
-          fontSize: 20,
+          fontSize: [12, 20, 20],
           fontWeight: "bold",
-          mt: 3,
+          mb: ["15px", "20px", "20px"],
         }}
       >
         {item?.name ?? "Dataset"}
@@ -102,14 +107,14 @@ export default function DatasetCard({
       <Flex
         sx={{
           justifyContent: "space-between",
-          my: 3,
+          mb: ["15px", "20px", "20px"],
         }}
       >
         <Flex sx={{ flexDirection: "column" }}>
           <Text
             sx={{
               color: "rgba(0, 0, 0, 0.5)",
-              fontSize: 14,
+              fontSize: [10, 14, 14],
             }}
           >
             Data Size
@@ -117,7 +122,7 @@ export default function DatasetCard({
           <Text
             sx={{
               color: "#333333",
-              fontSize: totalSize,
+              fontSize: isMobile ? 14 : totalSize,
               fontWeight: "bold",
             }}
           >
@@ -128,7 +133,7 @@ export default function DatasetCard({
           <Text
             sx={{
               color: "rgba(0, 0, 0, 0.5)",
-              fontSize: 14,
+              fontSize: [10, 14, 14],
             }}
           >
             Total Objects
@@ -136,7 +141,7 @@ export default function DatasetCard({
           <Text
             sx={{
               color: "#333333",
-              fontSize: totalSize,
+              fontSize: isMobile ? 14 : totalSize,
               fontWeight: "bold",
             }}
           >
@@ -144,19 +149,19 @@ export default function DatasetCard({
           </Text>
         </Flex>
       </Flex>
-      <Flex sx={{ justifyContent: "space-between", my: 3 }}>
+      <Flex sx={{ justifyContent: "space-between", alignItems: "center" }}>
         <Flex>
           <Image
             src="/images/icons/calender.png"
             alt="calender"
-            width="19px"
-            height="19px"
-            mr={2}
+            width={isMobile ? "11px" : "19px"}
+            height="auto"
+            mr={isMobile ? 1 : 2}
           />
           <Text
             sx={{
               color: "black",
-              fontSize: 16,
+              fontSize: [10, 16, 16],
               fontWeight: "medium",
             }}
           >
@@ -167,8 +172,8 @@ export default function DatasetCard({
           <Image
             src="/images/icons/link.png"
             alt="link"
-            width="24px"
-            height="24px"
+            width={isMobile ? "20px" : "24px"}
+            height="auto"
             onClick={() => {
               router.push(`/dataset/${item?.id}`);
             }}

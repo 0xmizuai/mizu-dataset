@@ -14,12 +14,14 @@ interface HeaderProps {
   showSearch?: boolean;
   handleSearch?: (value: string) => void;
   searchValue?: string;
+  isMobile?: boolean;
 }
 
 function Header({
   showSearch = false,
   handleSearch,
   searchValue,
+  isMobile = false,
 }: HeaderProps) {
   const router = useRouter();
   const [key, setKey] = useState<HeaderKey | null>(null);
@@ -94,20 +96,22 @@ function Header({
     >
       <Flex
         sx={{
-          py: 3,
+          py: [2, 3, 3],
           justifyContent: "space-between",
           maxWidth: "1280px",
           width: "100%",
-          mx: 5,
+          mx: [3, 5, 5],
         }}
       >
         <Image
           src="/images/login/logo-text.png"
           sx={{ maxWidth: "114px" }}
           alt="logo"
+          width={isMobile ? 90 : 114}
+          height="auto"
         />
         <Flex sx={{ alignItems: "center" }}>
-          {showSearch && (
+          {showSearch && !isMobile && (
             <Input
               value={searchValue}
               onChange={(e) => handleSearch?.(e.target.value)}
