@@ -4,12 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Flex, Text } from "theme-ui";
 
-export default function Breadcrumb() {
+export default function Breadcrumb({ isMobile }: { isMobile: boolean }) {
   const pathname = usePathname();
   const pathSegments = pathname.split("/").filter(Boolean);
 
   return (
-    <Flex sx={{ gap: 2, mb: 3 }}>
+    <Flex sx={{ gap: 2, mb: ["15px", "20px", "20px"] }}>
       {pathSegments.map((segment, index) => {
         let segmentLabel =
           segment === "dataset" ? "Home" : decodeURIComponent(segment);
@@ -34,7 +34,7 @@ export default function Breadcrumb() {
             >
               <Text
                 sx={{
-                  fontSize: 2,
+                  fontSize: "14px",
                   fontWeight:
                     index === pathSegments.length - 1 ? "bold" : "normal",
                 }}

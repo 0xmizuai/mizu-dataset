@@ -3,6 +3,7 @@ export interface SampleDataProps {
   name: string;
   data_type: string;
   language: string;
+  isMobile: boolean;
 }
 
 export interface SampleDataItem {

@@ -4,6 +4,7 @@ import DatasetCard from "@/components/DatasetCard";
 import Header from "@/components/Header";
 import SampleAndHistory from "@/components/query/SampleAndHistory";
 import { sendGet } from "@/utils/networkUtils";
+import { useResponsiveValue } from "@theme-ui/match-media";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Flex } from "theme-ui";
@@ -11,6 +12,9 @@ import { Flex } from "theme-ui";
 const DatasetPage = () => {
   const { id } = useParams();
   const [dataset, setDataset] = useState<any>(null);
+  const isMobile = useResponsiveValue([true, false, false], {
+    defaultIndex: 2,
+  });
 
   useEffect(() => {
     if (!id) return;
@@ -28,14 +32,14 @@ const DatasetPage = () => {
         backgroundColor: "white",
       }}
     >
-      <Header />
+      <Header isMobile={isMobile} />
       <Flex
         sx={{
           flexDirection: "column",
           backgroundColor: "white",
           alignItems: "center",
           minHeight: "100vh",
-          mx: 5,
+          mx: [3, 5, 5],
         }}
       >
         <Flex
@@ -46,13 +50,13 @@ const DatasetPage = () => {
             alignItems: "flex-start",
           }}
         >
-          <Breadcrumb />
+          <Breadcrumb isMobile={isMobile} />
           <DatasetCard
             item={dataset}
             showLink={false}
             showBorder={false}
-            totalSize={32}
-            width="40%"
+            totalSize={isMobile ? 24 : 32}
+            width={isMobile ? "100%" : "40%"}
           />
         </Flex>
         <Flex
@@ -67,6 +71,7 @@ const DatasetPage = () => {
               name={dataset?.name}
               data_type={dataset?.data_type}
               language={dataset?.language}
+              isMobile={isMobile}
             />
           )}
         </Flex>

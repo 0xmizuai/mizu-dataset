@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import { ApiResponse } from "@/types/api";
 import { ColumnType } from "antd/es/table";
 import { SorterResult } from "antd/es/table/interface";
+import { wrap } from "module";
 
 enum Tab {
   HISTORY = "history",
@@ -42,6 +43,7 @@ export default function SampleAndHistory({
   name,
   data_type,
   language,
+  isMobile,
 }: SampleDataProps) {
   const [historyList, setHistoryList] = useState<HistoryItem[]>([]);
   const [sampleList, setSampleList] = useState<SampleDataItem[]>([]);
@@ -157,13 +159,22 @@ export default function SampleAndHistory({
       title: "Query Content",
       dataIndex: "query_text",
       key: "query_text",
+      width: "40%",
       render: (text: string, record: HistoryItem) => {
         return (
           <Link
             style={{ color: "#2979F2" }}
             href={`/dataset/${id}/${record.id}`}
           >
-            {text}
+            <Text
+              sx={{
+                fontSize: ["10px", "16px", "16px"],
+                wordBreak: "break-all",
+                whiteSpace: "wrap",
+              }}
+            >
+              {text}
+            </Text>
           </Link>
         );
       },
@@ -175,6 +186,9 @@ export default function SampleAndHistory({
       defaultSortOrder: "descend",
       sorter: (a: HistoryItem, b: HistoryItem) =>
         a.created_at.localeCompare(b.created_at),
+      render: (text: string) => {
+        return <Text sx={{ fontSize: ["10px", "16px", "16px"] }}>{text}</Text>;
+      },
     },
     {
       title: "Expend",
@@ -184,7 +198,11 @@ export default function SampleAndHistory({
       sorter: (a: HistoryItem, b: HistoryItem) =>
         parseInt(a.points_spent) - parseInt(b.points_spent),
       render: (points_spent: string) => {
-        return <Text>{`${points_spent} points`}</Text>;
+        return (
+          <Text sx={{ fontSize: ["10px", "16px", "16px"] }}>
+            {`${points_spent} points`}
+          </Text>
+        );
       },
     },
     {
@@ -198,12 +216,12 @@ export default function SampleAndHistory({
             sx={{
               backgroundColor,
               borderRadius: "20px",
-              width: "108px",
+              width: isMobile ? "80px" : "108px",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Text sx={{ color: textColor, fontSize: 16 }}>
+            <Text sx={{ color: textColor, fontSize: ["10px", "16px", "16px"] }}>
               {StatusText[status]}
             </Text>
           </Flex>
@@ -217,18 +235,36 @@ export default function SampleAndHistory({
       title: "ID",
       dataIndex: "id",
       key: "id",
+      width: "30%",
+      render: (text: string) => {
+        return (
+          <Text
+            sx={{
+              fontSize: ["10px", "16px", "16px"],
+              whiteSpace: "wrap",
+              wordBreak: "break-all",
+            }}
+          >
+            {text}
+          </Text>
+        );
+      },
     },
     {
       title: "Text",
       dataIndex: "short_text",
       key: "short_text",
-      width: "40%",
+      width: "30%",
       render: (text: string, record: SampleDataItem) => {
         return (
           <Popover
             content={() => (
               <Box
-                sx={{ maxHeight: "500px", maxWidth: "500px", overflow: "auto" }}
+                sx={{
+                  maxHeight: isMobile ? "200px" : "500px",
+                  maxWidth: isMobile ? "200px" : "500px",
+                  overflow: "auto",
+                }}
               >
                 <Text>{record.text}</Text>
               </Box>
@@ -240,6 +276,9 @@ export default function SampleAndHistory({
                 display: "block",
                 textOverflow: "ellipsis",
                 cursor: "pointer",
+                fontSize: ["10px", "16px", "16px"],
+                whiteSpace: "wrap",
+                wordBreak: "break-all",
               }}
             >
               {text}
@@ -274,14 +313,15 @@ export default function SampleAndHistory({
 
   const renderHistory = () => {
     return (
-      <Table<HistoryItem>
+      <Table
         rowKey="id"
         columns={HistoryColumns as ColumnType<HistoryItem>[]}
         dataSource={historyList}
         pagination={false}
-        scroll={{ x: 1000 }}
+        scroll={{ x: isMobile ? 100 : 1000 }}
         bordered
         style={{ width: "100%" }}
+        size={isMobile ? "small" : "middle"}
         loading={loading}
         onChange={(
           pagination,
@@ -316,6 +356,7 @@ export default function SampleAndHistory({
         bordered
         style={{ width: "100%" }}
         loading={loading}
+        size={isMobile ? "small" : "middle"}
       />
     );
   };
@@ -337,7 +378,7 @@ export default function SampleAndHistory({
     <Box sx={{ width: "100%", pb: 4 }}>
       <Button
         sx={{
-          mb: 4,
+          mb: ["15px", "20px", "20px"],
           borderRadius: "10px",
           display: "flex",
           alignItems: "center",

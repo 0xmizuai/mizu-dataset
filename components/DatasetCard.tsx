@@ -97,7 +97,7 @@ export default function DatasetCard({
       <Text
         sx={{
           color: "#333333",
-          fontSize: [12, 20, 20],
+          fontSize: "20px",
           fontWeight: "bold",
           mb: ["15px", "20px", "20px"],
         }}
@@ -149,19 +149,25 @@ export default function DatasetCard({
           </Text>
         </Flex>
       </Flex>
-      <Flex sx={{ justifyContent: "space-between", alignItems: "center" }}>
+      <Flex
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: ["15px", "20px", "20px"],
+        }}
+      >
         <Flex>
           <Image
             src="/images/icons/calender.png"
             alt="calender"
-            width={isMobile ? "11px" : "19px"}
+            width={["16px", "19px", "19px"]}
             height="auto"
             mr={isMobile ? 1 : 2}
           />
           <Text
             sx={{
               color: "black",
-              fontSize: [10, 16, 16],
+              fontSize: ["14px", "16px", "16px"],
               fontWeight: "medium",
             }}
           >

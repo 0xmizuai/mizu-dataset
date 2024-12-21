@@ -3,7 +3,7 @@ import DatasetComList from "@/components/DatasetList";
 import Header from "@/components/Header";
 import { useResponsiveValue } from "@theme-ui/match-media";
 import { useRef, useState } from "react";
-import { Box, Flex, Text, Heading, Image, Input } from "theme-ui";
+import { Box, Flex, Text, Image, Input } from "theme-ui";
 
 function DatasetList() {
   const datasetListRef = useRef<any>(null);
