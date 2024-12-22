@@ -86,7 +86,9 @@ const QueryDetailPage = () => {
                 color: "#333333",
               }}
             >
-              {query?.query_text}
+              {query?.dataset?.language === "en"
+                ? "BAAI/bge-small-en"
+                : "Xenova/multilingual-e5-small"}
             </Text>
           </Box>
           <Grid
