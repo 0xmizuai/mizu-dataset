@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
       query_text: query.query_text,
       status: query.status,
       points_spent: query.points_spent?.toString(),
-      created_at: query.created_at.toLocaleDateString("en-US", {
+      created_at: query.created_at?.toLocaleDateString("en-US", {
         year: "numeric",
         month: "2-digit",
         day: "2-digit",

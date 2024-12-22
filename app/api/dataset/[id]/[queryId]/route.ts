@@ -60,9 +60,9 @@ export async function GET(
       }),
       dataset: {
         ...query.dataset,
-        total_bytes: query.dataset.total_bytes.toString(),
-        total_objects: query.dataset.total_objects.toString(),
-        created_at: query.dataset.created_at.toLocaleDateString("en-US", {
+        total_bytes: query.dataset?.total_bytes?.toString(),
+        total_objects: query.dataset?.total_objects?.toString(),
+        created_at: query.dataset?.created_at?.toLocaleDateString("en-US", {
           year: "numeric",
           month: "2-digit",
           day: "2-digit",

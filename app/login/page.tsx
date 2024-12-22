@@ -261,7 +261,7 @@ export default function LoginPage() {
                   </Button>
                 </Flex>
                 <Button
-                  loading={isLoading.toString()}
+                  loading={isLoading}
                   sx={{
                     bg: "primary",
                     color: "white",

@@ -45,8 +45,8 @@ export async function GET(request: NextRequest) {
       const crawledAt = new Date(item.crawled_at);
       return {
         ...item,
-        id: item.id.toString(),
-        total_bytes: item.total_bytes.toString(),
+        id: item?.id?.toString(),
+        total_bytes: item?.total_bytes?.toString(),
         crawled_at: crawledAt.toLocaleDateString("en-US", {
           month: "2-digit",
           day: "2-digit",
