@@ -376,6 +376,7 @@ export default function SampleAndHistory({
         maxWidth: "1280px",
         width: "100%",
         mx: [3, 5, 5],
+        mt: [3, 5, 5],
       }}
     >
       <Box sx={{ mb: 3 }}>
