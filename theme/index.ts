@@ -7,8 +7,8 @@ export const theme = {
     secondary: "#3B82F6", // 次要颜色
   },
   fonts: {
-    body: "system-ui, sans-serif",
-    heading: "Georgia, serif",
+    body: "Inter, sans-serif",
+    heading: "Inter, sans-serif",
   },
   space: [0, 4, 8, 16, 32, 64],
   radii: [0, 4, 8, 16],

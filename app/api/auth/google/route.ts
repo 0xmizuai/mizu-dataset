@@ -16,26 +16,40 @@ const client = new OAuth2Client({
  */
 export async function POST(request: NextRequest) {
   const requestBody = await request.json();
-  const { tokenId } = requestBody;
-  console.log("tokenId", tokenId);
-  const ticket = await client.verifyIdToken({
-    idToken: tokenId,
-    audience: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-  });
-  const payload = ticket.getPayload();
+  const { access_token } = requestBody;
+  console.log("access_token", access_token);
+  // 验证 google 认证用户信息是否有效
 
-  console.log("🌹 payload", payload);
+  // const tokenInfo = await client.getTokenInfo(access_token);
+  // const ticket = await client.verifyIdToken({
+  //   idToken: tokenId,
+  //   audience: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+  // });
+  // const payload = ticket.getPayload();
 
-  if (!payload) {
+  const response: any = await fetch(
+    "https://www.googleapis.com/oauth2/v3/userinfo",
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    }
+  );
+
+  console.log("🌹 response = ", response);
+  if (!response) {
     return Response.json({
       code: -1,
       message: "verify token failed",
     });
   }
 
+  const userData = await response.json();
+
+  console.log("🌹 userData = ", userData);
+
   try {
-    const { sub, email, name, picture } = payload;
-    console.log("🌹 payload", payload);
+    const { sub, email, name, picture } = userData;
     const token = await getJWT(sub, "GOOGLE");
     const user = await prisma.users.upsert({
       where: { user_key: sub },

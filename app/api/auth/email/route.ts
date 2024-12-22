@@ -2,7 +2,7 @@ import { validateEmail } from "@/utils/commonUtils";
 import { random } from "lodash";
 import { NextRequest } from "next/server";
 import { getRedisClient } from "@/lib/redis";
-import { AUTH_FAILED } from "@/utils/constants";
+import { httpMessage, namespace } from "@/utils/constants";
 
 export async function POST(request: NextRequest) {
   const requestData = await request.json();
@@ -10,19 +10,24 @@ export async function POST(request: NextRequest) {
   console.log("email", email);
 
   if (!email || !validateEmail(email)) {
-    return Response.json({
-      code: -1,
-      message: "email format error",
-    });
+    return Response.json(
+      {
+        code: 400,
+        message: httpMessage[400],
+      },
+      { status: 400 }
+    );
   }
 
   const redisClient = await getRedisClient();
-  const cacheCode = await redisClient.get(`check:emailCode:${email}`);
+  const cacheCode = await redisClient.get(
+    `${namespace}:check:emailCode:${email}`
+  );
 
   if (cacheCode) {
     return Response.json({
       code: -1,
-      message: "send code too frequently",
+      message: "Send code too frequently, please try again later",
     });
   }
 
@@ -52,10 +57,10 @@ export async function POST(request: NextRequest) {
     const resJson = await res.json();
 
     if (resJson?.ErrorCode === 0) {
-      redisClient.set(`check:emailCode:${email}`, randomCode, {
+      redisClient.set(`${namespace}:check:emailCode:${email}`, randomCode, {
         EX: 60,
       });
-      redisClient.set(`emailCode:${email}`, randomCode, {
+      redisClient.set(`${namespace}:emailCode:${email}`, randomCode, {
         EX: 180,
       });
     }
@@ -64,9 +69,12 @@ export async function POST(request: NextRequest) {
       data: {},
     });
   } catch (err) {
-    return Response.json({
-      code: AUTH_FAILED,
-      message: "Telegram initData Auth failed",
-    });
+    return Response.json(
+      {
+        code: 500,
+        message: httpMessage[500],
+      },
+      { status: 500 }
+    );
   }
 }

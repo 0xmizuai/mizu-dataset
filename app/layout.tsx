@@ -1,8 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Provider from "./provider";
-import { AuthInit } from "@/components/AuthInit";
 import { Metadata } from "next";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MIZU Mining App",
-  description: "Mining to gain points in MIZU",
+  title: "MIZU Dataset",
+  description: "MIZU Dataset",
 };
 
 export default function RootLayout({
@@ -29,10 +29,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Provider>
-          <AuthInit />
-          {children}
-        </Provider>
+        <Toaster />
+        <Provider>{children}</Provider>
       </body>
     </html>
   );

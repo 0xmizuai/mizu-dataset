@@ -2,8 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* :root {
   --foreground: #171717;
+  --background: #ededed;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -11,10 +12,46 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
-body {
+/* body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+} */
+
+:where(.css-dev-only-do-not-override-1kf000u).ant-tabs-card
+  > .ant-tabs-nav
+  .ant-tabs-tab,
+:where(.css-dev-only-do-not-override-1kf000u).ant-tabs-card
+  > div
+  > .ant-tabs-nav
+  .ant-tabs-tab {
+  border-color: rgba(0, 0, 0, 0.2) !important;
+  border-bottom: none !important;
+}
+
+:where(.css-dev-only-do-not-override-1kf000u).ant-tabs-top
+  > .ant-tabs-nav::before,
+:where(.css-dev-only-do-not-override-1kf000u).ant-tabs-bottom
+  > .ant-tabs-nav::before,
+:where(.css-dev-only-do-not-override-1kf000u).ant-tabs-top
+  > div
+  > .ant-tabs-nav::before,
+:where(.css-dev-only-do-not-override-1kf000u).ant-tabs-bottom
+  > div
+  > .ant-tabs-nav::before {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2) !important;
+}
+.antd-collected-table {
+  :where(.css-dev-only-do-not-override-1kf000u).ant-table-wrapper
+    .ant-table-thead
+    > tr
+    > th,
+  :where(.css-dev-only-do-not-override-1kf000u).ant-table-wrapper
+    .ant-table-thead
+    > tr
+    > td {
+    background-color: #e3f1ff !important;
+  }
 }
