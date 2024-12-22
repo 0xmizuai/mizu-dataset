@@ -203,8 +203,8 @@ export default function LoginPage() {
                 bg: "white",
                 maxWidth: ["100%", "368px", "408px", "488px", "568px"],
                 minWidth: ["100%", "368px", "400px", "428px", "508px"],
-                maxHeight: ["100%", "400px", "488px", "538px", "688px"],
-                minHeight: ["100%", "400px", "428px", "508px", "608px"],
+                maxHeight: ["100%", "488px", "488px", "538px", "688px"],
+                minHeight: ["100%", "488px", "488px", "508px", "608px"],
                 mx: "auto",
               }}
             >
@@ -213,11 +213,11 @@ export default function LoginPage() {
                   as="h2"
                   sx={{
                     mb: 3,
-                    fontSize: [0, 0, "36px", "36px", "36px"],
+                    fontSize: ["24px", "28px", "36px", "36px", "36px"],
                     textAlign: "center",
                     color: "text",
                     fontWeight: "bold",
-                    mt: [0, 0, 0, 0, "12px"],
+                    mt: ["0px", "0px", "12px", "12px", "12px"],
                   }}
                 >
                   Login
