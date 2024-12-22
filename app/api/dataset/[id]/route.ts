@@ -36,11 +36,11 @@ export async function GET(
     const date = new Date(dataset?.crawled_at || "");
 
     const jsonData = {
-      id: dataset?.id.toString,
+      id: dataset?.id?.toString(),
       name: dataset?.name,
       language: dataset?.language,
       data_type: dataset?.data_type,
-      total_objects: dataset?.total_objects.toString(),
+      total_objects: dataset?.total_objects?.toString(),
       total_bytes: dataset?.total_bytes?.toString(),
       crawled_at: date?.toLocaleDateString("en-US", {
         year: "numeric",

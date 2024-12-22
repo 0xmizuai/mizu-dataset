@@ -17,22 +17,23 @@ export async function GET(request: NextRequest) {
       { status: 401 }
     );
   }
-  const id = request.nextUrl.searchParams.get("id");
-  const currentPage = request.nextUrl.searchParams.get("currentPage");
-  const pageSize = request.nextUrl.searchParams.get("pageSize");
-  const orderBy = request.nextUrl.searchParams.get("orderBy") || "created_at";
-  const order = request.nextUrl.searchParams.get("order") || "desc";
-  
-  console.log(id, currentPage, pageSize);
-  if (!id || !currentPage || !pageSize)
-    return Response.json(
-      {
-        code: 400,
-        message: httpMessage[400],
-      },
-      { status: 400 }
-    );
+
   try {
+    const id = request.nextUrl.searchParams.get("id");
+    const currentPage = request.nextUrl.searchParams.get("currentPage");
+    const pageSize = request.nextUrl.searchParams.get("pageSize");
+    const orderBy = request.nextUrl.searchParams.get("orderBy") || "created_at";
+    const order = request.nextUrl.searchParams.get("order") || "desc";
+
+    console.log(id, currentPage, pageSize);
+    if (!id || !currentPage || !pageSize)
+      return Response.json(
+        {
+          code: 400,
+          message: httpMessage[400],
+        },
+        { status: 400 }
+      );
     const [queries, total] = await prisma.$transaction([
       prisma.queries.findMany({
         where: {
@@ -50,12 +51,24 @@ export async function GET(request: NextRequest) {
         },
       }),
     ]);
+    if (queries.length === 0) {
+      return Response.json({
+        code: 0,
+        message: "success",
+        data: {
+          total: 0,
+          list: [],
+          currentPage: Number(currentPage),
+          pageSize: Number(pageSize),
+        },
+      });
+    }
 
     const jsonData = queries.map((query) => ({
-      id: query.id,
+      id: query.id?.toString(),
       query_text: query.query_text,
       status: query.status,
-      points_spent: query.points_spent.toString(),
+      points_spent: query.points_spent?.toString(),
       created_at: query.created_at.toLocaleDateString("en-US", {
         year: "numeric",
         month: "2-digit",
