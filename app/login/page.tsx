@@ -185,7 +185,6 @@ export default function LoginPage() {
         <Flex
           sx={{
             flexDirection: ["column", "row"],
-            zIndex: 1000,
           }}
         >
           <Box
@@ -194,6 +193,7 @@ export default function LoginPage() {
               display: "flex",
               alignItems: "center",
               justifyContent: "flex-start",
+              zIndex: 1000,
             }}
           >
             <Card
@@ -201,9 +201,10 @@ export default function LoginPage() {
                 p: [2, 4, 4],
                 borderRadius: "20px",
                 bg: "white",
-                maxWidth: ["100%", "368px", "500px"],
-                minWidth: ["100%", "368px", "420px"],
-                maxHeight: ["100%", "400px", "588px"],
+                maxWidth: ["100%", "368px", "408px", "488px", "568px"],
+                minWidth: ["100%", "368px", "400px", "428px", "508px"],
+                maxHeight: ["100%", "400px", "488px", "538px", "688px"],
+                minHeight: ["100%", "400px", "428px", "508px", "608px"],
                 mx: "auto",
               }}
             >
@@ -212,10 +213,11 @@ export default function LoginPage() {
                   as="h2"
                   sx={{
                     mb: 3,
-                    fontSize: 4,
+                    fontSize: [0, 0, "36px", "36px", "36px"],
                     textAlign: "center",
                     color: "text",
                     fontWeight: "bold",
+                    mt: [0, 0, 0, 0, "12px"],
                   }}
                 >
                   Login
@@ -319,14 +321,14 @@ export default function LoginPage() {
               sx={{
                 width: ["100%", "50%"],
                 flexDirection: "column",
-                mt: 128,
-                ml: 80,
+                mt: ["58px", "58px", "58px", "78px", "188px"],
+                ml: ["70px", "70px", "70px", "70px", "150px"],
               }}
             >
               <Heading
                 as="h1"
                 sx={{
-                  fontSize: 5,
+                  fontSize: ["24px", "28px", "36px", "42px", "48px"],
                   mb: 3,
                   color: "white",
                   fontWeight: "bold",
@@ -345,8 +347,8 @@ export default function LoginPage() {
             src="/images/login/logo.png"
             alt="logo"
             sx={{
-              maxWidth: ["100%", "400px", "588px"],
-              minWidth: ["100%", "400px", "408px"],
+              maxWidth: ["100%", "400px", "468px", "508px", "688px"],
+              minWidth: ["100%", "400px", "408px", "488px", "600px"],
               height: "auto",
               objectFit: "cover",
               position: "absolute",
