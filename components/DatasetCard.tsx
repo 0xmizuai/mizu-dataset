@@ -94,16 +94,21 @@ export default function DatasetCard({
           </Text>
         </Flex>
       </Flex>
-      <Text
+      <Flex
         sx={{
-          color: "#333333",
-          fontSize: showBorder ? ["12px", "20px", "20px"] : "20px",
-          fontWeight: "bold",
           mb: ["15px", "20px", "20px"],
         }}
       >
-        {item?.name ?? "Dataset"}
-      </Text>
+        <Text
+          sx={{
+            color: "#333333",
+            fontSize: showBorder ? ["12px", "20px", "20px"] : "20px",
+            fontWeight: "bold",
+          }}
+        >
+          {item?.name ?? "Dataset"}
+        </Text>
+      </Flex>
       <Flex
         sx={{
           justifyContent: "space-between",
