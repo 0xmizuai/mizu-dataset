@@ -110,7 +110,7 @@ function Header({
           height="auto"
         />
         <Flex sx={{ alignItems: "center" }}>
-          {showSearch && !isMobile && (
+          {/* {showSearch && !isMobile && (
             <Input
               value={searchValue}
               onChange={(e) => handleSearch?.(e.target.value)}
@@ -129,7 +129,7 @@ function Header({
                 />
               }
             />
-          )}
+          )} */}
           <Box sx={{ ml: 3 }}>
             <Dropdown menu={{ items, onClick }}>
               <Image

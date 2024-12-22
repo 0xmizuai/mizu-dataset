@@ -32,7 +32,7 @@ function DatasetList() {
         searchValue={searchValue}
         isMobile={isMobile}
       />
-      {isMobile && (
+      {/* {isMobile && (
         <Flex sx={{ width: "100%", mt: 3, mb: ["15px", "32px", "32px"] }}>
           <Input
             value={searchValue}
@@ -56,7 +56,7 @@ function DatasetList() {
             }
           />
         </Flex>
-      )}
+      )} */}
       <Flex
         sx={{
           flexDirection: "column",
