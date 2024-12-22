@@ -126,7 +126,7 @@ export default function DatasetCard({
               fontWeight: "bold",
             }}
           >
-            {`${formatObjects(item?.total_objects ?? 0)}`}
+            {`${formatBytes(item?.total_bytes ?? 0)}`}
           </Text>
         </Flex>
         <Flex sx={{ flexDirection: "column" }}>
@@ -145,7 +145,7 @@ export default function DatasetCard({
               fontWeight: "bold",
             }}
           >
-            {`${formatBytes(item?.total_bytes ?? 0)}`}
+            {`${formatObjects(item?.total_objects ?? 0)}`}
           </Text>
         </Flex>
       </Flex>
