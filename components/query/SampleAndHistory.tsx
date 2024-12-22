@@ -377,7 +377,7 @@ export default function SampleAndHistory({
         width: "100%",
       }}
     >
-      <Box sx={{ mb: 3, mx: [3, 0, 0] }}>
+      <Box sx={{ mb: 3, mx: [3, 5, 5] }}>
         <Button
           sx={{
             mb: ["15px", "20px", "20px"],
@@ -405,6 +405,7 @@ export default function SampleAndHistory({
 
       <Box
         sx={{
+          mx: [0, 5, 5],
           boxShadow: isMobile ? "0px 0px 10px 0px rgba(0, 0, 0, 0.1)" : "none",
           borderTopLeftRadius: "20px",
           borderTopRightRadius: "20px",
