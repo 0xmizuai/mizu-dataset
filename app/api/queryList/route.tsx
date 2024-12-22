@@ -65,11 +65,11 @@ export async function GET(request: NextRequest) {
     }
 
     const jsonData = queries.map((query) => ({
-      id: query.id?.toString(),
-      query_text: query.query_text,
-      status: query.status,
-      points_spent: query.points_spent?.toString(),
-      created_at: query.created_at?.toLocaleDateString("en-US", {
+      id: query?.id?.toString(),
+      query_text: query?.query_text,
+      status: query?.status,
+      points_spent: query?.points_spent?.toString(),
+      created_at: query?.created_at?.toLocaleDateString("en-US", {
         year: "numeric",
         month: "2-digit",
         day: "2-digit",

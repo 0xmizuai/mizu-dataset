@@ -11,6 +11,7 @@
     "prisma:push": "npx prisma db push",
     "prisma:migrate": "npx prisma migrate dev",
     "prisma:studio": "npx prisma studio",
+    "prisma:pull": "npx prisma db pull",
     "db:sync": "ts-node scripts/db-sync.ts",
     "load-dataset": "ts-node scripts/load-dataset.ts"
   },
