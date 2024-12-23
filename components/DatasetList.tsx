@@ -119,7 +119,7 @@ function DatasetList({ isMobile }: { isMobile: boolean }, ref: any) {
                   <DatasetCard item={item} key={index} isMobile={isMobile} />
                 ))}
               </Grid>
-              <Flex sx={{ justifyContent: "flex-end", mt: 4 }}>
+              <Flex sx={{ mx: [3, 5, 5], justifyContent: "flex-end", mt: 4 }}>
                 <Pagination
                   showTotal={(total) => (
                     <Text

@@ -2,7 +2,7 @@
 
 import { useDebouncedEffect } from "@/hooks/useDebouncedEffect";
 import { useUserStore } from "@/stores/userStore";
-import { deleteJwt, saveJwt, sendPost } from "@/utils/networkUtils";
+import { deleteJwt, getJwt, saveJwt, sendPost } from "@/utils/networkUtils";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -15,7 +15,13 @@ export const AuthInit = ({ children }: { children: React.ReactNode }) => {
 
   useDebouncedEffect(
     async () => {
-      if (pathname === "/login") return children;
+      if (pathname === "/login") {
+        const jwt = getJwt();
+        if (jwt) {
+          router.push("/dataset");
+        }
+        return;
+      }
       setLoading(true);
       try {
         const res: any = await sendPost(`/api/auth/verify`, {}, {});
