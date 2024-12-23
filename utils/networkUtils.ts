@@ -23,14 +23,14 @@ export async function sendPost<T>(
     excludeAuthorization?: boolean;
     onError?: (errMessage: string) => void;
   }
-): Promise<ApiResponse<T> | undefined> {
+): Promise<ApiResponse<T>> {
   try {
     const headers: any = { "Content-Type": "application/json" };
     if (!options?.excludeAuthorization) {
       const jwtCookie = getJwt();
       if (!jwtCookie) {
         options?.onError?.("Unauthorized");
-        return;
+        return { code: 1, message: "Unauthorized", data: {} as T };
       }
       headers.Authorization = `Bearer ${jwtCookie}`;
     }
@@ -42,18 +42,22 @@ export async function sendPost<T>(
     });
     if (!response.ok) {
       options?.onError?.(response.statusText);
-      return undefined;
+      return { code: 1, message: response.statusText, data: {} as T };
     }
 
     const resJson = await response.json();
     if (resJson?.code === 401) {
       options?.onError?.("Unauthorized");
-      return undefined;
+      return { code: 1, message: "Unauthorized", data: {} as T };
     }
 
     return resJson;
-  } catch (err) {
-    return undefined;
+  } catch (err: any) {
+    return {
+      code: 1,
+      message: err.message || DEFAULT_ERROR_MESSAGE,
+      data: {} as T,
+    };
   }
 }
 
@@ -64,14 +68,14 @@ export async function sendGet<T>(
     excludeAuthorization?: boolean;
     onError?: (errMessage: string) => void;
   }
-): Promise<ApiResponse<T> | undefined> {
+): Promise<ApiResponse<T>> {
   try {
     const headers: any = { "Content-Type": "application/json" };
     if (!options?.excludeAuthorization) {
       const jwtCookie = getJwt();
       if (!jwtCookie) {
         options?.onError?.("Unauthorized");
-        return;
+        return { code: 1, message: "Unauthorized", data: {} as T };
       }
       headers.Authorization = `Bearer ${jwtCookie}`;
     }
@@ -86,20 +90,24 @@ export async function sendGet<T>(
 
     if (!response.ok) {
       options?.onError?.(response.statusText);
-      return undefined;
+      return { code: 1, message: response.statusText, data: {} as T };
     }
 
     const resJson = await response.json();
 
     if (resJson?.code === 401) {
       options?.onError?.("Unauthorized");
-      return undefined;
+      return { code: 1, message: "Unauthorized", data: {} as T };
     }
 
     return resJson;
   } catch (err: any) {
     options?.onError?.(err.message || DEFAULT_ERROR_MESSAGE);
-    return undefined;
+    return {
+      code: 1,
+      message: err.message || DEFAULT_ERROR_MESSAGE,
+      data: {} as T,
+    };
   }
 }
 
