@@ -10,7 +10,19 @@ enum HeaderKey {
   LOGOUT = "logout",
 }
 
-function Header() {
+interface HeaderProps {
+  showSearch?: boolean;
+  handleSearch?: (value: string) => void;
+  searchValue?: string;
+  isMobile?: boolean;
+}
+
+function Header({
+  showSearch = false,
+  handleSearch,
+  searchValue,
+  isMobile = false,
+}: HeaderProps) {
   const router = useRouter();
   const [key, setKey] = useState<HeaderKey | null>(null);
 
@@ -40,6 +52,10 @@ function Header() {
             cursor: "pointer",
             color: key === HeaderKey.LOGOUT ? "#2979F2" : "inherit",
           }}
+          onClick={() => {
+            deleteJwt();
+            router.push("/login");
+          }}
         >
           <Image
             src="/images/login/logout.png"
@@ -68,44 +84,62 @@ function Header() {
   return (
     <Flex
       sx={{
-        justifyContent: "space-between",
-        p: 3,
-        borderBottom: "1px solid #eaeaea",
-        width: 1280,
-        maxWidth: "100%",
+        backgroundColor: "#F7FAFC",
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
       }}
     >
-      <Image
-        src="/images/login/logo-text.png"
-        sx={{ maxWidth: "114px" }}
-        alt="logo"
-      />
-      <Flex sx={{ alignItems: "center" }}>
-        <Input
-          placeholder="Search Dataset..."
-          sx={{
-            maxWidth: ["100%", "300px"],
-            ml: [0, 3],
-            flex: 1,
-          }}
-          prefix={
-            <Image
-              src="/images/icons/search.png"
-              width="24px"
-              height="24px"
-              alt="search"
-            />
-          }
+      <Flex
+        sx={{
+          py: [2, 3, 3],
+          justifyContent: "space-between",
+          maxWidth: "1280px",
+          width: "100%",
+          mx: [3, 5, 5],
+        }}
+      >
+        <Image
+          src="/images/login/logo-text.png"
+          sx={{ maxWidth: "114px" }}
+          alt="logo"
+          width={isMobile ? 90 : 114}
+          height="auto"
         />
-        <Box sx={{ ml: 3 }}>
-          <Dropdown menu={{ items, onClick }}>
-            <Image
-              src="/images/icons/avatar.png"
-              sx={{ width: "24px", height: "24px", cursor: "pointer" }}
-              alt="avatar"
+        <Flex sx={{ alignItems: "center" }}>
+          {/* {showSearch && !isMobile && (
+            <Input
+              value={searchValue}
+              onChange={(e) => handleSearch?.(e.target.value)}
+              placeholder="Search Dataset..."
+              sx={{
+                maxWidth: ["100%", "300px"],
+                ml: [0, 3],
+              }}
+              prefix={
+                <Image
+                  src="/images/icons/search.png"
+                  width="24px"
+                  height="24px"
+                  alt="search"
+                  sx={{ display: "inline-block" }}
+                />
+              }
             />
-          </Dropdown>
-        </Box>
+          )} */}
+          <Box sx={{ ml: 3 }}>
+            <Dropdown menu={{ items, onClick }}>
+              <Image
+                src="/images/icons/avatar.png"
+                sx={{ width: "24px", height: "auto", cursor: "pointer" }}
+                alt="avatar"
+              />
+            </Dropdown>
+          </Box>
+        </Flex>
       </Flex>
     </Flex>
   );

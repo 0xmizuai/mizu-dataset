@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { getRedisClient } from "@/lib/redis";
 import { getJWT } from "@/lib/jwt";
 import prisma from "@/lib/prisma";
+import { namespace } from "@/utils/constants";
 
 export async function POST(request: NextRequest) {
   const requestData = await request.json();
@@ -16,7 +17,7 @@ export async function POST(request: NextRequest) {
 
   // Check code
   const redisClient = await getRedisClient();
-  const emailCode = await redisClient.get(`emailCode:${email}`);
+  const emailCode = await redisClient.get(`${namespace}:emailCode:${email}`);
   if (!emailCode || emailCode !== code) {
     return Response.json({
       code: -1,
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
   // Code is right, enter register logic
   const token = await getJWT(email, "EMAIL");
 
-  await redisClient.del(`emailCode:${email}`);
+  await redisClient.del(`${namespace}:emailCode:${email}`);
   await prisma.users.upsert({
     where: { user_key: email },
     update: { user_key: email, type: "EMAIL", name: email },

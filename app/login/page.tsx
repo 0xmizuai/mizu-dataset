@@ -1,24 +1,36 @@
 "use client";
 import { useUserStore } from "@/stores/userStore";
 import { saveJwt, sendPost } from "@/utils/networkUtils";
-import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Box, Button, Card, Input, Text, Flex, Image, Heading } from "theme-ui";
+import {
+  Box,
+  Button,
+  Card,
+  Input,
+  Text,
+  Flex,
+  Image,
+  Heading,
+  Spinner,
+} from "theme-ui";
 import { useResponsiveValue } from "@theme-ui/match-media";
 import { validateEmail } from "@/utils/commonUtils";
-import { useDebouncedEffect } from "@/hooks/useDebouncedEffect";
 import { DEFAULT_LOGIN_REDIRECT } from "@/config/routes";
 
 export default function LoginPage() {
   const setUser = useUserStore((state) => state.setUser);
   const router = useRouter();
-  const isMobile = useResponsiveValue([true, false, false]);
-  const [account, setAccount] = useState(""); // 邮箱号
-  const [countdown, setCountdown] = useState(0); // 倒计时秒数
-  const [code, setCode] = useState<string | null>(null); // 验证码
-  const [isLoading, setIsLoading] = useState(false); // 是否正在加载
+  const isMobile = useResponsiveValue([true, false, false], {
+    defaultIndex: 2,
+  });
+  const [account, setAccount] = useState("");
+  const [countdown, setCountdown] = useState(0);
+  const [code, setCode] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoging, setIsLoging] = useState(false);
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
@@ -33,12 +45,13 @@ export default function LoginPage() {
   const handleGoogleLogin = async (credentialResponse: any) => {
     console.log("credent🌻🌻ialResponse", credentialResponse);
     try {
-      const tokenId = credentialResponse.access_token;
-      console.log("tokenId", tokenId);
+      setIsLoading(true);
+      const access_token = credentialResponse.access_token;
+      console.log("access_token", access_token);
       const response: any = await sendPost(
         `/api/auth/google`,
         {
-          tokenId,
+          access_token,
         },
         {
           excludeAuthorization: true,
@@ -51,10 +64,14 @@ export default function LoginPage() {
           userKey: response.data.userKey || "",
         });
         return router.push("/");
+      } else {
+        return toast.error("Login failed");
       }
     } catch (error) {
       console.error("Google login error", error);
       return toast.error("Login failed");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -66,11 +83,11 @@ export default function LoginPage() {
   });
 
   const handleSendCode = async () => {
-    if (!account) {
+    if (!account || !validateEmail(account)) {
+      console.log("account", account);
       return toast.error("Please input valid email");
     }
-    validateEmail(account);
-    console.log("account", account);
+    console.log("🚀 ~ handleSendCode ~ account", account);
     const res = await sendPost(
       `/api/auth/email`,
       {
@@ -81,65 +98,62 @@ export default function LoginPage() {
       }
     );
 
-    console.log("handleSendCode = ", res);
+    console.log("🚀 ~ handleSendCode ~ res", res);
 
-    if (res && res?.code === 0) {
+    if (res && res.code === 0) {
       setCountdown(60);
       setCode(null);
+    } else {
+      return toast.error(res?.message || "Send failed");
     }
   };
 
-  const handleLogin = useDebouncedEffect(
-    async () => {
-      setIsLoading(true); // 设置 loading 状态
-      console.log("提交的验证码:", code);
-      const res: any = await sendPost(
-        "/api/auth/email/login",
-        {
-          email: account,
-          code: code,
-        },
-        {
-          excludeAuthorization: true,
-        }
-      );
-
-      if (!res || res.code === -1) {
-        setCode(null);
-        setIsLoading(false);
-        return toast.error(res?.message || "login failed");
+  const handleLogin = async () => {
+    setIsLoging(true);
+    if (!code || !account) {
+      return toast.error("Please input verification code and email");
+    }
+    const res: any = await sendPost(
+      "/api/auth/email/login",
+      {
+        email: account,
+        code: code,
+      },
+      {
+        excludeAuthorization: true,
       }
-      saveJwt(res.data.token);
-      setUser({
-        userKey: res.data.userKey || "",
-      });
-      setIsLoading(false);
-      return router.push(DEFAULT_LOGIN_REDIRECT);
-    },
-    [code],
-    1000
-  );
+    );
 
-  console.log("loading", isLoading);
+    if (!res || res.code === -1) {
+      setCode(null);
+      setIsLoging(false);
+      return toast.error(res?.message || "login failed");
+    }
+    saveJwt(res.data.token);
+    setUser({
+      userKey: res.data.userKey || "",
+    });
+    setIsLoging(false);
+    return router.push(DEFAULT_LOGIN_REDIRECT);
+  };
+
   return (
-    <Box
+    <Flex
       sx={{
         height: "100vh",
         width: "100%",
         bg: "white",
-        display: "flex",
         alignItems: "center",
-        justifyContent: ["flex-start", "center", "center"],
         flexDirection: "column",
       }}
     >
-      <Box
+      {/* header */}
+      <Flex
         sx={{
-          display: "flex",
           alignItems: "center",
-          justifyContent: "flex-start",
-          width: !isMobile ? "76%" : "100%",
-          mb: [2, 4, 4],
+          width: "100%",
+          height: "108px",
+          pl: isMobile ? "2" : "18%",
         }}
       >
         <Image
@@ -152,33 +166,31 @@ export default function LoginPage() {
             mt: [4, 0, 0],
           }}
         />
-      </Box>
+      </Flex>
       <Box
         sx={
           isMobile
             ? { width: "100%" }
             : {
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: "20px",
-                mx: [0, 4, 4],
-                background: !isMobile
-                  ? "linear-gradient(135deg, #3C81BF 0%, #1C44B3 31%, #1A42B4 63%, #1B43B4 100%)"
-                  : "none",
+                width: "100%",
+                background: isMobile
+                  ? "none"
+                  : "linear-gradient(135deg, #3C81BF 0%, #1C44B3 31%, #1A42B4 63%, #1B43B4 100%)",
+                height: "calc(100vh - 108px - 168px)",
+                pl: "18%",
               }
         }
       >
         <Flex
           sx={{
             flexDirection: ["column", "row"],
+            zIndex: 1000,
           }}
         >
-          {/* 左侧登录卡片 */}
           <Box
             sx={{
-              width: ["100%", "50%", "50%"],
-              p: [2, 4, 4],
+              p: [2, 0, 0],
               display: "flex",
               alignItems: "center",
               justifyContent: "flex-start",
@@ -189,8 +201,9 @@ export default function LoginPage() {
                 p: [2, 4, 4],
                 borderRadius: "20px",
                 bg: "white",
-                width: ["100%", "368px", "500px"],
-                height: ["100%", "400px", "588px"],
+                maxWidth: ["100%", "368px", "500px"],
+                minWidth: ["100%", "368px", "420px"],
+                maxHeight: ["100%", "400px", "588px"],
                 mx: "auto",
               }}
             >
@@ -211,7 +224,7 @@ export default function LoginPage() {
                   placeholder="Enter your email address..."
                   sx={{
                     borderRadius: "7px",
-                    color: "text", // 使用主题中的 text 色值
+                    color: "text",
                     border: "1px solid #ddd",
                   }}
                   onChange={(e: any) => {
@@ -225,7 +238,7 @@ export default function LoginPage() {
                       flex: 1,
                       mr: 2,
                       borderRadius: "7px",
-                      color: "text", // 使用主题中的 text 色值
+                      color: "text",
                       border: "1px solid #ddd",
                     }}
                     onChange={(e: any) => setCode(e.target.value)}
@@ -237,6 +250,10 @@ export default function LoginPage() {
                       color: countdown > 0 ? "text-gray-600" : "white",
                       flexShrink: 0,
                       borderRadius: "7px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: !account ? "not-allowed" : "pointer",
                     }}
                     onClick={handleSendCode}
                   >
@@ -244,27 +261,31 @@ export default function LoginPage() {
                   </Button>
                 </Flex>
                 <Button
-                  loading={isLoading.toString()}
+                  loading={isLoading}
                   sx={{
                     bg: "primary",
                     color: "white",
                     borderRadius: "7px",
                     py: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: !code || !account ? "not-allowed" : "pointer",
+                    height: "42px",
+                    lineHeight: "42px",
                   }}
+                  disabled={!code || !account}
                   onClick={handleLogin}
                 >
-                  Log In
+                  {isLoging ? (
+                    <Spinner sx={{ color: "white" }} size={20} />
+                  ) : (
+                    "Log In"
+                  )}
                 </Button>
                 <Text sx={{ textAlign: "center", my: 2, color: "text" }}>
                   OR
                 </Text>
-                {/* <GoogleLogin
-                  size="large"
-                  onSuccess={handleGoogleLogin}
-                  onError={() => {
-                    toast.error("Login failed");
-                  }}
-                /> */}
                 <Button
                   sx={{
                     bg: "white",
@@ -277,11 +298,15 @@ export default function LoginPage() {
                   }}
                   onClick={() => login()}
                 >
-                  <Image
-                    src="/images/icons/google.png"
-                    alt="google"
-                    sx={{ width: "20px", height: "20px", mr: 3 }}
-                  />
+                  {isLoading ? (
+                    <Spinner size={20} sx={{ textAlign: "center", mr: 3 }} />
+                  ) : (
+                    <Image
+                      src="/images/icons/google.png"
+                      alt="google"
+                      sx={{ width: "20px", height: "20px", mr: 3 }}
+                    />
+                  )}
                   Continue with Google
                 </Button>
               </Flex>
@@ -289,40 +314,48 @@ export default function LoginPage() {
           </Box>
 
           {/* 右侧背景图片和文案 */}
-          {!isMobile && (
-            <Box
+          {isMobile ? null : (
+            <Flex
               sx={{
                 width: ["100%", "50%"],
-                position: "relative",
-                color: "white",
-                display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
-                pt: 3,
+                mt: 128,
+                ml: 80,
               }}
             >
-              <Box sx={{ position: "relative", zIndex: 1, px: 5 }}>
-                <Heading as="h1" sx={{ fontSize: 5, mb: 3 }}>
-                  Empower your AI Applications with MIZU Data
-                </Heading>
-                <Text>Open, Ultra-low Cost, Hyperscale</Text>
-              </Box>
-              <Image
-                src="/images/login/logo.png"
-                alt="logo"
+              <Heading
+                as="h1"
                 sx={{
-                  width: "100%",
-                  height: "auto",
-                  objectFit: "cover",
-                  position: "absolute",
-                  bottom: 0,
-                  right: 0,
+                  fontSize: 5,
+                  mb: 3,
+                  color: "white",
+                  fontWeight: "bold",
                 }}
-              />
-            </Box>
+              >
+                Empower your AI Applications with MIZU Data
+              </Heading>
+              <Text sx={{ color: "white", fontSize: 15 }}>
+                Open, Ultra-low Cost, Hyperscale
+              </Text>
+            </Flex>
           )}
         </Flex>
+        {isMobile ? null : (
+          <Image
+            src="/images/login/logo.png"
+            alt="logo"
+            sx={{
+              maxWidth: ["100%", "400px", "588px"],
+              minWidth: ["100%", "400px", "408px"],
+              height: "auto",
+              objectFit: "cover",
+              position: "absolute",
+              bottom: 168,
+              right: 0,
+            }}
+          />
+        )}
       </Box>
-    </Box>
+    </Flex>
   );
 }

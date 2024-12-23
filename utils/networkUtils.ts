@@ -4,7 +4,8 @@ import { COOKIE_KEY_JWT, DEFAULT_ERROR_MESSAGE } from "./constants";
 
 export async function saveJwt(jwt: string) {
   setCookie(COOKIE_KEY_JWT, jwt, {
-    maxAge: 60 * 60 * 24 * 7,
+    maxAge: 60 * 60 * 24 * 7, // 7 days in seconds
+    secure: process.env.NODE_ENV === "production",
   });
 }
 
@@ -23,14 +24,16 @@ export async function sendPost<T>(
     excludeAuthorization?: boolean;
     onError?: (errMessage: string) => void;
   }
-): Promise<ApiResponse<T>> {
+): Promise<ApiResponse<T> | void> {
   try {
     const headers: any = { "Content-Type": "application/json" };
+
     if (!options?.excludeAuthorization) {
       const jwtCookie = getJwt();
       if (!jwtCookie) {
         options?.onError?.("Unauthorized");
-        return { code: 1, message: "Unauthorized", data: {} as T };
+        window.location.href = "/login";
+        return;
       }
       headers.Authorization = `Bearer ${jwtCookie}`;
     }
@@ -40,75 +43,66 @@ export async function sendPost<T>(
       headers,
       body: JSON.stringify(params),
     });
+
+    if (response.status === 401) {
+      options?.onError?.("Unauthorized");
+      window.location.href = "/login";
+      return;
+    }
+
     if (!response.ok) {
       options?.onError?.(response.statusText);
-      return { code: 1, message: response.statusText, data: {} as T };
+      return;
     }
 
-    const resJson = await response.json();
-    if (resJson?.code === 401) {
-      options?.onError?.("Unauthorized");
-      return { code: 1, message: "Unauthorized", data: {} as T };
-    }
-
-    return resJson;
+    return await response.json();
   } catch (err: any) {
-    return {
-      code: 1,
-      message: err.message || DEFAULT_ERROR_MESSAGE,
-      data: {} as T,
-    };
+    options?.onError?.(err.message || DEFAULT_ERROR_MESSAGE);
+    return undefined;
   }
 }
 
 export async function sendGet<T>(
   path: string,
-  params: object,
+  params?: object,
   options?: {
     excludeAuthorization?: boolean;
     onError?: (errMessage: string) => void;
   }
-): Promise<ApiResponse<T>> {
+): Promise<ApiResponse<T> | void> {
   try {
     const headers: any = { "Content-Type": "application/json" };
+
     if (!options?.excludeAuthorization) {
       const jwtCookie = getJwt();
       if (!jwtCookie) {
+        window.location.href = "/login";
         options?.onError?.("Unauthorized");
-        return { code: 1, message: "Unauthorized", data: {} as T };
+        return;
       }
       headers.Authorization = `Bearer ${jwtCookie}`;
     }
 
-    const response = await fetch(
-      `${path}?` + new URLSearchParams({ ...params }),
-      {
-        method: "GET",
-        headers,
-      }
-    );
+    const url = params ? `${path}?${new URLSearchParams({ ...params })}` : path;
+    const response = await fetch(url, {
+      method: "GET",
+      headers,
+    });
+
+    if (response.status === 401) {
+      options?.onError?.("Unauthorized");
+      window.location.href = "/login";
+      return;
+    }
 
     if (!response.ok) {
       options?.onError?.(response.statusText);
-      return { code: 1, message: response.statusText, data: {} as T };
+      return;
     }
 
-    const resJson = await response.json();
-
-    if (resJson?.code === 401) {
-      options?.onError?.("Unauthorized");
-      return { code: 1, message: "Unauthorized", data: {} as T };
-    }
-
-    return resJson;
+    return await response.json();
   } catch (err: any) {
     options?.onError?.(err.message || DEFAULT_ERROR_MESSAGE);
-    return {
-      code: 1,
-      message: err.message || DEFAULT_ERROR_MESSAGE,
-      data: {} as T,
-    };
+    return;
   }
 }
-
-export async function checkAuth() {}
