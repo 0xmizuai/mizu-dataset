@@ -271,9 +271,9 @@ const QueryDetailPage = () => {
       </Flex>
       <Flex
         sx={{
-          width: "100%",
           flexDirection: "column",
           alignItems: "center",
+          mx: ["0", "20px", "20px"],
         }}
       >
         <CollectedTable

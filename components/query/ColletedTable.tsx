@@ -108,13 +108,18 @@ export default function CollectedTable({ id, isMobile }: CollectedTableProps) {
         sx={{
           color: "#0A043C",
           fontSize: [16, 24, 24],
-          fontWeight: "semibold",
+          fontWeight: "bold",
           alignSelf: "flex-start",
         }}
       >
         Data collected
       </Text>
-      <Box sx={{ mt: 3, width: "100%" }}>
+      <Box
+        sx={{
+          mt: 3,
+          width: "100%",
+        }}
+      >
         <Table
           rowKey="id"
           columns={HistoryColumns}
@@ -128,7 +133,7 @@ export default function CollectedTable({ id, isMobile }: CollectedTableProps) {
         />
         <Flex
           sx={{
-            justifyContent: "center",
+            justifyContent: isMobile ? "center" : "flex-end",
             flexDirection: isMobile ? "column" : "row",
             alignItems: "center",
             mt: 4,
