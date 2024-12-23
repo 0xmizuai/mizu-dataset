@@ -31,8 +31,8 @@ export async function POST(request: NextRequest) {
   await redisClient.del(`${namespace}:emailCode:${email}`);
   await prisma.users.upsert({
     where: { user_key: email },
-    update: { user_key: email, type: "EMAIL", name: email },
-    create: { user_key: email, type: "EMAIL", name: email },
+    update: { user_key: email, type: "EMAIL", name: email, email: email },
+    create: { user_key: email, type: "EMAIL", name: email, email: email },
   });
 
   return Response.json({

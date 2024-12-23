@@ -46,14 +46,13 @@ function DatasetList({ isMobile }: { isMobile: boolean }, ref: any) {
         params.name = searchValue;
         params.currentPage = 1;
       }
-      console.log("@@@selectedLanguage", selectedLanguage);
       if (selectedLanguage !== "all") {
         params.language = selectedLanguage;
       }
       const res: any = await sendGet("/api/dataset", params);
       if (res?.code === 0) {
-        setDatasetList(res.data.list);
-        setTotalPages(res.data.total);
+        setDatasetList(res?.data?.list || []);
+        setTotalPages(res?.data?.total || 0);
       }
       setIsLoading(false);
     },

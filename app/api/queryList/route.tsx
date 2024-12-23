@@ -19,11 +19,12 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const id = request.nextUrl.searchParams.get("id");
-    const currentPage = request.nextUrl.searchParams.get("currentPage");
-    const pageSize = request.nextUrl.searchParams.get("pageSize");
-    const orderBy = request.nextUrl.searchParams.get("orderBy") || "created_at";
-    const order = request.nextUrl.searchParams.get("order") || "desc";
+    const id = request?.nextUrl?.searchParams?.get("id");
+    const currentPage = request?.nextUrl?.searchParams?.get("currentPage");
+    const pageSize = request?.nextUrl?.searchParams?.get("pageSize");
+    const orderBy =
+      request?.nextUrl?.searchParams?.get("orderBy") || "created_at";
+    const order = request?.nextUrl?.searchParams?.get("order") || "desc";
 
     console.log(id, currentPage, pageSize);
     if (!id || !currentPage || !pageSize)
@@ -35,7 +36,7 @@ export async function GET(request: NextRequest) {
         { status: 400 }
       );
     const [queries, total] = await prisma.$transaction([
-      prisma.queries.findMany({
+      prisma?.queries?.findMany({
         where: {
           dataset_id: parseInt(id),
         },
@@ -45,13 +46,13 @@ export async function GET(request: NextRequest) {
         skip: (Number(currentPage) - 1) * Number(pageSize),
         take: Number(pageSize),
       }),
-      prisma.queries.count({
+      prisma?.queries?.count({
         where: {
           dataset_id: parseInt(id),
         },
       }),
     ]);
-    if (queries.length === 0) {
+    if (!queries || queries?.length === 0) {
       return Response.json({
         code: 0,
         message: "success",

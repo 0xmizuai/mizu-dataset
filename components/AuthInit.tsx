@@ -15,7 +15,7 @@ export const AuthInit = ({ children }: { children: React.ReactNode }) => {
 
   useDebouncedEffect(
     async () => {
-      if (pathname === "/login") return;
+      if (pathname === "/login") return children;
       setLoading(true);
       try {
         const res: any = await sendPost(`/api/auth/verify`, {}, {});

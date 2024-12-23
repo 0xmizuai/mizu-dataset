@@ -19,18 +19,18 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const params = request.nextUrl.searchParams;
-  const id = params.get("id");
-
-  if (!id) {
-    return Response.json(
-      { code: 400, message: "Missing dataset ID" },
-      { status: 400 }
-    );
-  }
-
   try {
-    const dataset = await prisma.datasets.findUnique({
+    const params = request.nextUrl.searchParams;
+    const id = params.get("id");
+
+    if (!id) {
+      return Response.json(
+        { code: 400, message: "Missing dataset ID" },
+        { status: 400 }
+      );
+    }
+
+    const dataset = await prisma?.datasets?.findUnique({
       where: { id: Number(id) },
     });
 
@@ -38,13 +38,13 @@ export async function GET(request: NextRequest) {
       return Response.json({ code: 0, message: "success", data: [] });
     }
 
-    const records = await prisma.data_records.findMany({
+    const records = await prisma?.data_records?.findMany({
       where: { dataset_id: Number(id) },
       skip: 0,
       take: 5,
     });
 
-    const serializedRecords = records.map((record: any) => ({
+    const serializedRecords = records?.map((record: any) => ({
       id: Number(record.id),
       md5: record.md5,
       byte_size: Number(record.byte_size),
