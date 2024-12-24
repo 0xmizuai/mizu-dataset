@@ -285,7 +285,8 @@ export default function LoginPage() {
                     "Log In"
                   )}
                 </Button>
-                <Text sx={{ textAlign: "center", my: 2, color: "text" }}>
+                {/* google login */}
+                {/* <Text sx={{ textAlign: "center", my: 2, color: "text" }}>
                   OR
                 </Text>
                 <Button
@@ -310,7 +311,7 @@ export default function LoginPage() {
                     />
                   )}
                   Continue with Google
-                </Button>
+                </Button> */}
               </Flex>
             </Card>
           </Box>
