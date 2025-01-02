@@ -7,17 +7,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
-  id         Int       @id @default(autoincrement())
-  user_key   String    @unique
-  type       UserType  @default(EMAIL)
-  name       String?
-  email      String?
-  avatar     String?
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  queries    queries[]
-}
+// model users {
+//   id         Int       @id @default(autoincrement())
+//   user_key   String    @unique
+//   type       UserType  @default(EMAIL)
+//   name       String?
+//   email      String?
+//   avatar     String?
+//   created_at DateTime  @default(now())
+//   updated_at DateTime  @updatedAt
+//   queries    queries[]
+// }
 
 model datasets {
   id            Int            @id @default(autoincrement())
@@ -61,13 +61,13 @@ model queries {
   created_at            DateTime @default(now())
   points_spent          BigInt   @default(0)
   dataset               datasets @relation(fields: [dataset_id], references: [id])
-  user                  users    @relation(fields: [user_id], references: [user_key])
+  // user                  users    @relation(fields: [user_id], references: [user_key])
 
   @@index([user_id, dataset_id, status])
 }
 
-enum UserType {
-  GOOGLE
-  EMAIL
-  GITHUB
-}
+// enum UserType {
+//   GOOGLE
+//   EMAIL
+//   GITHUB
+// }

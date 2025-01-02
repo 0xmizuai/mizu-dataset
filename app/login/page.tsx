@@ -61,7 +61,7 @@ export default function LoginPage() {
       if (!!response?.data.token) {
         saveJwt(response.data.token);
         setUser({
-          userKey: response.data.userKey || "",
+          userId: response.data.userId || "",
         });
         return router.push("/");
       } else {
@@ -129,9 +129,9 @@ export default function LoginPage() {
       setIsLoging(false);
       return toast.error(res?.message || "login failed");
     }
-    saveJwt(res.data.token);
+    saveJwt(res?.data?.token);
     setUser({
-      userKey: res.data.userKey || "",
+      userId: res?.data?.user?.userId || "",
     });
     setIsLoging(false);
     return router.push(DEFAULT_LOGIN_REDIRECT);

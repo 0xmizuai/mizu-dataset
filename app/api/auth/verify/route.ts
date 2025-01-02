@@ -1,5 +1,4 @@
 import { getJWT, verifyJWT } from "@/lib/jwt";
-import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -13,9 +12,8 @@ export async function POST(request: Request) {
     );
   }
   const jwtSub = await verifyJWT(token);
-  const userKey = jwtSub?.userKey;
-  const userKeyType = jwtSub?.userKeyType;
-  if (!userKey) {
+  const user = jwtSub?.user;
+  if (!user) {
     return NextResponse.json(
       { code: 401, message: "Auth failed" },
       { status: 401 }
@@ -23,15 +21,13 @@ export async function POST(request: Request) {
   }
 
   try {
-    const newToken = await getJWT(userKey, userKeyType);
-    await prisma.users.upsert({
-      where: { user_key: userKey },
-      update: { user_key: userKey, type: userKeyType },
-      create: { user_key: userKey, type: userKeyType },
-    });
+    const newToken = await getJWT(user);
     return NextResponse.json({
       code: 0,
-      data: { userKey, token: newToken },
+      data: {
+        token: newToken,
+        user,
+      },
     });
   } catch (error) {
     return NextResponse.json(

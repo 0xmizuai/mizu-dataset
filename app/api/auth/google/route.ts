@@ -3,6 +3,9 @@ import { OAuth2Client } from "google-auth-library";
 import prisma from "@/lib/prisma";
 import { getJWT } from "@/lib/jwt";
 import { AUTH_FAILED } from "@/utils/constants";
+import connectMongo from "@/lib/mongoose";
+import { UserPointModel } from "@/models/userPoint";
+import { USER_KEY_TYPE } from "../email/login/route";
 
 const client = new OAuth2Client({
   clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
@@ -50,27 +53,30 @@ export async function POST(request: NextRequest) {
 
   try {
     const { sub, email, name, picture } = userData;
-    const token = await getJWT(sub, "GOOGLE");
-    const user = await prisma.users.upsert({
-      where: { user_key: sub },
-      update: {
-        user_key: sub,
-        type: "GOOGLE",
-        email,
-        name: name || "",
-        avatar: picture,
-      },
-      create: {
-        user_key: sub,
-        type: "GOOGLE",
-        email,
-        name: name || "",
-        avatar: picture,
-      },
+    const userKey = email || sub;
+
+    await connectMongo();
+    const admin = await UserPointModel.findOneAndUpdate(
+      { user_key: userKey, user_key_type: USER_KEY_TYPE },
+      { $set: { user_key: userKey, user_key_type: USER_KEY_TYPE } },
+      { upsert: true, new: true }
+    );
+    const token = await getJWT({
+      userId: admin._id.toString(),
+      userKey: admin.user_key,
+      userKeyType: admin.user_key_type,
     });
+
     return Response.json({
       code: 0,
-      data: { token, userKey: user.user_key },
+      data: {
+        token,
+        user: {
+          userId: admin._id.toString(),
+          userKey: admin.user_key,
+          userKeyType: admin.user_key_type,
+        },
+      },
     });
   } catch (err) {
     return Response.json({

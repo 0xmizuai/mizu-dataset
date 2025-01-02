@@ -1,16 +1,29 @@
 import { createPrivateKey, createPublicKey } from "crypto";
 import { SignJWT, jwtVerify } from "jose";
 
-export const getJWT = async (userKey: string, userKeyType: string) => {
+export interface AuthedUserInfo {
+  userId: string;
+  userKey: string;
+  userKeyType: string;
+}
+
+export interface JwtSub {
+  user: AuthedUserInfo;
+}
+
+export const getJWT = async (user: AuthedUserInfo) => {
   const privateKey = process.env.JWT_PRIVATE_KEY;
   if (!privateKey) {
     return null;
   }
   const key = createPrivateKey(privateKey);
 
+  const sub: JwtSub = {
+    user,
+  };
+
   const jwtSub = {
-    userKey,
-    userKeyType,
+    sub: JSON.stringify(sub),
   };
   const jwt = await new SignJWT({
     sub: JSON.stringify(jwtSub),

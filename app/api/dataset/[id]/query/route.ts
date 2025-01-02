@@ -7,8 +7,8 @@ export async function POST(request: NextRequest) {
   const token =
     request.headers.get("Authorization")?.replace("Bearer ", "") || "";
   const jwtSub = await verifyJWT(token);
-  const userKey = jwtSub?.userKey;
-  if (!userKey) {
+  const jwtUserId = jwtSub?.user?.userId;
+  if (!jwtUserId) {
     return Response.json(
       {
         code: 401,
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
       data: {
         query_text,
         dataset_id: parseInt(datasetId),
-        user_id: userKey,
+        user_id: jwtUserId,
         model,
       },
     });
