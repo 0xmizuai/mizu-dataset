@@ -1,7 +1,6 @@
 import { NextRequest } from "next/server";
 import { getRedisClient } from "@/lib/redis";
 import { getJWT } from "@/lib/jwt";
-import prisma from "@/lib/prisma";
 import { namespace } from "@/utils/constants";
 import connectMongo from "@/lib/mongoose";
 import { UserPointModel } from "@/models/userPoint";

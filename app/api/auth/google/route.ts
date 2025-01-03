@@ -49,8 +49,6 @@ export async function POST(request: NextRequest) {
 
   const userData = await response.json();
 
-  console.log("🌹 userData = ", userData);
-
   try {
     const { sub, email, name, picture } = userData;
     const userKey = email || sub;

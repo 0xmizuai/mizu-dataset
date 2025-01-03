@@ -259,7 +259,7 @@ export default function LoginPage() {
                     }}
                     onClick={handleSendCode}
                   >
-                    {countdown > 0 ? `Resend in ${countdown}s` : "Send"}
+                    {countdown > 0 ? `${countdown}s` : "Send"}
                   </Button>
                 </Flex>
                 <Button

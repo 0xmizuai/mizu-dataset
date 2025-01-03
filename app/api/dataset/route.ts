@@ -7,7 +7,9 @@ export async function GET(request: NextRequest) {
   const token =
     request.headers.get("Authorization")?.replace("Bearer ", "") || "";
   const jwtSub = await verifyJWT(token);
+  console.log("🌹 jwtSub = ", jwtSub);
   const jwtUserId = jwtSub?.user?.userId;
+  console.log("🌹 jwtUserId = ", jwtUserId);
   if (!jwtUserId) {
     return Response.json(
       {
