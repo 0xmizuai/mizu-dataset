@@ -31,6 +31,7 @@ export default function LoginPage() {
   const [code, setCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoging, setIsLoging] = useState(false);
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
@@ -61,7 +62,8 @@ export default function LoginPage() {
       if (!!response?.data.token) {
         saveJwt(response.data.token);
         setUser({
-          userKey: response.data.userKey || "",
+          userId: response.data.userId || "",
+          point: response.data.user.point || 0,
         });
         return router.push("/");
       } else {
@@ -87,6 +89,7 @@ export default function LoginPage() {
       console.log("account", account);
       return toast.error("Please input valid email");
     }
+    setIsSending(true);
     console.log("🚀 ~ handleSendCode ~ account", account);
     const res = await sendPost(
       `/api/auth/email`,
@@ -103,16 +106,18 @@ export default function LoginPage() {
     if (res && res.code === 0) {
       setCountdown(60);
       setCode(null);
+      setIsSending(false);
     } else {
+      setIsSending(false);
       return toast.error(res?.message || "Send failed");
     }
   };
 
   const handleLogin = async () => {
-    setIsLoging(true);
     if (!code || !account) {
       return toast.error("Please input verification code and email");
     }
+    setIsLoging(true);
     const res: any = await sendPost(
       "/api/auth/email/login",
       {
@@ -129,9 +134,10 @@ export default function LoginPage() {
       setIsLoging(false);
       return toast.error(res?.message || "login failed");
     }
-    saveJwt(res.data.token);
+    saveJwt(res?.data?.token);
     setUser({
-      userKey: res.data.userKey || "",
+      userId: res?.data?.user?.userId || "",
+      point: res?.data?.user?.point || 0,
     });
     setIsLoging(false);
     return router.push(DEFAULT_LOGIN_REDIRECT);
@@ -259,7 +265,13 @@ export default function LoginPage() {
                     }}
                     onClick={handleSendCode}
                   >
-                    {countdown > 0 ? `Resend in ${countdown}s` : "Send"}
+                    {countdown > 0 ? (
+                      `${countdown}s`
+                    ) : isSending ? (
+                      <Spinner size={20} sx={{ textAlign: "center", mr: 3 }} />
+                    ) : (
+                      "Send"
+                    )}
                   </Button>
                 </Flex>
                 <Button
@@ -285,7 +297,8 @@ export default function LoginPage() {
                     "Log In"
                   )}
                 </Button>
-                <Text sx={{ textAlign: "center", my: 2, color: "text" }}>
+                {/* google login */}
+                {/* <Text sx={{ textAlign: "center", my: 2, color: "text" }}>
                   OR
                 </Text>
                 <Button
@@ -310,7 +323,7 @@ export default function LoginPage() {
                     />
                   )}
                   Continue with Google
-                </Button>
+                </Button> */}
               </Flex>
             </Card>
           </Box>

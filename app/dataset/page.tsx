@@ -86,20 +86,21 @@ function DatasetList() {
               justifyContent: "space-between",
               alignItems: "flex-start",
               mx: [3, 5, 5],
+              position: "relative",
             }}
           >
             <Box
               sx={{
-                width: ["75%", "50%", "50%"],
-                mt: [0, 4, 4],
-                pt: [0, 4, 4],
+                width: ["50%", "45%", "45%", "50%", "50%"],
+                mt: [0, 2, 3],
+                pt: [0, 2, 3],
                 display: "flex",
                 flexDirection: "column",
               }}
             >
               <Text
                 sx={{
-                  fontSize: ["16px", "36px", "36px"],
+                  fontSize: ["16px", "28px", "36px"],
                   fontWeight: "bold",
                   mb: [0, 3, 3],
                 }}
@@ -118,16 +119,13 @@ function DatasetList() {
               src="/images/dataset/logo.png"
               alt="logo"
               sx={{
-                maxWidth: ["216px", "497px", "497px"],
+                maxWidth: ["216px", "367px", "497px", "497px", "497px"],
                 height: "auto",
-                mt: ["10px", "18px", "18px"],
-                mr: "-43px",
                 borderBottomRightRadius: ["20px", "20px", "0"],
-                ...(isMobile && {
-                  position: "absolute",
-                  right: 0,
-                  bottom: 0,
-                }),
+                position: "absolute",
+                right: 0,
+                bottom: 0,
+                transform: "translate(20%, 18%)",
               }}
             />
           </Flex>
