@@ -19,6 +19,7 @@ import {
 import { useResponsiveValue } from "@theme-ui/match-media";
 import { validateEmail } from "@/utils/commonUtils";
 import { DEFAULT_LOGIN_REDIRECT } from "@/config/routes";
+import { Color } from "antd/es/color-picker";
 
 export default function LoginPage() {
   const setUser = useUserStore((state) => state.setUser);
@@ -242,6 +243,7 @@ export default function LoginPage() {
                 <Flex>
                   <Input
                     placeholder="Verification Code"
+                    value={code}
                     sx={{
                       flex: 1,
                       mr: 2,
@@ -268,7 +270,10 @@ export default function LoginPage() {
                     {countdown > 0 ? (
                       `${countdown}s`
                     ) : isSending ? (
-                      <Spinner size={20} sx={{ textAlign: "center", mr: 3 }} />
+                      <Spinner
+                        size={20}
+                        sx={{ color: "white", textAlign: "center", mr: 3 }}
+                      />
                     ) : (
                       "Send"
                     )}
