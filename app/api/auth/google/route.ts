@@ -1,6 +1,5 @@
 import { NextRequest } from "next/server";
 import { OAuth2Client } from "google-auth-library";
-import prisma from "@/lib/prisma";
 import { getJWT } from "@/lib/jwt";
 import { AUTH_FAILED } from "@/utils/constants";
 import connectMongo from "@/lib/mongoose";
