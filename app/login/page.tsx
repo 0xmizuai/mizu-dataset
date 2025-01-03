@@ -63,6 +63,7 @@ export default function LoginPage() {
         saveJwt(response.data.token);
         setUser({
           userId: response.data.userId || "",
+          point: response.data.user.point || 0,
         });
         return router.push("/");
       } else {
@@ -113,10 +114,10 @@ export default function LoginPage() {
   };
 
   const handleLogin = async () => {
-    setIsLoging(true);
     if (!code || !account) {
       return toast.error("Please input verification code and email");
     }
+    setIsLoging(true);
     const res: any = await sendPost(
       "/api/auth/email/login",
       {
@@ -136,6 +137,7 @@ export default function LoginPage() {
     saveJwt(res?.data?.token);
     setUser({
       userId: res?.data?.user?.userId || "",
+      point: res?.data?.user?.point || 0,
     });
     setIsLoging(false);
     return router.push(DEFAULT_LOGIN_REDIRECT);

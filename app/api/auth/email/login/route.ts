@@ -57,6 +57,7 @@ export async function POST(request: NextRequest) {
         userId: admin._id.toString(),
         userKey: admin.user_key,
         userKeyType: USER_KEY_TYPE,
+        point: admin.claimed_point,
       },
     },
   });
