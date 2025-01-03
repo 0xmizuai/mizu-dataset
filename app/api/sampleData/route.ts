@@ -7,9 +7,9 @@ export async function GET(request: NextRequest) {
   const token =
     request.headers.get("Authorization")?.replace("Bearer ", "") || "";
   const jwtSub = await verifyJWT(token);
-  const userKey = jwtSub?.userKey;
+  const jwtUserId = jwtSub?.user?.userId;
 
-  if (!userKey) {
+  if (!jwtUserId) {
     return Response.json(
       {
         code: 401,

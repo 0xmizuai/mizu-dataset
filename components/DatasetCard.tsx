@@ -4,6 +4,7 @@ import { Card, Flex, Image, Text } from "theme-ui";
 import { useRouter } from "next/navigation";
 import { formatBytes, formatObjects } from "@/utils/format";
 import Link from "next/link";
+import { Grid } from "theme-ui";
 interface DatasetCardProps {
   item: any;
   showLink?: boolean;
@@ -109,7 +110,8 @@ export default function DatasetCard({
           {item?.name ?? "Dataset"}
         </Text>
       </Flex>
-      <Flex
+      <Grid
+        columns={["2fr", "1fr 1fr", "1fr 1fr"]} // 小屏幕占用1列，中等和大屏幕占用2列
         sx={{
           justifyContent: "space-between",
           mb: ["15px", "20px", "20px"],
@@ -153,7 +155,7 @@ export default function DatasetCard({
             {`${formatObjects(item?.total_objects ?? 0)}`}
           </Text>
         </Flex>
-      </Flex>
+      </Grid>
       <Flex
         sx={{
           justifyContent: "space-between",
