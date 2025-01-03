@@ -119,13 +119,19 @@ function DatasetList() {
               src="/images/dataset/logo.png"
               alt="logo"
               sx={{
-                maxWidth: ["216px", "367px", "497px", "497px", "497px"],
+                maxWidth: ["216px", "497px", "497px", "497px", "497px"],
                 height: "auto",
                 borderBottomRightRadius: ["20px", "20px", "0"],
                 position: "absolute",
                 right: 0,
                 bottom: 0,
-                transform: "translate(20%, 18%)",
+                transform: [
+                  "translate(20%, 18%)",
+                  "translate(20%, 6%)",
+                  "translate(20%, 18%)",
+                  "translate(20%, 18%)",
+                  "translate(20%, 18%)",
+                ],
               }}
             />
           </Flex>
