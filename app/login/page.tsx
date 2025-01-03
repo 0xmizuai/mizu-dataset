@@ -243,6 +243,7 @@ export default function LoginPage() {
                 <Flex>
                   <Input
                     placeholder="Verification Code"
+                    value={code}
                     sx={{
                       flex: 1,
                       mr: 2,
