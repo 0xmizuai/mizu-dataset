@@ -31,6 +31,7 @@ export default function LoginPage() {
   const [code, setCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoging, setIsLoging] = useState(false);
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
@@ -87,6 +88,7 @@ export default function LoginPage() {
       console.log("account", account);
       return toast.error("Please input valid email");
     }
+    setIsSending(true);
     console.log("🚀 ~ handleSendCode ~ account", account);
     const res = await sendPost(
       `/api/auth/email`,
@@ -103,7 +105,9 @@ export default function LoginPage() {
     if (res && res.code === 0) {
       setCountdown(60);
       setCode(null);
+      setIsSending(false);
     } else {
+      setIsSending(false);
       return toast.error(res?.message || "Send failed");
     }
   };
@@ -259,7 +263,13 @@ export default function LoginPage() {
                     }}
                     onClick={handleSendCode}
                   >
-                    {countdown > 0 ? `${countdown}s` : "Send"}
+                    {countdown > 0 ? (
+                      `${countdown}s`
+                    ) : isSending ? (
+                      <Spinner size={20} sx={{ textAlign: "center", mr: 3 }} />
+                    ) : (
+                      "Send"
+                    )}
                   </Button>
                 </Flex>
                 <Button
