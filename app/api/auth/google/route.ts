@@ -6,10 +6,10 @@ import connectMongo from "@/lib/mongoose";
 import { UserPointModel } from "@/models/userPoint";
 import { USER_KEY_TYPE } from "../email/login/route";
 
-const client = new OAuth2Client({
-  clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-  clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET,
-});
+// const client = new OAuth2Client({
+//   clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+//   clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET,
+// });
 
 /**
  * @description: google OAuth2.0 login
