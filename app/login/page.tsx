@@ -29,7 +29,7 @@ export default function LoginPage() {
   });
   const [account, setAccount] = useState("");
   const [countdown, setCountdown] = useState(0);
-  const [code, setCode] = useState<string | null>(null);
+  const [code, setCode] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoging, setIsLoging] = useState(false);
   const [isSending, setIsSending] = useState(false);
@@ -106,7 +106,7 @@ export default function LoginPage() {
 
     if (res && res.code === 0) {
       setCountdown(60);
-      setCode(null);
+      setCode("");
       setIsSending(false);
     } else {
       setIsSending(false);
@@ -131,7 +131,7 @@ export default function LoginPage() {
     );
 
     if (!res || res.code === -1) {
-      setCode(null);
+      setCode("");
       setIsLoging(false);
       return toast.error(res?.message || "login failed");
     }
@@ -303,7 +303,7 @@ export default function LoginPage() {
                   )}
                 </Button>
                 {/* google login */}
-                {/* <Text sx={{ textAlign: "center", my: 2, color: "text" }}>
+                <Text sx={{ textAlign: "center", my: 2, color: "text" }}>
                   OR
                 </Text>
                 <Button
@@ -328,7 +328,7 @@ export default function LoginPage() {
                     />
                   )}
                   Continue with Google
-                </Button> */}
+                </Button>
               </Flex>
             </Card>
           </Box>
