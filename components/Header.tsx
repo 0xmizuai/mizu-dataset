@@ -4,6 +4,7 @@ import { Dropdown, Input, MenuProps, message } from "antd";
 import { deleteJwt } from "@/utils/networkUtils";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useUserStore } from "@/stores/userStore";
 
 enum HeaderKey {
   POINTS = "points",
@@ -23,6 +24,7 @@ function Header({
   searchValue,
   isMobile = false,
 }: HeaderProps) {
+  const user = useUserStore((state) => state.user);
   const router = useRouter();
   const [key, setKey] = useState<HeaderKey | null>(null);
 
@@ -36,9 +38,11 @@ function Header({
             color: key === HeaderKey.POINTS ? "#2979F2" : "inherit",
           }}
         >
-          <Text sx={{ ml: 2, fontSize: 16, fontWeight: "medium" }}>
+          <Text sx={{ fontSize: 16, fontWeight: "medium" }}>
             My points:
-            <Text sx={{ fontWeight: "bold", color: "#2979F2" }}>2000</Text>
+            <Text sx={{ fontWeight: "bold", color: "#2979F2", ml: "4px" }}>
+              {user?.point || 0}
+            </Text>
           </Text>
         </Flex>
       ),

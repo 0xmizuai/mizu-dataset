@@ -1,8 +1,11 @@
 import { NextRequest } from "next/server";
 import { getRedisClient } from "@/lib/redis";
 import { getJWT } from "@/lib/jwt";
-import prisma from "@/lib/prisma";
 import { namespace } from "@/utils/constants";
+import connectMongo from "@/lib/mongoose";
+import { UserPointModel } from "@/models/userPoint";
+
+export const USER_KEY_TYPE = "email";
 
 export async function POST(request: NextRequest) {
   const requestData = await request.json();
@@ -25,18 +28,37 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  // Code is right, enter register logic
-  const token = await getJWT(email, "EMAIL");
-
   await redisClient.del(`${namespace}:emailCode:${email}`);
-  await prisma.users.upsert({
-    where: { user_key: email },
-    update: { user_key: email, type: "EMAIL", name: email, email: email },
-    create: { user_key: email, type: "EMAIL", name: email, email: email },
+  await connectMongo();
+  const admin = await UserPointModel.findOneAndUpdate(
+    { user_key: email, user_key_type: USER_KEY_TYPE },
+    { $set: { user_key: email, user_key_type: USER_KEY_TYPE } },
+    { upsert: true, new: true }
+  );
+
+  if (!admin) {
+    return Response.json({
+      code: -1,
+      message: "admin not found",
+    });
+  }
+
+  const token = await getJWT({
+    userId: admin._id.toString(),
+    userKey: admin.user_key,
+    userKeyType: USER_KEY_TYPE,
   });
 
   return Response.json({
     code: 0,
-    data: { token, userKey: email },
+    data: {
+      token,
+      user: {
+        userId: admin._id.toString(),
+        userKey: admin.user_key,
+        userKeyType: USER_KEY_TYPE,
+        point: admin.claimed_point,
+      },
+    },
   });
 }

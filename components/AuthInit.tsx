@@ -27,7 +27,7 @@ export const AuthInit = ({ children }: { children: React.ReactNode }) => {
         const res: any = await sendPost(`/api/auth/verify`, {}, {});
         if (res?.code === 0) {
           saveJwt(res?.data?.token);
-          setUser(res?.data?.userKey);
+          setUser(res?.data?.user?.userId);
         } else {
           deleteJwt();
           router.push("/login");
