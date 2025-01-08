@@ -16,6 +16,11 @@ import toast from "react-hot-toast";
 import { ApiResponse } from "@/types/api";
 import { ColumnType } from "antd/es/table";
 import { SorterResult } from "antd/es/table/interface";
+import { useStore } from "zustand";
+import { useUserStore } from "@/stores/userStore";
+import { franc } from "franc";
+import { LANGUAGES } from "@/utils/languages";
+import { francAll } from "franc-all";
 
 enum Tab {
   HISTORY = "history",
@@ -44,6 +49,7 @@ export default function SampleAndHistory({
   language,
   isMobile,
 }: SampleDataProps) {
+  const user = useUserStore((state) => state.user);
   const [historyList, setHistoryList] = useState<HistoryItem[]>([]);
   const [sampleList, setSampleList] = useState<SampleDataItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -60,6 +66,7 @@ export default function SampleAndHistory({
     }
     return {};
   });
+  const [languageError, setLanguageError] = useState<string>("");
 
   const loadHistory = async (orderBy = "created_at", order = "desc") => {
     setLoading(true);
@@ -356,7 +363,25 @@ export default function SampleAndHistory({
       />
     );
   };
+
+  const checkLanguage = async () => {
+    console.log("🚀queryText = ", queryText);
+    const detectedLang = await franc(queryText);
+    console.log("🚀detectedLang = ", detectedLang);
+    if (LANGUAGES[detectedLang]) {
+      return true;
+    }
+    setLanguageError(
+      `The detected language code "${detectedLang}" is not in the supported language list.`
+    );
+    return false;
+  };
+
   const handleNewQuery = async () => {
+    const isLanguageSupported = await checkLanguage();
+    if (!isLanguageSupported && languageError === "") {
+      return;
+    }
     const res = (await sendPost(`/api/dataset/${id}/query`, {
       datasetId: id,
       query_text: queryText,
@@ -364,6 +389,8 @@ export default function SampleAndHistory({
     })) as ApiResponse<any>;
     if (res.code === 0) {
       setVisible(false);
+      setQueryText("");
+      setLanguageError("");
       loadHistory();
       return toast.success("New query created");
     }
@@ -529,19 +556,27 @@ export default function SampleAndHistory({
             </Text>
           </Box>
         }
-        onCancel={() => setVisible(false)}
+        style={{ minWidth: isMobile ? "100%" : "600px" }}
+        onCancel={() => {
+          setVisible(false);
+          setQueryText("");
+          setLanguageError("");
+        }}
         onOk={handleNewQuery}
         footer={[
-          <Flex sx={{ justifyContent: "center", gap: 2 }}>
+          <Flex sx={{ width: "100%", justifyContent: "center", gap: 2 }}>
             <Button
               sx={{
                 borderRadius: "10px",
                 backgroundColor: "#EFEFEF",
                 color: "text",
-                width: "160px",
               }}
               key="cancel"
-              onClick={() => setVisible(false)}
+              onClick={() => {
+                setVisible(false);
+                setQueryText("");
+                setLanguageError("");
+              }}
             >
               Cancel
             </Button>
@@ -554,31 +589,93 @@ export default function SampleAndHistory({
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "center",
-                width: "160px",
               }}
               key="submit"
               onClick={handleNewQuery}
             >
-              Submit
+              {languageError ? "I still want to submit" : "Submit"}
               <Image
-                src="/images/icons/create.png"
+                src="/images/icons/dataset-query.png"
                 alt="plus"
-                width={18}
-                height={18.5}
+                width={52}
+                height={22}
                 sx={{ ml: 2 }}
               />
             </Button>
           </Flex>,
         ]}
       >
+        <Flex
+          sx={{
+            mb: 2,
+            flexDirection: isMobile ? "column" : "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Flex>
+            <Text sx={{ color: "#333333" }}>Model: {name}</Text>
+            <Flex
+              sx={{
+                alignItems: "center",
+                border: "1px solid #E5E7EB",
+                borderRadius: "20px",
+                px: [1, 2, 2],
+                flexDirection: "row",
+                height: "20px",
+                mx: 1,
+              }}
+            >
+              <Image
+                src="/images/dataset/text.png"
+                alt="common"
+                width="16px"
+                height="auto"
+                mr={1}
+              />
+              <Text sx={{ fontSize: isMobile ? 10 : 14 }}>
+                {data_type ?? "text"}
+              </Text>
+            </Flex>
+            <Flex
+              sx={{
+                alignItems: "center",
+                border: "1px solid #E5E7EB",
+                borderRadius: "20px",
+                px: [1, 2, 2],
+                ml: 1,
+                height: "20px",
+              }}
+            >
+              <Image
+                src="/images/dataset/language.png"
+                alt="common"
+                width="14px"
+                height="auto"
+                mr={isMobile ? 1 : 2}
+              />
+              <Text sx={{ fontSize: isMobile ? 10 : 14 }}>
+                {language ?? "eng"}
+              </Text>
+            </Flex>
+          </Flex>
+          <Flex sx={{ color: "rgba(0, 0, 0, 0.5)" }}>
+            Points balance:
+            <Image width={18} height={18} src={"/images/icons/points.png"} />
+            <Text>{user?.point || 0}</Text>
+          </Flex>
+        </Flex>
         <Input.TextArea
           value={queryText}
-          onChange={(e) => setQueryText(e.target.value)}
+          onChange={(e) => {
+            setQueryText(e.target.value);
+            setLanguageError("");
+          }}
           placeholder="Please enter your query"
           rows={4}
-          style={{ marginBottom: 16 }}
+          style={{ marginBottom: languageError ? 0 : 16 }}
           autoSize={{ minRows: 4, maxRows: 10 }}
         />
+        {languageError && <Text sx={{ color: "red" }}>{languageError}</Text>}
       </Modal>
     </Box>
   );

@@ -19,7 +19,6 @@ import {
 import { useResponsiveValue } from "@theme-ui/match-media";
 import { validateEmail } from "@/utils/commonUtils";
 import { DEFAULT_LOGIN_REDIRECT } from "@/config/routes";
-import { Color } from "antd/es/color-picker";
 
 export default function LoginPage() {
   const setUser = useUserStore((state) => state.setUser);
