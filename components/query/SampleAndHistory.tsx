@@ -605,7 +605,13 @@ export default function SampleAndHistory({
           </Flex>,
         ]}
       >
-        <Flex sx={{ mb: 2, justifyContent: "space-between" }}>
+        <Flex
+          sx={{
+            mb: 2,
+            flexDirection: isMobile ? "column" : "row",
+            justifyContent: "space-between",
+          }}
+        >
           <Flex>
             <Text sx={{ color: "#333333" }}>Model: {name}</Text>
             <Flex
